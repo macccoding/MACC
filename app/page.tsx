@@ -1,65 +1,455 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ScrollReveal from "./components/ScrollReveal";
+import RotatingText from "./components/RotatingText";
+
+/* ─── DISCIPLINES ─── */
+const disciplines = [
+  { num: "01", label: "Entrepreneur" },
+  { num: "02", label: "Food & Beverage" },
+  { num: "03", label: "Technology" },
+  { num: "04", label: "Design" },
+  { num: "05", label: "Travel" },
+  { num: "06", label: "Gadgets & Tech" },
+];
+
+/* ─── VENTURES ─── */
+const ventures = [
+  {
+    num: "01",
+    name: "ISTRY",
+    meta: "FOUNDER \u00b7 BESPOKE F&B",
+    tags: ["FOOD & BEVERAGE", "WHITELABELING", "EVENTS", "CATERING"],
+    description:
+      "Bespoke food & beverage company specializing in whitelabel products, event catering, and culinary experiences. Building Jamaica\u2019s next great food brand.",
+    color: "#D4A843",
+  },
+  {
+    num: "02",
+    name: "SUPERPLUS",
+    meta: "LEGACY \u00b7 COMMUNITY RETAIL",
+    tags: ["RETAIL", "COMMUNITY", "GROCERY", "FAMILY"],
+    description:
+      "A family supermarket legacy built by my grandmother, Hyacinth Gloria Chen. I\u2019m at the heart of operations day-to-day \u2014 keeping the family business alive and evolving.",
+    color: "#2D8C4E",
+  },
+  {
+    num: "03",
+    name: "KEMI",
+    meta: "FOUNDER \u00b7 ACTIVELY BUILDING",
+    tags: ["ARTIFICIAL INTELLIGENCE", "PRODUCTIVITY", "PRODUCT"],
+    description:
+      "An AI product I\u2019m actively building. Code, design, and ship \u2014 from Kingston to the world.",
+    color: "#D4A843",
+  },
+  {
+    num: "04",
+    name: "CARICOM FREIGHT",
+    meta: "FAMILY \u00b7 LOGISTICS",
+    tags: ["FREIGHT", "LOGISTICS", "SHIPPING"],
+    description:
+      "Family freight and logistics business. Caribbean shipping infrastructure that keeps goods moving across the islands.",
+    color: "#2D8C4E",
+  },
+];
+
+/* ─── JOURNAL PREVIEW ─── */
+const journalPosts = [
+  {
+    num: "01",
+    title: "Why I\u2019m Building a Personal Site in 2026",
+    date: "FEB 2026",
+    category: "BUILDING",
+  },
+  {
+    num: "02",
+    title: "The Tech Stack Behind My Businesses",
+    date: "FEB 2026",
+    category: "TECH",
+  },
+  {
+    num: "03",
+    title: "Food at the Intersection of Jamaica and China",
+    date: "FEB 2026",
+    category: "FOOD",
+  },
+];
+
+/* ─── GALLERY PREVIEW ─── */
+const galleryItems = Array.from({ length: 10 }, (_, i) => ({
+  num: String(i + 1).padStart(2, "0"),
+  category: ["FOOD", "TRAVEL", "GADGETS", "STREET", "PORTRAITS", "FOOD", "TRAVEL", "DRONE", "LIFESTYLE", "MAKING"][i],
+}));
 
 export default function Home() {
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      <Navbar />
+
+      {/* ════════════════════════════════════════════
+          SECTION 1: HERO
+      ════════════════════════════════════════════ */}
+      <motion.section
+        ref={heroRef}
+        style={{ opacity: heroOpacity, scale: heroScale }}
+        className="relative flex h-screen flex-col items-center justify-center overflow-hidden bg-bg-primary"
+      >
+        {/* Flanking Text — Left */}
+        <span className="absolute left-6 top-1/2 hidden -translate-y-1/2 -rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block">
+          A COLLECTION OF VENTURES &amp; VISIONS
+        </span>
+
+        {/* Flanking Text — Right */}
+        <span className="absolute right-6 top-1/2 hidden -translate-y-1/2 rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block">
+          MICHAEL CHEN 2026
+        </span>
+
+        {/* Hero Logo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="relative"
+        >
+          <Image
+            src="/images/macc-logo.png"
+            alt="MACC Logo — Chinese Chop Stamp"
+            width={320}
+            height={320}
+            priority
+            className="h-auto w-[250px] drop-shadow-[0_0_60px_rgba(212,168,67,0.15)] md:w-[320px]"
+          />
+        </motion.div>
+
+        {/* Tagline */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="-mt-4 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted md:-mt-6"
+        >
+          Building things. Tasting everything. Designing the rest.
+        </motion.p>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2 }}
+          className="absolute bottom-12 flex flex-col items-center gap-3"
+        >
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted">
+            SCROLL TO EXPLORE
+          </span>
+          <motion.span
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            className="text-text-muted"
+          >
+            &darr;
+          </motion.span>
+        </motion.div>
+      </motion.section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 2: NAME REVEAL
+      ════════════════════════════════════════════ */}
+      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-accent px-6 py-32">
+        <ScrollReveal>
+          <h1 className="text-center font-[family-name:var(--font-playfair)] text-[15vw] font-bold leading-[0.85] text-bg-primary md:text-[18vw]">
+            MIKE
+            <br />
+            CHEN
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+        </ScrollReveal>
+
+        {/* Numbered Disciplines */}
+        <ScrollReveal delay={0.3}>
+          <div className="mt-16 flex flex-wrap justify-center gap-x-10 gap-y-4">
+            {disciplines.map((d) => (
+              <span
+                key={d.num}
+                className="font-[family-name:var(--font-playfair)] text-sm text-bg-primary/70 md:text-base"
+              >
+                <span className="font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/40">
+                  {d.num}
+                </span>{" "}
+                {d.label}
+              </span>
+            ))}
+          </div>
+        </ScrollReveal>
+
+        {/* Video Embed Placeholder */}
+        <ScrollReveal delay={0.5} className="mt-20 w-full max-w-4xl">
+          <div className="aspect-video w-full overflow-hidden rounded-lg bg-bg-primary/20">
+            <div className="flex h-full items-center justify-center">
+              <div className="text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-bg-primary/30">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="ml-1">
+                    <path d="M8 5v14l11-7L8 5z" fill="#0A0A0A" fillOpacity="0.5" />
+                  </svg>
+                </div>
+                <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
+                  SIZZLE REEL COMING SOON
+                </span>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 3: ABOUT CARD
+      ════════════════════════════════════════════ */}
+      <section className="relative flex min-h-screen items-center justify-center bg-bg-primary px-6 py-32">
+        <ScrollReveal>
+          <div className="mx-auto w-full max-w-3xl rounded-2xl bg-accent px-[clamp(2.5rem,8vw,7rem)] py-[clamp(2.5rem,6vw,5rem)] text-bg-primary shadow-[0_0_80px_rgba(212,168,67,0.12)]">
+            {/* Name + Rotating Role */}
+            <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
+              Mike Chen
+            </p>
+            <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
+              does
+            </p>
+            <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
+              <RotatingText
+                words={[
+                  "entrepreneur",
+                  "builder",
+                  "coder",
+                  "designer",
+                  "foodie",
+                ]}
+                interval={2200}
+              />
+            </div>
+
+            {/* Bio */}
+            <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
+              I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
+              businesses, brands, code, and whatever else I can get my hands on.
+              Founder of Istry. Keeping SuperPlus alive as a family legacy.
+              Actively building Kemi. I design, I ship, and I eat everything.
+              Based in Kingston.
+            </p>
+
+            {/* Location */}
+            <div className="mt-10 border-t border-bg-primary/20 pt-6">
+              <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
+                CURRENTLY BASED IN
+              </span>
+              <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
+                Kingston, Jamaica
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
+                18.0179&deg; N, 76.8099&deg; W
+              </p>
+            </div>
+
+            {/* Read More */}
+            <Link
+              href="/about"
+              className="mt-8 inline-block font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              READ MORE &rarr;
+            </Link>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 4: FEATURED VENTURES
+      ════════════════════════════════════════════ */}
+      <section className="bg-bg-secondary px-6 py-32 md:px-12">
+        <div className="mx-auto max-w-7xl">
+          {/* Section Header */}
+          <ScrollReveal>
+            <div className="mb-20 flex items-end justify-between border-b border-white/10 pb-6">
+              <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
+                Featured
+                <br />
+                <span className="italic text-accent">Ventures</span>
+              </h2>
+              <Link
+                href="/ventures"
+                className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
+              >
+                SEE ALL VENTURES &rarr;
+              </Link>
+            </div>
+          </ScrollReveal>
+
+          {/* Ventures List */}
+          <div className="space-y-32">
+            {ventures.map((venture, i) => (
+              <ScrollReveal key={venture.num} delay={0.1}>
+                <div className="grid gap-8 md:grid-cols-2 md:gap-16">
+                  {/* Left: Info */}
+                  <div className={`flex flex-col justify-center ${i % 2 === 1 ? "md:order-2" : ""}`}>
+                    <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+                      FEATURED VENTURE {venture.num}
+                    </span>
+                    <h3
+                      className="mt-4 font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-5xl"
+                      style={{ color: venture.color }}
+                    >
+                      {venture.name}
+                    </h3>
+                    <p className="mt-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted">
+                      {venture.meta}
+                    </p>
+                    <p className="mt-6 text-lg leading-relaxed text-text-primary/80">
+                      {venture.description}
+                    </p>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      {venture.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-text-muted"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <Link
+                      href="/ventures"
+                      className="mt-8 inline-block font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-accent transition-opacity hover:opacity-70"
+                    >
+                      VIEW VENTURE &rarr;
+                    </Link>
+                  </div>
+
+                  {/* Right: Image Placeholder */}
+                  <div className={`${i % 2 === 1 ? "md:order-1" : ""}`}>
+                    <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bg-primary">
+                      <div className="flex h-full items-center justify-center">
+                        <span
+                          className="font-[family-name:var(--font-playfair)] text-6xl font-bold opacity-10"
+                          style={{ color: venture.color }}
+                        >
+                          {venture.num}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 5: LATEST FROM THE JOURNAL
+      ════════════════════════════════════════════ */}
+      <section className="bg-bg-primary px-6 py-32 md:px-12">
+        <div className="mx-auto max-w-7xl">
+          <ScrollReveal>
+            <div className="mb-16 flex items-end justify-between">
+              <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
+                Latest <span className="italic text-accent">Posts</span>
+              </h2>
+              <Link
+                href="/journal"
+                className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
+              >
+                VIEW ALL &rarr;
+              </Link>
+            </div>
+          </ScrollReveal>
+
+          <div className="space-y-0 divide-y divide-white/5">
+            {journalPosts.map((post, i) => (
+              <ScrollReveal key={post.num} delay={i * 0.1}>
+                <Link href="/journal" className="group block py-8 transition-colors hover:bg-white/[0.02]">
+                  <div className="flex items-start gap-6">
+                    <span className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40">
+                      {post.num}
+                    </span>
+                    <div className="flex-1">
+                      <h3 className="font-[family-name:var(--font-playfair)] text-xl font-semibold transition-colors group-hover:text-accent md:text-2xl">
+                        {post.title}
+                      </h3>
+                      <div className="mt-2 flex items-center gap-4">
+                        <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
+                          {post.date}
+                        </span>
+                        <span className="rounded-full border border-accent/30 px-3 py-0.5 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-accent">
+                          {post.category}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/30 transition-colors group-hover:text-accent">
+                      &rarr;
+                    </span>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 6: ARCHIVE / GALLERY PREVIEW
+      ════════════════════════════════════════════ */}
+      <section className="bg-bg-secondary px-6 py-32 md:px-12">
+        <div className="mx-auto max-w-7xl">
+          <ScrollReveal>
+            <div className="mb-16 flex items-end justify-between">
+              <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
+                Archive
+              </h2>
+              <Link
+                href="/gallery"
+                className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
+              >
+                SEE ALL &rarr;
+              </Link>
+            </div>
+          </ScrollReveal>
+
+          {/* Numbered Grid */}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5 md:gap-6">
+            {galleryItems.map((item, i) => (
+              <ScrollReveal key={item.num} delay={i * 0.05}>
+                <Link href="/gallery" className="group relative block">
+                  <div className="aspect-square overflow-hidden rounded-lg bg-bg-primary transition-all group-hover:ring-2 group-hover:ring-accent/50">
+                    <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
+                      <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
+                        {item.num}
+                      </span>
+                      <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
+                        {item.category}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 7: FOOTER
+      ════════════════════════════════════════════ */}
+      <Footer />
+    </>
   );
 }
