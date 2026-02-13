@@ -1,0 +1,30 @@
+{
+  "title": "gallery",
+  "type": "object",
+  "properties": {
+    "num": {
+      "title": "Image Number",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Sequential number (01, 02, etc)"
+    },
+    "category": {
+      "title": "Category",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "FOOD & DRINK, TRAVEL, GADGETS & MAKING, DRONE / AERIAL, STREET / LIFESTYLE, or PORTRAITS"
+    },
+    "aspect": {
+      "title": "Aspect Ratio",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "CSS aspect class: aspect-[3/4], aspect-square, aspect-[4/5], or aspect-[4/3]"
+    },
+    "caption": {
+      "title": "Caption",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Short description of the image"
+    }
+  }
+}

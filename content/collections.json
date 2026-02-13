@@ -4,5 +4,11 @@
     "slug": "journal",
     "path": "content/journal",
     "children": []
+  },
+  {
+    "title": "Gallery",
+    "slug": "gallery",
+    "path": "content/gallery",
+    "children": []
   }
 ]

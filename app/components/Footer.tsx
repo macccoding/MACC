@@ -133,7 +133,7 @@ export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-bg-primary px-6 pb-8 pt-16 md:pt-24 md:px-12">
       {/* Social Links */}
-      <div className="mx-auto flex max-w-7xl flex-wrap justify-center gap-6 border-t border-white/10 pt-12 md:justify-between">
+      <div className="mx-auto flex max-w-7xl flex-wrap justify-center gap-8 border-t border-white/10 pt-12 md:gap-12">
         {socialLinks.map((link) => (
           <a
             key={link.label}
