@@ -166,15 +166,6 @@ export default function Footer() {
         <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
           &copy; 2026 MIKE CHEN
         </span>
-        <Link
-          href="/links"
-          className="inline-flex items-center gap-2 rounded-full border border-accent/30 px-5 py-2.5 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-accent transition-all hover:border-accent hover:bg-accent/10"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="opacity-70">
-            <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          LINKS
-        </Link>
         <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
           BUILT BY MIKEY
         </span>
