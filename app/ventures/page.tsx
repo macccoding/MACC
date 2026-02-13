@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ScrollReveal from "../components/ScrollReveal";
+import MagneticButton from "../components/MagneticButton";
 
 /* ─── VENTURE DATA ─── */
 const ventures = [
@@ -45,7 +46,7 @@ const ventures = [
     year: "EST.",
     tagline: "Family supermarket. Built by my grandmother. Kept alive by us.",
     tags: ["RETAIL", "COMMUNITY", "GROCERY", "FAMILY LEGACY"],
-    accent: "#2D8C4E",
+    accent: "#C41E3A",
     description: [
       "SuperPlus was built from the ground up by my grandmother, Hyacinth Gloria Chen. It was then carried forward by my uncles, my father, and my aunt. Today I\u2019m at the heart of a couple of the stores day-to-day \u2014 operating, advising, and keeping the family legacy alive.",
       "Running a community store in Jamaica is an education in patience, relationships, and resilience. Every shelf stocked, every credit extended to a neighbor who promises to pay Friday \u2014 it all adds up to something bigger than commerce. It is trust, built daily.",
@@ -100,7 +101,7 @@ const ventures = [
     year: "EST.",
     tagline: "Family freight & logistics. Keeping goods moving across the Caribbean.",
     tags: ["FREIGHT", "LOGISTICS", "SHIPPING", "CARIBBEAN"],
-    accent: "#2D8C4E",
+    accent: "#C41E3A",
     description: [
       "Caricom Freight is the family logistics business. Caribbean shipping infrastructure that keeps goods moving across the islands.",
       "This is my father\u2019s world \u2014 the logistics backbone that supports everything from retail inventory to commercial freight. Being close to this operation gives me a perspective on supply chain and trade that most tech people never get.",
@@ -696,12 +697,14 @@ export default function VenturesPage() {
             Let&apos;s <span className="italic text-accent">Talk</span>
           </h2>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
-            <Link
-              href="/contact"
-              className="inline-block rounded-full border border-accent bg-accent px-8 py-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary transition-all hover:bg-transparent hover:text-accent"
-            >
-              GET IN TOUCH
-            </Link>
+            <MagneticButton>
+              <Link
+                href="/contact"
+                className="inline-block rounded-full border border-accent bg-accent px-8 py-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary transition-all hover:bg-transparent hover:text-accent"
+              >
+                GET IN TOUCH
+              </Link>
+            </MagneticButton>
             <Link
               href="/about"
               className="group inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"

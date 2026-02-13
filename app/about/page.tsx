@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ScrollReveal from "../components/ScrollReveal";
+import AnimatedCounter from "../components/AnimatedCounter";
 
 /* ─── STATS ─── */
 const stats = [
@@ -170,9 +171,10 @@ export default function AboutPage() {
             {stats.map((stat, i) => (
               <ScrollReveal key={stat.label} delay={i * 0.1}>
                 <div className="flex flex-col gap-3">
-                  <span className="font-[family-name:var(--font-playfair)] text-4xl font-bold text-accent md:text-5xl">
-                    {stat.value}
-                  </span>
+                  <AnimatedCounter
+                    value={stat.value}
+                    className="font-[family-name:var(--font-playfair)] text-4xl font-bold text-accent md:text-5xl"
+                  />
                   <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted">
                     {stat.label}
                   </span>

@@ -38,7 +38,7 @@ export default function Footer() {
           viewport={{ once: true }}
           className="select-none font-[family-name:var(--font-playfair)] text-[12vw] font-bold leading-none text-ghost"
         >
-          MACCWORLD
+          CHEN
         </motion.h2>
       </div>
 

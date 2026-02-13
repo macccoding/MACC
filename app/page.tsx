@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import ScrollReveal from "./components/ScrollReveal";
 import RotatingText from "./components/RotatingText";
 import HeroCursorTilt from "./components/HeroCursorTilt";
+import SplitReveal from "./components/SplitReveal";
 
 /* ─── DISCIPLINES ─── */
 const disciplines = [
@@ -38,7 +39,7 @@ const ventures = [
     tags: ["RETAIL", "COMMUNITY", "GROCERY", "FAMILY"],
     description:
       "A family supermarket legacy built by my grandmother, Hyacinth Gloria Chen. I\u2019m at the heart of operations day-to-day \u2014 keeping the family business alive and evolving.",
-    color: "#2D8C4E",
+    color: "#C41E3A",
   },
   {
     num: "03",
@@ -56,7 +57,7 @@ const ventures = [
     tags: ["FREIGHT", "LOGISTICS", "SHIPPING"],
     description:
       "Family freight and logistics business. Caribbean shipping infrastructure that keeps goods moving across the islands.",
-    color: "#2D8C4E",
+    color: "#C41E3A",
   },
 ];
 
@@ -379,9 +380,9 @@ export default function Home() {
           <ScrollReveal>
             <div className="mb-20 flex items-end justify-between border-b border-white/10 pb-6">
               <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
-                Featured
+                <SplitReveal text="Featured" />
                 <br />
-                <span className="italic text-accent">Ventures</span>
+                <span className="italic text-accent"><SplitReveal text="Ventures" delay={0.15} /></span>
               </h2>
               <Link
                 href="/ventures"
@@ -438,16 +439,23 @@ export default function Home() {
 
                   {/* Right: Image Placeholder */}
                   <div className={`${i % 2 === 1 ? "md:order-1" : ""}`}>
-                    <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bg-primary">
-                      <div className="flex h-full items-center justify-center">
-                        <span
-                          className="font-[family-name:var(--font-playfair)] text-6xl font-bold opacity-10"
-                          style={{ color: venture.color }}
+                    <HeroCursorTilt>
+                      <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bg-primary transition-shadow duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+                        <div
+                          className="flex h-full items-center justify-center"
+                          style={{
+                            background: `linear-gradient(135deg, ${venture.color}08 0%, transparent 50%, ${venture.color}05 100%)`,
+                          }}
                         >
-                          {venture.num}
-                        </span>
+                          <span
+                            className="font-[family-name:var(--font-playfair)] text-6xl font-bold opacity-10"
+                            style={{ color: venture.color }}
+                          >
+                            {venture.num}
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    </HeroCursorTilt>
                   </div>
                 </div>
               </ScrollReveal>
@@ -465,7 +473,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="mb-16 flex items-end justify-between">
               <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
-                Latest <span className="italic text-accent">Posts</span>
+                <SplitReveal text="Latest" /> <span className="italic text-accent"><SplitReveal text="Posts" delay={0.1} /></span>
               </h2>
               <Link
                 href="/journal"
@@ -516,7 +524,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="mb-16 flex items-end justify-between">
               <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
-                Archive
+                <SplitReveal text="Archive" />
               </h2>
               <Link
                 href="/gallery"

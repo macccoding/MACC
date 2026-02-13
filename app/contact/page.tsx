@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ScrollReveal from "../components/ScrollReveal";
+import MagneticButton from "../components/MagneticButton";
 
 const subjects = [
   "General Inquiry",
@@ -190,14 +191,15 @@ export default function ContactPage() {
                 </div>
 
                 {/* Submit */}
-                <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full rounded-lg bg-accent py-4 font-[family-name:var(--font-jetbrains)] text-[12px] font-bold uppercase tracking-[0.2em] text-black transition-opacity hover:opacity-90"
-                >
-                  SEND MESSAGE
-                </motion.button>
+                <MagneticButton className="w-full" strength={0.15}>
+                  <motion.button
+                    type="submit"
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full rounded-lg bg-accent py-4 font-[family-name:var(--font-jetbrains)] text-[12px] font-bold uppercase tracking-[0.2em] text-black transition-opacity hover:opacity-90"
+                  >
+                    SEND MESSAGE
+                  </motion.button>
+                </MagneticButton>
               </form>
             </div>
           </ScrollReveal>
