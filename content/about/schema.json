@@ -1,0 +1,12 @@
+{
+  "title": "about",
+  "type": "object",
+  "properties": {
+    "label": {
+      "title": "Label",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Label for the image (e.g. Portrait, Lifestyle)"
+    }
+  }
+}

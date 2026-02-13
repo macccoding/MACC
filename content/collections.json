@@ -10,5 +10,17 @@
     "slug": "gallery",
     "path": "content/gallery",
     "children": []
+  },
+  {
+    "title": "Ventures",
+    "slug": "ventures",
+    "path": "content/ventures",
+    "children": []
+  },
+  {
+    "title": "About",
+    "slug": "about",
+    "path": "content/about",
+    "children": []
   }
 ]

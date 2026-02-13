@@ -1,0 +1,54 @@
+{
+  "title": "ventures",
+  "type": "object",
+  "properties": {
+    "num": {
+      "title": "Venture Number",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Sequential number (01, 02, etc)"
+    },
+    "role": {
+      "title": "Role",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Your role (Founder, Legacy, Family)"
+    },
+    "year": {
+      "title": "Year",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Year founded or EST."
+    },
+    "tagline": {
+      "title": "Tagline",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Short tagline for the venture"
+    },
+    "meta": {
+      "title": "Meta",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Short meta text (e.g. FOUNDER · BESPOKE F&B)"
+    },
+    "accent": {
+      "title": "Accent Color",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Hex color for accent (#E5B820 or #C41E3A)"
+    },
+    "link": {
+      "title": "External Link",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "URL for the venture"
+    },
+    "linkLabel": {
+      "title": "Link Label",
+      "fieldType": "Text",
+      "dataType": "string",
+      "description": "Text for the CTA button"
+    }
+  }
+}
