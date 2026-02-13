@@ -3,10 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import ScrollReveal from "../components/ScrollReveal";
-import MagneticButton from "../components/MagneticButton";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import ScrollReveal from "../../components/ScrollReveal";
+import MagneticButton from "../../components/MagneticButton";
 
 const subjects = [
   "General Inquiry",

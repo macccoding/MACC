@@ -4,12 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ScrollReveal from "./components/ScrollReveal";
-import RotatingText from "./components/RotatingText";
-import HeroCursorTilt from "./components/HeroCursorTilt";
-import SplitReveal from "./components/SplitReveal";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ScrollReveal from "../components/ScrollReveal";
+import RotatingText from "../components/RotatingText";
+import HeroCursorTilt from "../components/HeroCursorTilt";
+import SplitReveal from "../components/SplitReveal";
 
 /* ─── DISCIPLINES ─── */
 const disciplines = [

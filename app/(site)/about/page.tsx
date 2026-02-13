@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import ScrollReveal from "../components/ScrollReveal";
-import AnimatedCounter from "../components/AnimatedCounter";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import ScrollReveal from "../../components/ScrollReveal";
+import AnimatedCounter from "../../components/AnimatedCounter";
 
 /* ─── STATS ─── */
 const stats = [

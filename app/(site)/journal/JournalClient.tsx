@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import ScrollReveal from "../components/ScrollReveal";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import ScrollReveal from "../../components/ScrollReveal";
 
 /* ─── CATEGORIES ─── */
 const categories = [

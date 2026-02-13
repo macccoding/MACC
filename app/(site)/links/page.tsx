@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import ScrollReveal from "../components/ScrollReveal";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import ScrollReveal from "../../components/ScrollReveal";
 
 const links = [
   { label: "ISTRY", href: "#", description: "Bespoke F&B" },

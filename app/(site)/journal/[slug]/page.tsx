@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPosts, getPostBySlug } from "@/lib/journal";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ScrollReveal from "../../components/ScrollReveal";
+import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
+import ScrollReveal from "../../../components/ScrollReveal";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();

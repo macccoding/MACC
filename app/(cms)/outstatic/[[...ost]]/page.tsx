@@ -1,4 +1,3 @@
-import "outstatic/outstatic.css";
 import { Outstatic } from "outstatic";
 import { OstClient } from "outstatic/client";
 

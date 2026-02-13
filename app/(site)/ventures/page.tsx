@@ -3,10 +3,10 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import ScrollReveal from "../components/ScrollReveal";
-import MagneticButton from "../components/MagneticButton";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import ScrollReveal from "../../components/ScrollReveal";
+import MagneticButton from "../../components/MagneticButton";
 
 /* ─── VENTURE DATA ─── */
 const ventures = [
