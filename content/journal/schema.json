@@ -1,0 +1,12 @@
+{
+  "title": "journal",
+  "type": "object",
+  "properties": {
+    "excerpt": {
+      "description": "",
+      "fieldType": "Text",
+      "dataType": "string",
+      "title": "Excerpt"
+    }
+  }
+}
