@@ -11,8 +11,6 @@ import RotatingText from "../components/RotatingText";
 import HeroCursorTilt from "../components/HeroCursorTilt";
 import SplitReveal from "../components/SplitReveal";
 import GradientOrb from "../components/GradientOrb";
-import TextReveal from "../components/TextReveal";
-import GlowBorder from "../components/GlowBorder";
 
 /* ─── DISCIPLINES ─── */
 const disciplines = [
@@ -409,13 +407,11 @@ export default function Home() {
       ════════════════════════════════════════════ */}
       <section ref={nameRef} className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-accent px-6 py-16 md:min-h-screen md:py-24">
         <motion.div style={{ scale: nameScale }}>
-          <TextReveal
-            text="MIKE CHEN"
-            as="h1"
-            splitBy="char"
-            className="text-center font-[family-name:var(--font-playfair)] text-[18vw] font-bold leading-[0.85] text-bg-primary md:text-[22vw]"
-            scrollOffset={["start 0.9", "start 0.2"]}
-          />
+          <h1 className="text-center font-[family-name:var(--font-playfair)] text-[18vw] font-bold leading-[0.85] text-bg-primary md:text-[22vw]">
+            <SplitReveal text="MIKE" />
+            <br />
+            <SplitReveal text="CHEN" delay={0.15} />
+          </h1>
         </motion.div>
 
         {/* Numbered Disciplines */}
@@ -463,69 +459,66 @@ export default function Home() {
           SECTION 3: ABOUT CARD
       ════════════════════════════════════════════ */}
       <section className="relative flex items-center justify-center bg-bg-primary px-6 py-20 md:py-32">
-        <div className="mx-auto w-full max-w-3xl">
-          <GlowBorder glowColor="rgba(229,184,32,0.35)" hoverOnly={true} borderRadius={16}>
-            <motion.div
-              initial={{ scale: 0.92, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              whileHover={{ scale: 1.01 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              viewport={{ once: true, margin: "-50px" }}
+        <motion.div
+          initial={{ scale: 0.92, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          whileHover={{ scale: 1.01 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          viewport={{ once: true, margin: "-50px" }}
+          className="mx-auto w-full max-w-3xl"
+        >
+          <div className="rounded-2xl bg-accent px-8 py-10 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] transition-shadow duration-500 hover:shadow-[0_0_120px_rgba(229,184,32,0.25)] md:px-14 md:py-14">
+            {/* Name + Rotating Role */}
+            <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
+              Mike Chen
+            </p>
+            <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
+              does
+            </p>
+            <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
+              <RotatingText
+                words={[
+                  "entrepreneur",
+                  "builder",
+                  "coder",
+                  "designer",
+                  "foodie",
+                ]}
+                interval={2200}
+              />
+            </div>
+
+            {/* Bio */}
+            <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
+              I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
+              businesses, brands, code, and whatever else I can get my hands on.
+              Founder of Istry. Keeping SuperPlus alive as a family legacy.
+              Actively building Kemi. I design, I ship, and I eat everything.
+              Based in Mandeville.
+            </p>
+
+            {/* Location */}
+            <div className="mt-10 border-t border-bg-primary/20 pt-6">
+              <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
+                CURRENTLY BASED IN
+              </span>
+              <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
+                Mandeville, Jamaica
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
+                18.0416&deg; N, 77.5058&deg; W
+              </p>
+            </div>
+
+            {/* Read More */}
+            <Link
+              href="/about"
+              className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
             >
-              <div className="rounded-2xl bg-accent px-8 py-10 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] backdrop-blur-sm md:px-14 md:py-14">
-                {/* Name + Rotating Role */}
-                <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
-                  Mike Chen
-                </p>
-                <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
-                  does
-                </p>
-                <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
-                  <RotatingText
-                    words={[
-                      "entrepreneur",
-                      "builder",
-                      "coder",
-                      "designer",
-                      "foodie",
-                    ]}
-                    interval={2200}
-                  />
-                </div>
-
-                {/* Bio */}
-                <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
-                  I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
-                  businesses, brands, code, and whatever else I can get my hands on.
-                  Founder of Istry. Keeping SuperPlus alive as a family legacy.
-                  Actively building Kemi. I design, I ship, and I eat everything.
-                  Based in Mandeville.
-                </p>
-
-                {/* Location */}
-                <div className="mt-10 border-t border-bg-primary/20 pt-6">
-                  <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
-                    CURRENTLY BASED IN
-                  </span>
-                  <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
-                    Mandeville, Jamaica
-                  </p>
-                  <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
-                    18.0416&deg; N, 77.5058&deg; W
-                  </p>
-                </div>
-
-                {/* Read More */}
-                <Link
-                  href="/about"
-                  className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
-                >
-                  READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-                </Link>
-              </div>
-            </motion.div>
-          </GlowBorder>
-        </div>
+              READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
+            </Link>
+          </div>
+        </motion.div>
       </section>
 
       {/* ── Section Divider ── */}
