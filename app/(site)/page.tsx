@@ -467,13 +467,13 @@ export default function Home() {
           viewport={{ once: true, margin: "-50px" }}
           className="mx-auto w-full max-w-3xl"
         >
-          <div className="rounded-2xl bg-accent px-8 py-10 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] transition-shadow duration-500 hover:shadow-[0_0_120px_rgba(229,184,32,0.25)] md:px-14 md:py-14">
+          <div className="rounded-2xl bg-accent px-10 py-12 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] transition-shadow duration-500 hover:shadow-[0_0_120px_rgba(229,184,32,0.25)] md:px-16 md:py-16">
             {/* Name + Rotating Role */}
             <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
               Mike Chen
             </p>
             <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
-              does
+              is a
             </p>
             <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
               <RotatingText
