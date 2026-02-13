@@ -15,13 +15,13 @@ author:
 
 I grew up eating ackee and saltfish for breakfast and char siu for dinner. That's not a metaphor. That's literally what happened in my house.
 
-Being Jamaican-Chinese means you exist at the intersection of two of the most flavour-obsessed cultures on earth. Scotch bonnet and five spice. Jerk and soy. Coconut milk in everything — both sides claim it. Growing up, I didn't think any of this was unusual. It was just food. It was just my family.
+Being Jamaican-Chinese means you exist at the intersection of two of the most flavour-obsessed cultures on earth. Scotch bonnet and five spice. Jerk and soy.  Growing up, I didn't think any of this was unusual. It was just food. It was just my family.
 
 It took leaving Jamaica, eating in other countries, and coming back to realise how rare and how special this combination actually is.
 
 ## Two Kitchens, One House
 
-The Chen family kitchen was the centre of everything whether it would be Grandma. She could make a pot of brown stew chicken that would feed twenty people and somehow still have leftovers. On the same stove, on the same day, she might be steaming fish (I hate fish but don't tell her that) with ginger and scallion the way she learned how. There was no separation between the two cuisines. It was all just our food.
+The person that was the centre of everything was my Grandma. She could make a pot of brown stew chicken that would feed twenty people and somehow still have leftovers. On the same stove, on the same day, she might be steaming fish (I hate fish but don't tell her that) with ginger and scallion the way she learned how. There was no separation between the two cuisines. It was all just our food.
 
 Sunday dinner was the best example. Rice and peas alongside fried rice. Curry goat next to Pak Jam Gai. Red Stripe and Chinese tea. Nobody thought twice about it. That was the table I grew up at.
 
