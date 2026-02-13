@@ -12,11 +12,14 @@ import HeroCursorTilt from "@/app/components/HeroCursorTilt";
 import SplitReveal from "@/app/components/SplitReveal";
 import GradientOrb from "@/app/components/GradientOrb";
 import TextScramble from "@/app/components/TextScramble";
-import BlobDivider from "@/app/components/BlobDivider";
+import BrushStrokeDivider from "@/app/components/BrushStrokeDivider";
 import GlowBorder from "@/app/components/GlowBorder";
 import ParallaxLayer from "@/app/components/ParallaxLayer";
 import AnimatedButton from "@/app/components/AnimatedButton";
 import StaggeredGrid from "@/app/components/StaggeredGrid";
+import CoinFlip from "@/app/components/CoinFlip";
+import TextReveal from "@/app/components/TextReveal";
+import InkSplash from "@/app/components/InkSplash";
 
 /* ─── TYPES ─── */
 export interface VenturePreview {
@@ -87,7 +90,7 @@ function VentureCard({
 
   return (
     <div ref={cardRef} id={`venture-${venture.num}`} className="scroll-mt-20">
-      {index > 0 && <BlobDivider color={venture.color} className="my-8 md:my-12" />}
+      {index > 0 && <BrushStrokeDivider color={venture.color} index={index} className="my-8 md:my-12" />}
       <ScrollReveal delay={0.1}>
         <div className="grid gap-8 md:grid-cols-2 md:gap-16">
           {/* Left: Info */}
@@ -312,7 +315,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
           style={{ y: leftTextY }}
           className="absolute left-6 top-1/2 hidden -translate-y-1/2 -rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block"
         >
-          A COLLECTION OF VENTURES &amp; VISIONS
+          MANDEVILLE TO THE WORLD
         </motion.span>
 
         {/* Flanking Text — Right (parallax) */}
@@ -334,14 +337,14 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
           className="absolute top-24 flex gap-6 text-center md:hidden"
         >
           <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
-            VENTURES &amp; VISIONS
+            MANDEVILLE TO THE WORLD
           </span>
           <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
             2026
           </span>
         </motion.div>
 
-        {/* Hero Logo */}
+        {/* Hero Logo — Coin Flip */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -355,14 +358,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
               className="absolute inset-0 -m-16 rounded-full bg-[radial-gradient(circle,rgba(229,184,32,0.08)_0%,transparent_70%)]"
               style={{ animation: "pulse-glow 4s ease-in-out infinite" }}
             />
-            <Image
-              src="/images/macc-logo.png"
-              alt="MACC Logo — Chinese Chop Stamp"
-              width={320}
-              height={320}
-              priority
-              className="relative h-auto w-[160px] drop-shadow-[0_0_80px_rgba(229,184,32,0.25)] sm:w-[200px] md:w-[320px]"
-            />
+            <CoinFlip />
           </HeroCursorTilt>
         </motion.div>
 
@@ -374,7 +370,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
           className="-mt-4 md:-mt-6"
         >
           <TextScramble
-            text="Building things. Tasting everything. Designing the rest."
+            text="Build things. Taste everything. Design the rest."
             className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted"
             delay={1200}
           />
@@ -400,8 +396,41 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
         </motion.div>
       </motion.section>
 
-      {/* ── Blob Divider: Hero → Name Reveal ── */}
-      <BlobDivider color="#E5B820" />
+      {/* ── Brush Stroke Divider: Hero → Philosophy ── */}
+      <BrushStrokeDivider color="#E5B820" index={0} />
+
+      {/* ════════════════════════════════════════════
+          SECTION 1.5: PHILOSOPHY REVEAL
+      ════════════════════════════════════════════ */}
+      <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-bg-primary px-6 py-16 md:min-h-[80vh] md:py-24">
+        {/* 持 (persist) watermark */}
+        <span
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[35vw] font-bold leading-none text-ghost"
+          style={{ fontFamily: "'Noto Serif SC', 'Songti SC', 'STSong', serif" }}
+        >
+          持
+        </span>
+
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
+          <TextReveal
+            text="Abundance favors the persistent, not the deserving."
+            as="h2"
+            className="font-[family-name:var(--font-playfair)] text-4xl font-bold leading-snug text-text-primary md:text-6xl lg:text-7xl"
+          />
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mt-8 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted"
+          >
+            &mdash; MC
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ── Brush Stroke Divider: Philosophy → Name Reveal ── */}
+      <BrushStrokeDivider color="#E5B820" index={1} />
 
       {/* ════════════════════════════════════════════
           SECTION 2: NAME REVEAL
@@ -415,23 +444,30 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
           </h1>
         </motion.div>
 
-        {/* Numbered Disciplines */}
+        {/* Numbered Disciplines — burst rhythm (60ms gaps, pause every 3) */}
         <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 md:mt-16 md:gap-x-10 md:gap-y-4">
-          {disciplines.map((d, i) => (
-            <motion.span
-              key={d.num}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 + i * 0.1, ease: "easeOut" }}
-              viewport={{ once: true }}
-              className="font-[family-name:var(--font-playfair)] text-sm text-bg-primary/70 md:text-base"
-            >
-              <span className="font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/40">
-                {d.num}
-              </span>{" "}
-              {d.label}
-            </motion.span>
-          ))}
+          {disciplines.map((d, i) => {
+            // Rapid burst with beat pause between groups of 3
+            const group = Math.floor(i / 3);
+            const withinGroup = i % 3;
+            const burstDelay = 0.3 + group * 0.28 + withinGroup * 0.06;
+
+            return (
+              <motion.span
+                key={d.num}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: burstDelay, ease: [0.16, 1, 0.3, 1] }}
+                viewport={{ once: true }}
+                className="font-[family-name:var(--font-playfair)] text-sm text-bg-primary/70 md:text-base"
+              >
+                <span className="font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/40">
+                  {d.num}
+                </span>{" "}
+                {d.label}
+              </motion.span>
+            );
+          })}
         </div>
 
         {/* Video Embed Placeholder */}
@@ -457,8 +493,8 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
         </ScrollReveal>
       </section>
 
-      {/* ── Blob Divider: Name Reveal → About ── */}
-      <BlobDivider color="#E5B820" flip />
+      {/* ── Brush Stroke Divider: Name Reveal → About ── */}
+      <BrushStrokeDivider color="#E5B820" index={2} flip />
 
       {/* ════════════════════════════════════════════
           SECTION 3: ABOUT CARD
@@ -489,13 +525,12 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
                   />
                 </div>
 
-                {/* Bio */}
+                {/* Bio — personal voice */}
                 <p className="mx-auto mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
-                  I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
-                  businesses, brands, code, and whatever else I can get my hands on.
-                  Founder of Istry. Keeping SuperPlus alive as a family legacy.
-                  Actively building Kemi. I design, I ship, and I eat everything.
-                  Based in Mandeville.
+                  Jamaican-Chinese. Builder. The kind of person who bags groceries
+                  before school and codes after midnight. Founder of Istry. Keeping
+                  SuperPlus alive as a family legacy. Actively building Kemi.
+                  I design, I ship, and I eat everything. Based in Mandeville.
                 </p>
 
                 {/* Location */}
@@ -618,38 +653,40 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
           <div className="space-y-0 divide-y divide-white/5">
             {journalPosts.map((post, i) => (
               <ScrollReveal key={post.num} delay={i * 0.1}>
-                <Link
-                  href={`/journal/${post.slug}`}
-                  className="group block border-l-2 border-transparent py-8 pl-4 transition-all hover:border-accent hover:bg-gradient-to-r hover:from-white/[0.02] hover:to-transparent"
-                >
-                  <div className="flex items-start gap-6">
-                    <TextScramble
-                      text={post.num}
-                      className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40"
-                      delay={i * 200}
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-[family-name:var(--font-playfair)] text-xl font-semibold transition-colors group-hover:text-accent md:text-2xl">
-                        {post.title}
-                      </h3>
-                      <div className="mt-2 flex items-center gap-4">
-                        <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
-                          {post.date}
-                        </span>
-                        <span className="rounded-full border border-accent/30 px-3 py-0.5 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-accent">
-                          {post.category}
-                        </span>
+                <InkSplash>
+                  <Link
+                    href={`/journal/${post.slug}`}
+                    className="group block border-l-2 border-transparent py-8 pl-4 transition-all hover:border-accent hover:bg-gradient-to-r hover:from-white/[0.02] hover:to-transparent"
+                  >
+                    <div className="flex items-start gap-6">
+                      <TextScramble
+                        text={post.num}
+                        className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40"
+                        delay={i * 200}
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-[family-name:var(--font-playfair)] text-xl font-semibold transition-colors group-hover:text-accent md:text-2xl">
+                          {post.title}
+                        </h3>
+                        <div className="mt-2 flex items-center gap-4">
+                          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
+                            {post.date}
+                          </span>
+                          <span className="rounded-full border border-accent/30 px-3 py-0.5 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-accent">
+                            {post.category}
+                          </span>
+                        </div>
                       </div>
+                      <motion.span
+                        className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/30 transition-colors group-hover:text-accent"
+                        whileHover={{ x: [0, 4, 0] }}
+                        transition={{ repeat: Infinity, duration: 1 }}
+                      >
+                        &rarr;
+                      </motion.span>
                     </div>
-                    <motion.span
-                      className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/30 transition-colors group-hover:text-accent"
-                      whileHover={{ x: [0, 4, 0] }}
-                      transition={{ repeat: Infinity, duration: 1 }}
-                    >
-                      &rarr;
-                    </motion.span>
-                  </div>
-                </Link>
+                  </Link>
+                </InkSplash>
               </ScrollReveal>
             ))}
           </div>
@@ -717,20 +754,22 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
                   className="shrink-0"
                 >
                   <Link href="/gallery" className="group relative block">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className="aspect-square min-w-[240px] overflow-hidden rounded-lg bg-bg-primary transition-all duration-300 group-hover:ring-2 group-hover:ring-accent/50 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.1)]"
-                    >
-                      <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
-                        <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
-                          {item.num}
-                        </span>
-                        <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
-                          {item.category}
-                        </span>
-                      </div>
-                    </motion.div>
+                    <InkSplash>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        className="aspect-square min-w-[240px] overflow-hidden rounded-lg bg-bg-primary transition-all duration-300 group-hover:ring-2 group-hover:ring-accent/50 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.1)]"
+                      >
+                        <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
+                          <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
+                            {item.num}
+                          </span>
+                          <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
+                            {item.category}
+                          </span>
+                        </div>
+                      </motion.div>
+                    </InkSplash>
                   </Link>
                 </motion.div>
               ))}

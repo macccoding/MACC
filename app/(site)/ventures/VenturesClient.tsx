@@ -10,7 +10,7 @@ import ScrollReveal from "@/app/components/ScrollReveal";
 import ImageReveal from "@/app/components/ImageReveal";
 import TextScramble from "@/app/components/TextScramble";
 import TextReveal from "@/app/components/TextReveal";
-import BlobDivider from "@/app/components/BlobDivider";
+import BrushStrokeDivider from "@/app/components/BrushStrokeDivider";
 import AnimatedButton from "@/app/components/AnimatedButton";
 import AnimatedCounter from "@/app/components/AnimatedCounter";
 import GlowBorder from "@/app/components/GlowBorder";
@@ -55,12 +55,13 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
         style={{ opacity: heroOpacity }}
         className="relative flex h-screen flex-col items-center justify-center overflow-hidden bg-bg-primary px-6"
       >
-        {/* Background ghost number */}
+        {/* Background ghost character — 建 (jiàn: to build) */}
         <motion.span
           style={{ y: heroY }}
-          className="pointer-events-none absolute select-none font-[family-name:var(--font-playfair)] text-[40vw] font-bold leading-none text-ghost"
+          className="pointer-events-none absolute select-none text-[35vw] font-bold leading-none text-ghost"
+          aria-hidden="true"
         >
-          V
+          <span style={{ fontFamily: "'Noto Serif SC', 'Songti SC', 'STSong', serif" }}>建</span>
         </motion.span>
 
         {/* Flanking labels */}
@@ -95,7 +96,7 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
             <TextScramble text="Ventures" delay={300} />
           </h1>
           <p className="mx-auto mt-8 max-w-xl font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-[0.15em] text-text-muted">
-            Businesses, legacy, and things I&apos;m building.
+            Family legacy. My own builds. Everything in between.
             <br className="hidden md:block" />
             From family roots to new frontiers.
           </p>
@@ -373,7 +374,7 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
 
               {/* ── Venture divider ── */}
               {ventureIndex < ventures.length - 1 && (
-                <BlobDivider color={venture.accent} className="mt-20 md:mt-40" />
+                <BrushStrokeDivider color={venture.accent} index={ventureIndex} className="mt-20 md:mt-40" />
               )}
             </div>
           </div>
@@ -384,14 +385,18 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
           CLOSING CTA
       ════════════════════════════════════════════ */}
       <section className="relative flex min-h-[40vh] flex-col items-center justify-center overflow-hidden bg-bg-primary px-6 py-16 md:min-h-[60vh] md:py-32">
-        {/* Ghost watermark */}
-        <span className="pointer-events-none absolute select-none font-[family-name:var(--font-playfair)] text-[20vw] font-bold leading-none text-ghost">
-          MACC
+        {/* Ghost watermark — 家 (jiā: family/home) */}
+        <span
+          className="pointer-events-none absolute select-none text-[35vw] font-bold leading-none text-ghost"
+          style={{ fontFamily: "'Noto Serif SC', 'Songti SC', 'STSong', serif" }}
+          aria-hidden="true"
+        >
+          家
         </span>
 
         <ScrollReveal className="relative z-10 text-center">
           <p className="mb-6 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted">
-            WANT TO BUILD SOMETHING TOGETHER?
+            SOMETHING ON YOUR MIND?
           </p>
           <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold text-text-primary md:text-6xl">
             Let&apos;s <span className="italic text-accent">Talk</span>

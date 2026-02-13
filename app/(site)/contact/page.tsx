@@ -92,7 +92,7 @@ export default function ContactPage() {
         </ScrollReveal>
         <ScrollReveal delay={0.3}>
           <p className="mt-6 max-w-md text-center text-lg leading-relaxed text-text-primary/70">
-            Whether it&apos;s business, a collaboration, or just to say what&apos;s up &mdash; I&apos;d love to hear from you.
+            Business, collab, or just vibes &mdash; my door&apos;s always open.
           </p>
         </ScrollReveal>
       </section>

@@ -28,24 +28,29 @@ export default function SplitReveal({
 
   return (
     <Tag className={className}>
-      {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden">
-          <motion.span
-            className="inline-block"
-            initial={{ y: "100%", opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{
-              duration: 0.5,
-              delay: delay + goldenStagger(i, stagger * words.length),
-              ease: [0.33, 1, 0.68, 1],
-            }}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            {word}
-          </motion.span>
-          {i < words.length - 1 && "\u00A0"}
-        </span>
-      ))}
+      {words.map((word, i) => {
+        // Every 3rd word gets 80ms extra delay for rhythmic 1-2-PAUSE feel
+        const rhythmicPause = (i + 1) % 3 === 0 ? 0.08 : 0;
+
+        return (
+          <span key={i} className="inline-block overflow-hidden">
+            <motion.span
+              className="inline-block"
+              initial={{ y: "100%", opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{
+                duration: 0.5,
+                delay: delay + goldenStagger(i, stagger * words.length) + rhythmicPause,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              viewport={{ once: true, margin: "-50px" }}
+            >
+              {word}
+            </motion.span>
+            {i < words.length - 1 && "\u00A0"}
+          </span>
+        );
+      })}
     </Tag>
   );
 }

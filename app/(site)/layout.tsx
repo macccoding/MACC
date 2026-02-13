@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MACC — Mike Chen",
     description:
-      "Building things. Tasting everything. Designing the rest.",
+      "Build things. Taste everything. Design the rest.",
     type: "website",
     locale: "en_US",
   },

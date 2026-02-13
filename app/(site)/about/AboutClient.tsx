@@ -11,6 +11,8 @@ import GlowBorder from "@/app/components/GlowBorder";
 import StaggeredGrid from "@/app/components/StaggeredGrid";
 import ParallaxLayer from "@/app/components/ParallaxLayer";
 import PlaceholderImage from "@/app/components/PlaceholderImage";
+import SealStamp from "@/app/components/SealStamp";
+import LatticePattern from "@/app/components/LatticePattern";
 
 /* ─── STATS ─── */
 const stats = [
@@ -38,6 +40,28 @@ const toolCategories = [
   { category: "DAILY", tools: ["MacBook", "AirPods", "IONIQ 5"] },
 ];
 
+/* ─── GENERATIONAL THREAD ─── */
+const generations = [
+  {
+    era: "1970s",
+    title: "Grandmother",
+    description: "Hyacinth Gloria Chen \u2014 Built SuperPlus from the ground up",
+    character: "\u7956", // 祖 (ancestor)
+  },
+  {
+    era: "1990s",
+    title: "The Family",
+    description: "The Chen Clan \u2014 Carried the legacy forward",
+    character: "\u5BB6", // 家 (family)
+  },
+  {
+    era: "NOW",
+    title: "Mike",
+    description: "Michael A.C. Chen \u2014 Building on everything",
+    character: "\u5EFA", // 建 (build)
+  },
+];
+
 export default function AboutClient({ portrait }: { portrait: string }) {
   return (
     <>
@@ -47,14 +71,15 @@ export default function AboutClient({ portrait }: { portrait: string }) {
           SECTION 1: HERO PORTRAIT
       ════════════════════════════════════════════ */}
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-bg-primary px-6 pt-24 pb-16 md:pb-32 md:px-12">
-        {/* Ghost text behind portrait */}
+        {/* Ghost text behind portrait — 陳 (Chen) */}
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 0.3 }}
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-[family-name:var(--font-playfair)] text-[25vw] font-bold leading-none text-ghost"
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[35vw] font-bold leading-none text-ghost"
+          style={{ fontFamily: "'Noto Serif SC', 'Songti SC', 'STSong', serif" }}
         >
-          ABOUT
+          陳
         </motion.span>
 
         {/* Portrait placeholder with parallax accent shapes */}
@@ -145,9 +170,12 @@ export default function AboutClient({ portrait }: { portrait: string }) {
       <section className="bg-bg-primary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-3xl">
           <ScrollReveal>
-            <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
-              01 &mdash; THE STORY
-            </span>
+            <div className="flex items-center gap-3">
+              <SealStamp character="故" />
+              <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+                01 &mdash; THE STORY
+              </span>
+            </div>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight text-text-primary" style={{ fontSize: "var(--text-heading)" }}>
@@ -160,28 +188,66 @@ export default function AboutClient({ portrait }: { portrait: string }) {
               <p className="text-lg leading-relaxed text-text-primary/80">
                 I grew up Jamaican-Chinese in Mandeville &mdash; between two cultures that
                 both value family above everything and understand that hustle isn&apos;t
-                something you learn, it&apos;s something you inherit. My grandmother,
-                Hyacinth Gloria Chen, built SuperPlus from the ground up. My uncles,
-                my father, and my aunt carried it forward. I grew up behind the counter,
-                bagging groceries and counting inventory before I could drive. That store
-                taught me everything &mdash; retail, margins, community, and how to talk
-                to anyone.
+                something you learn, it&apos;s something you inherit. They&apos;re blended
+                for me. My grandmother, Hyacinth Gloria Chen, built SuperPlus from the
+                ground up. My uncles, my father, and my aunt carried it forward. I grew up
+                behind the counter, bagging groceries and counting inventory before I could
+                drive. That store taught me everything &mdash; retail, margins, community,
+                and how to talk to anyone. There is a large sense of family duty, duty to
+                the community &mdash; hustle was born into us.
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15}>
+              <p className="text-lg leading-relaxed text-text-primary/80">
+                They call us the Chen clan because of how tight we are. Cousins feel like
+                brothers and sisters. Uncles feel like fathers and aunts feel like moms. And
+                food is what brings us together. We love our flavors. Christmas dinner,
+                Sunday lunches, random Tuesday night dinners &mdash; that is how our large
+                family communes. It&apos;s how we grew up. It&apos;s how we eat, how we work,
+                what family means.
               </p>
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
+              <p className="text-lg leading-relaxed text-text-primary/80">
+                I was my mom&apos;s &ldquo;handbag&rdquo; &mdash; everywhere she went, I
+                went. But I&apos;m also very calm, composed. I bring people and ideas
+                together, natural leader. I don&apos;t try to steal the room but sometimes
+                the room comes to me. I&apos;m not the usual creative &mdash; I didn&apos;t
+                grow up drawing, painting, sketching. It&apos;s how my brain works. How I
+                put together a room, an outfit, what colors go together. My brain identifies
+                automatically when things look off, if the font is wrong. My creative energy
+                knows no bounds, it&apos;s just not the traditional kind.
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.25}>
+              <p className="text-lg leading-relaxed text-text-primary/80">
+                My life is a lot about music. AirPods are always on my ears. It dictates how
+                I&apos;m feeling. You might see me jamming to Not Like Us by Kendrick
+                straight into Monaco by Bad Bunny, then into some R&amp;B Drake, Chicago
+                Freestyle cruising down the I-95. Then you might get hit with some EDM. When
+                I&apos;m deep in code, anything high tempo plays. The vibe at an Istry event
+                is Afrobeats, light hip hop. Family dinner is old school Jamaican music.
+                Sometimes when I&apos;m driving in the Ioniq, it&apos;s Vybz Kartel and more.
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.3}>
               <p className="text-lg leading-relaxed text-text-primary/80">
                 Today I&apos;m still at the heart of a couple SuperPlus locations
                 day-to-day &mdash; advising, operating, keeping the legacy alive. But
                 I also build my own things. I founded Istry, a bespoke food and beverage
                 company. I&apos;m actively building Kemi, an AI product. I write code,
                 design brands in Figma, 3D print prototypes on my BambuLab, and shoot
-                with my Sony A7IV and DJI drone. I don&apos;t have one lane &mdash; I
-                have a workshop.
+                with my Sony A7IV and DJI drone. I love building things, getting them to a
+                point &mdash; then going on and working on the next thing. I don&apos;t have
+                one lane. I have a workshop.
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.3}>
+            <ScrollReveal delay={0.35}>
               <p className="text-lg leading-relaxed text-text-primary/80">
                 What drives me is making things &mdash; the moment an idea becomes
                 something real that people can touch, taste, or use. I love food, I
@@ -195,14 +261,43 @@ export default function AboutClient({ portrait }: { portrait: string }) {
       </section>
 
       {/* ════════════════════════════════════════════
+          SECTION 2.5: GENERATIONAL THREAD
+      ════════════════════════════════════════════ */}
+      <section className="bg-bg-primary px-6 md:px-12" style={{ paddingBottom: "var(--space-section)" }}>
+        <div className="mx-auto max-w-5xl">
+          <div className="grid gap-6 md:grid-cols-3 md:gap-8">
+            {generations.map((gen, i) => (
+              <ScrollReveal key={gen.era} delay={i * 0.15}>
+                <div className="relative border-l-2 border-accent-secondary/40 pl-6 py-4">
+                  <SealStamp character={gen.character} className="mb-4" />
+                  <span className="block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-accent-secondary">
+                    {gen.era}
+                  </span>
+                  <h3 className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold text-text-primary">
+                    {gen.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-text-primary/60">
+                    {gen.description}
+                  </p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════
           SECTION 3: BY THE NUMBERS
       ════════════════════════════════════════════ */}
       <section className="bg-bg-secondary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
-            <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
-              02 &mdash; BY THE NUMBERS
-            </span>
+            <div className="flex items-center gap-3">
+              <SealStamp character="數" />
+              <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+                02 &mdash; BY THE NUMBERS
+              </span>
+            </div>
             <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight" style={{ fontSize: "var(--text-heading)" }}>
               The <span className="italic text-accent">Stats.</span>
             </h2>
@@ -232,9 +327,12 @@ export default function AboutClient({ portrait }: { portrait: string }) {
       <section className="bg-bg-primary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-3xl">
           <ScrollReveal>
-            <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
-              03 &mdash; NOW
-            </span>
+            <div className="flex items-center gap-3">
+              <SealStamp character="今" />
+              <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+                03 &mdash; NOW
+              </span>
+            </div>
             <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight" style={{ fontSize: "var(--text-heading)" }}>
               What I&apos;m Doing
               <br />
@@ -272,20 +370,17 @@ export default function AboutClient({ portrait }: { portrait: string }) {
           SECTION 5: LOCATION BLOCK
       ════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-bg-secondary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
-        {/* Subtle coordinate grid background */}
-        <div className="pointer-events-none absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px"
-          }}
-          aria-hidden="true"
-        />
+        {/* Heritage lattice pattern replaces coordinate grid */}
+        <LatticePattern />
 
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-center text-center">
           <ScrollReveal>
-            <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
-              04 &mdash; BASED IN
-            </span>
+            <div className="flex items-center gap-3">
+              <SealStamp character="根" />
+              <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+                04 &mdash; BASED IN
+              </span>
+            </div>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <h2 className="mt-8 font-[family-name:var(--font-playfair)] font-bold leading-tight text-text-primary" style={{ fontSize: "var(--text-display)" }}>
@@ -315,9 +410,12 @@ export default function AboutClient({ portrait }: { portrait: string }) {
       <section className="bg-bg-primary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
-            <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
-              05 &mdash; TOOLKIT
-            </span>
+            <div className="flex items-center gap-3">
+              <SealStamp character="器" />
+              <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+                05 &mdash; TOOLKIT
+              </span>
+            </div>
             <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight" style={{ fontSize: "var(--text-heading)" }}>
               Tools I <span className="italic text-accent">Use.</span>
             </h2>
