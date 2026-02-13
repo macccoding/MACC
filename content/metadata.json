@@ -1,6 +1,6 @@
 {
-  "commit": "a7b4d979080e307e2f54a5a0c410841d4902e53d",
-  "generated": "2026-02-13T06:40:09.316Z",
+  "commit": "5b22b9f20bb130a63e49009782f423314ed06fe6",
+  "generated": "2026-02-13T06:56:23.220Z",
   "metadata": [
     {
       "__outstatic": {
@@ -46,8 +46,8 @@
     },
     {
       "__outstatic": {
-        "commit": "a7b4d979080e307e2f54a5a0c410841d4902e53d",
-        "hash": "164550017",
+        "commit": "5b22b9f20bb130a63e49009782f423314ed06fe6",
+        "hash": "2087075533",
         "path": "content/journal/03-food-at-the-intersection-of-jamaica-and-china.md"
       },
       "author": {

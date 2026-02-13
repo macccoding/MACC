@@ -21,9 +21,9 @@ It took leaving Jamaica, eating in other countries, and coming back to realise h
 
 ## Two Kitchens, One House
 
-My grandmother's kitchen was the centre of everything. She could make a pot of brown stew chicken that would feed twenty people and somehow still have leftovers. On the same stove, on the same day, she might be steaming fish with ginger and scallion the way her parents taught her. There was no separation between the two cuisines. It was all just our food.
+The Chen family kitchen was the centre of everything whether it would be Grandma. She could make a pot of brown stew chicken that would feed twenty people and somehow still have leftovers. On the same stove, on the same day, she might be steaming fish (I hate fish but don't tell her that) with ginger and scallion the way she learned how. There was no separation between the two cuisines. It was all just our food.
 
-Sunday dinner was the best example. Rice and peas alongside fried rice. Curry goat next to braised duck. Red Stripe and Chinese tea. Nobody thought twice about it. That was the table I grew up at.
+Sunday dinner was the best example. Rice and peas alongside fried rice. Curry goat next to Pak Jam Gai. Red Stripe and Chinese tea. Nobody thought twice about it. That was the table I grew up at.
 
 ## What I Learned Without Realising
 
