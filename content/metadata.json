@@ -1,6 +1,6 @@
 {
-  "commit": "ab3454580d844ab8d6a19f013a3e2b94e8883f06",
-  "generated": "2026-02-13T07:05:54.875Z",
+  "commit": "ada67fa55a9218b522f6fe81e35a4fd7be1a4927",
+  "generated": "2026-02-13T07:20:09.269Z",
   "metadata": [
     {
       "__outstatic": {
@@ -25,27 +25,6 @@
     },
     {
       "__outstatic": {
-        "commit": "32e7b76ef35cd297fe3a6236866c9f9e74f08b96",
-        "hash": "3244174704",
-        "path": "content/journal/01-why-im-building-a-personal-site.md"
-      },
-      "author": {
-        "name": "MACC",
-        "picture": ""
-      },
-      "category": "BUILDING",
-      "collection": "journal",
-      "date": "2026-02-12",
-      "excerpt": "One algorithm update away from disappearing, so I decided to build my own corner of the internet.",
-      "featured": true,
-      "publishedAt": "2026-02-13T06:03:59.081Z",
-      "readTime": "5 min read",
-      "slug": "01-why-im-building-a-personal-site",
-      "status": "published",
-      "title": "Why I'm Building a Personal Site in 2026"
-    },
-    {
-      "__outstatic": {
         "commit": "ab3454580d844ab8d6a19f013a3e2b94e8883f06",
         "hash": "258006676",
         "path": "content/journal/03-food-at-the-intersection-of-jamaica-and-china.md"
@@ -64,6 +43,27 @@
       "slug": "03-food-at-the-intersection-of-jamaica-and-china",
       "status": "published",
       "title": "Food at the Intersection of Jamaica and China"
+    },
+    {
+      "__outstatic": {
+        "commit": "ada67fa55a9218b522f6fe81e35a4fd7be1a4927",
+        "hash": "3964462119",
+        "path": "content/journal/01-why-im-building-a-personal-site.md"
+      },
+      "author": {
+        "name": "MACC",
+        "picture": ""
+      },
+      "category": "BUILDING",
+      "collection": "journal",
+      "date": "2026-02-12",
+      "excerpt": "One algorithm update away from disappearing, so I decided to build my own corner of the internet.",
+      "featured": true,
+      "publishedAt": "2026-02-13T06:03:59.081Z",
+      "readTime": "5 min read",
+      "slug": "01-why-im-building-a-personal-site",
+      "status": "published",
+      "title": "Why I'm Building a Personal Site in 2026"
     }
   ]
 }

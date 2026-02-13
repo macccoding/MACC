@@ -13,38 +13,76 @@ author:
   picture: ""
 ---
 
-I have an Instagram. I have X. I have LinkedIn. So why am I spending time building a website from scratch when I could just keep posting on platforms that already have the audience?
 
-Because none of them are mine.
+### **So… Why a Website?**
 
-Instagram can change the algorithm tomorrow. X can suspend you for something you said three years ago. LinkedIn is a resume with a comment section. None of these platforms let me tell my story the way I want to tell it. They let me rent attention. I want to own it.
+Okay.
+
+Yes, I already have Instagram. I have Twitter (f\*ck X). I have LinkedIn. I am online. Trust me.
+
+So why am I building a whole website from scratch like it’s 2009?
+
+Because… none of those actually allow me to tell the full story. How am I supposed to fit all I want to say or describe in a character limited box. Im supposed to illustrate my life with stills and captions.
+
+Don't get me wrong.
+
+They’re cool.
+
+I like them.
+
+I just don’t trust them ***explaining*** my entire personality.
 
 ## The Real Reason
 
-I run Istry. I'm deep in the day-to-day at SuperPlus. I'm building Kemi. I shoot with a Sony A7IV, fly a DJI drone, and 3D print things on my BambuLab at 2 AM. I design in Figma. I code in Next.js. I eat everything.
+I do Istry. I'm deep in the day-to-day at SuperPlus. I shoot with a Sony A7IV, fly a DJI drone, and 3D print things on my BambuLab at 2 AM. I design in Figma. I eat everything.. especially lychee flavored things.
 
-None of that fits in a bio. None of it fits in 280 characters. And honestly, I was getting tired of introducing myself differently depending on which platform I was on. On Instagram I'm a food guy. On LinkedIn I'm an entrepreneur. On X I'm a tech person.
+None of that fits in a bio.  And honestly, I was getting tired of introducing myself differently depending on which platform I was on. On Instagram I'm an artsy travel guy. On LinkedIn I'm an entrepreneur. On twitter I'm a tech person.
 
 I'm all of those things. I needed one place where that was obvious.
 
 ## Why Build It Myself?
 
-I could have used Squarespace. I could have used Framer. I could have hired someone.
+Could I have used Squarespace , Wix, or Wordpress?
 
-But I'm a builder. The whole point of this site is that I make things. So I made the thing. It's built on Next.js and Tailwind, hosted on Vercel, and every line of code is mine. That matters to me. Not because I think everyone should code their own website — but because for me, the process of building it *is* the point.
+Yes.
 
-I learned things building this site that I'll use in Kemi. I solved design problems that sharpened my eye. I made typography decisions at 1 AM that I'm weirdly proud of. This is how I work — everything feeds into everything else.
+Would my life be easier?
+
+Also yes.
+
+Did I do it anyway?
+
+Obviously.
+
+I’m a builder. If something can be built, I will probably try to build it. Even if it takes longer. Even if I complain the whole time.
+
+So I built this.
+
+Next.js. Tailwind. Vercel. Not because I’m trying to prove anything.
+
+Mostly because I enjoy suffering slightly in the name of learning.
+
+Also, I made some design choices at 3:30 AM (yawn) that I'm weirdly proud of. This is how I work, everything feeds into everything else.
 
 ## What You'll Find Here
 
-This site is my home on the internet. Here's what I'm putting on it:
+Think of this as my corner of the internet. Where I put the stuff that doesn’t fit anywhere else.
 
-- **Ventures** — every business I'm involved in, with the real story behind each one
-- **Journal** — what I'm building, learning, cooking, and thinking about
-- **Gallery** — photos from my camera, my drone, and my life
-- **About** — who I actually am, not the LinkedIn version
+Ventures — what I’m actually building (not just the highlight reel).
 
-I'm not trying to be an influencer. I'm not trying to monetize a newsletter. I just want a place on the internet that's mine, that represents all of me, and that I can point people to when they ask "so what do you do?"
+Journal — what I’m learning, cooking, thinking about.
+
+Gallery — things I’ve seen and liked enough to photograph.
+
+About — me, but not in corporate language.
+
+I’m not trying to be an influencer.
+
+I’m not selling a course.
+
+There’s no “subscribe for secrets.”
+
+A lot of people ask me since I've been home, what do I do?
 
 The answer is: a lot. And now there's a URL for it.
 
