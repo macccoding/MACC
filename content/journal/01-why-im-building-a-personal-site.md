@@ -1,7 +1,11 @@
-# Why I'm Building a Personal Site in 2026
-
-**February 12, 2026 | BUILDING | 5 min read**
-
+---
+title: "Why I'm Building a Personal Site in 2026"
+date: "2026-02-12"
+category: "BUILDING"
+readTime: "5 min read"
+excerpt: "Instagram can change the algorithm tomorrow. None of these platforms let me tell my story the way I want to tell it. They let me rent attention. I want to own it."
+slug: "why-im-building-a-personal-site"
+featured: true
 ---
 
 I have an Instagram. I have X. I have LinkedIn. So why am I spending time building a website from scratch when I could just keep posting on platforms that already have the audience?

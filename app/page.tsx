@@ -66,18 +66,21 @@ const journalPosts = [
     title: "Why I\u2019m Building a Personal Site in 2026",
     date: "FEB 2026",
     category: "BUILDING",
+    slug: "why-im-building-a-personal-site",
   },
   {
     num: "02",
     title: "The Tech Stack Behind My Businesses",
     date: "FEB 2026",
     category: "TECH",
+    slug: "the-tech-stack-behind-my-businesses",
   },
   {
     num: "03",
     title: "Food at the Intersection of Jamaica and China",
     date: "FEB 2026",
     category: "FOOD",
+    slug: "food-at-the-intersection-of-jamaica-and-china",
   },
 ];
 
@@ -376,7 +379,7 @@ export default function Home() {
           <div className="space-y-0 divide-y divide-white/5">
             {journalPosts.map((post, i) => (
               <ScrollReveal key={post.num} delay={i * 0.1}>
-                <Link href="/journal" className="group block py-8 transition-colors hover:bg-white/[0.02]">
+                <Link href={`/journal/${post.slug}`} className="group block py-8 transition-colors hover:bg-white/[0.02]">
                   <div className="flex items-start gap-6">
                     <span className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40">
                       {post.num}

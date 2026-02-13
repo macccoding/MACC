@@ -1,7 +1,11 @@
-# The Tech Stack Behind My Businesses
-
-**February 10, 2026 | TECH | 8 min read**
-
+---
+title: "The Tech Stack Behind My Businesses"
+date: "2026-02-10"
+category: "TECH"
+readTime: "8 min read"
+excerpt: "People always ask me what I do. The real answer is that I bounce between running a food company, operating a supermarket, building an AI product, and making things — all in the same day. Here's every tool I use and why."
+slug: "the-tech-stack-behind-my-businesses"
+featured: false
 ---
 
 People always ask me what I do. The real answer is that I bounce between running a food company, operating a family supermarket, building an AI product, and making things — all in the same day. What holds it all together isn't hustle. It's systems.
