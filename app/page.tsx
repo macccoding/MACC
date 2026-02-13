@@ -186,7 +186,7 @@ export default function Home() {
               width={320}
               height={320}
               priority
-              className="relative h-auto w-[250px] drop-shadow-[0_0_80px_rgba(229,184,32,0.25)] md:w-[320px]"
+              className="relative h-auto w-[160px] drop-shadow-[0_0_80px_rgba(229,184,32,0.25)] sm:w-[200px] md:w-[320px]"
             />
           </HeroCursorTilt>
         </motion.div>
@@ -224,7 +224,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           SECTION 2: NAME REVEAL
       ════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-accent px-6 py-24">
+      <section className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-accent px-6 py-16 md:min-h-screen md:py-24">
         <motion.div
           initial={{ scale: 0.85, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
@@ -239,7 +239,7 @@ export default function Home() {
         </motion.div>
 
         {/* Numbered Disciplines */}
-        <div className="mt-16 flex flex-wrap justify-center gap-x-10 gap-y-4">
+        <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 md:mt-16 md:gap-x-10 md:gap-y-4">
           {disciplines.map((d, i) => (
             <motion.span
               key={d.num}
@@ -258,7 +258,7 @@ export default function Home() {
         </div>
 
         {/* Video Embed Placeholder */}
-        <ScrollReveal delay={0.5} className="mt-20 w-full max-w-4xl">
+        <ScrollReveal delay={0.5} className="mt-12 w-full max-w-4xl md:mt-20">
           <div className="aspect-video w-full overflow-hidden rounded-lg bg-bg-primary/20">
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
@@ -279,7 +279,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           SECTION 3: ABOUT CARD
       ════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen items-center justify-center bg-bg-primary px-6 py-32">
+      <section className="relative flex items-center justify-center bg-bg-primary px-6 py-20 md:py-32">
         <motion.div
           initial={{ scale: 0.92, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
@@ -374,12 +374,12 @@ export default function Home() {
         </div>
       </div>
 
-      <section ref={venturesSectionRef} className="bg-bg-secondary px-6 py-32 md:px-12">
+      <section ref={venturesSectionRef} className="bg-bg-secondary px-6 py-16 md:px-12 md:py-32">
         <div className="mx-auto max-w-7xl">
           {/* Section Header */}
           <ScrollReveal>
-            <div className="mb-20 flex items-end justify-between border-b border-white/10 pb-6">
-              <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
+            <div className="mb-12 flex flex-col gap-4 border-b border-white/10 pb-6 md:mb-20 md:flex-row md:items-end md:justify-between">
+              <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-6xl">
                 <SplitReveal text="Featured" />
                 <br />
                 <span className="italic text-accent"><SplitReveal text="Ventures" delay={0.15} /></span>
@@ -398,7 +398,7 @@ export default function Home() {
             {ventures.map((venture, i) => (
               <div key={venture.num} id={`venture-${venture.num}`} className="scroll-mt-20">
                 {i > 0 && (
-                  <div className="border-t border-dashed border-white/10 my-16" />
+                  <div className="border-t border-dashed border-white/10 my-10 md:my-16" />
                 )}
               <ScrollReveal delay={0.1}>
                 <div className="grid gap-8 md:grid-cols-2 md:gap-16">
@@ -468,11 +468,11 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           SECTION 5: LATEST FROM THE JOURNAL
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-32 md:px-12">
+      <section className="bg-bg-primary px-6 py-16 md:px-12 md:py-32">
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
-            <div className="mb-16 flex items-end justify-between">
-              <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
+            <div className="mb-10 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
+              <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-6xl">
                 <SplitReveal text="Latest" /> <span className="italic text-accent"><SplitReveal text="Posts" delay={0.1} /></span>
               </h2>
               <Link
@@ -519,11 +519,11 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           SECTION 6: ARCHIVE / GALLERY PREVIEW
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-secondary px-6 py-32 md:px-12">
+      <section className="bg-bg-secondary px-6 py-16 md:px-12 md:py-32">
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
-            <div className="mb-16 flex items-end justify-between">
-              <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
+            <div className="mb-10 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
+              <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-6xl">
                 <SplitReveal text="Archive" />
               </h2>
               <Link

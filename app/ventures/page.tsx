@@ -212,7 +212,7 @@ export default function VenturesPage() {
         >
           {/* ── HERO IMAGE PLACEHOLDER (full-bleed) ── */}
           <ScrollReveal>
-            <div className="relative h-[60vh] w-full overflow-hidden md:h-[80vh]">
+            <div className="relative h-[40vh] w-full overflow-hidden md:h-[60vh]">
               <div
                 className="absolute inset-0"
                 style={{
@@ -242,7 +242,7 @@ export default function VenturesPage() {
           </ScrollReveal>
 
           {/* ── VENTURE CONTENT ── */}
-          <div className="relative px-6 pb-32 pt-8 md:px-12 lg:px-24">
+          <div className="relative px-6 pb-16 pt-8 md:pb-32 md:px-12 lg:px-24">
             <div className="mx-auto max-w-7xl">
               {/* Number + Name */}
               <div className="mb-16 md:mb-24">
@@ -250,7 +250,7 @@ export default function VenturesPage() {
                   <div className="flex items-start gap-6 md:gap-10">
                     {/* Big number */}
                     <span
-                      className="font-[family-name:var(--font-playfair)] text-[8rem] font-bold leading-none md:text-[12rem] lg:text-[16rem]"
+                      className="font-[family-name:var(--font-playfair)] text-[5rem] font-bold leading-none md:text-[8rem] lg:text-[16rem]"
                       style={{ color: `${venture.accent}15` }}
                     >
                       {venture.num}
@@ -372,7 +372,7 @@ export default function VenturesPage() {
               </div>
 
               {/* ── Photo Gallery Placeholder (Asymmetric) ── */}
-              <div className="mt-24 md:mt-32">
+              <div className="mt-16 md:mt-32">
                 <ScrollReveal>
                   <p className="mb-10 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted">
                     GALLERY
@@ -666,7 +666,7 @@ export default function VenturesPage() {
               {/* ── Venture divider ── */}
               {ventureIndex < ventures.length - 1 && (
                 <ScrollReveal>
-                  <div className="mt-32 flex items-center gap-6">
+                  <div className="mt-16 flex items-center gap-6 md:mt-32">
                     <div className="h-px flex-1 border-t border-dashed border-white/10" />
                     <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted/30">
                       NEXT VENTURE
@@ -683,7 +683,7 @@ export default function VenturesPage() {
       {/* ════════════════════════════════════════════
           CLOSING CTA
       ════════════════════════════════════════════ */}
-      <section className="relative flex min-h-[60vh] flex-col items-center justify-center overflow-hidden bg-bg-primary px-6 py-32">
+      <section className="relative flex min-h-[40vh] flex-col items-center justify-center overflow-hidden bg-bg-primary px-6 py-16 md:min-h-[60vh] md:py-32">
         {/* Ghost watermark */}
         <span className="pointer-events-none absolute select-none font-[family-name:var(--font-playfair)] text-[20vw] font-bold leading-none text-ghost">
           MACC

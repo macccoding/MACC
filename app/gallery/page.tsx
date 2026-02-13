@@ -216,7 +216,7 @@ function Lightbox({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.92 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="mx-auto flex max-h-[85vh] w-full max-w-4xl flex-col items-center px-16 md:px-24"
+        className="mx-auto flex max-h-[85vh] w-full max-w-4xl flex-col items-center px-4 sm:px-8 md:px-16 lg:px-24"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Image Placeholder */}
@@ -293,7 +293,7 @@ export default function GalleryPage() {
       {/* ════════════════════════════════════════════
           HERO
       ════════════════════════════════════════════ */}
-      <section className="relative flex min-h-[70vh] flex-col items-center justify-center bg-bg-primary px-6 pt-24">
+      <section className="relative flex min-h-[50vh] md:min-h-[70vh] flex-col items-center justify-center bg-bg-primary px-6 pt-24">
         {/* Flanking Text */}
         <span className="absolute left-6 top-1/2 hidden -translate-y-1/2 -rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block">
           VISUAL ARCHIVE
@@ -346,7 +346,7 @@ export default function GalleryPage() {
           FILTER PILLS
       ════════════════════════════════════════════ */}
       <section className="sticky top-0 z-40 border-b border-white/5 bg-bg-primary/80 px-6 py-6 backdrop-blur-lg md:px-12">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-3">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-2 md:gap-3">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -366,7 +366,7 @@ export default function GalleryPage() {
       {/* ════════════════════════════════════════════
           MASONRY GRID
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-20 md:px-12">
+      <section className="bg-bg-primary px-6 py-12 md:py-20 md:px-12">
         <div className="mx-auto max-w-7xl">
           {/* Item Count */}
           <ScrollReveal>
@@ -456,7 +456,7 @@ export default function GalleryPage() {
       {/* ════════════════════════════════════════════
           BOTTOM CTA
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-secondary px-6 py-32 md:px-12">
+      <section className="bg-bg-secondary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto max-w-7xl text-center">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted">

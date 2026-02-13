@@ -48,7 +48,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
       {/* ════════════════════════════════════════════
           HERO / PAGE HEADER
       ════════════════════════════════════════════ */}
-      <section className="relative flex min-h-[70vh] flex-col justify-end overflow-hidden bg-bg-primary px-6 pb-16 pt-32 md:px-12">
+      <section className="relative flex min-h-[50vh] md:min-h-[70vh] flex-col justify-end overflow-hidden bg-bg-primary px-6 pb-16 pt-32 md:px-12">
         {/* Background ghost number */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
           <span className="select-none font-[family-name:var(--font-playfair)] text-[40vw] font-bold leading-none text-ghost">
@@ -228,7 +228,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
       {/* ════════════════════════════════════════════
           POST LIST
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-24 md:px-12">
+      <section className="bg-bg-primary px-6 py-16 md:py-24 md:px-12">
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <div className="mb-12 flex items-center justify-between">
@@ -319,10 +319,10 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
       {/* ════════════════════════════════════════════
           CATEGORY INDEX (FULL)
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-secondary px-6 py-32 md:px-12">
+      <section className="bg-bg-secondary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
-            <div className="mb-20 border-b border-white/10 pb-6">
+            <div className="mb-12 md:mb-20 border-b border-white/10 pb-6">
               <h2 className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-6xl">
                 Journal <span className="italic text-accent">Index</span>
               </h2>
@@ -366,7 +366,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
       {/* ════════════════════════════════════════════
           NEWSLETTER / CTA
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-32 md:px-12">
+      <section className="bg-bg-primary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted">

@@ -72,7 +72,7 @@ export default function ContactPage() {
       {/* ════════════════════════════════════════════
           HERO
       ════════════════════════════════════════════ */}
-      <section className="flex min-h-[60vh] flex-col items-center justify-center bg-bg-primary px-6 pt-32 pb-16">
+      <section className="flex min-h-[40vh] md:min-h-[60vh] flex-col items-center justify-center bg-bg-primary px-6 pt-24 pb-12 md:pt-32 md:pb-16">
         <ScrollReveal>
           <span className="mb-6 block text-center font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted">
             GET IN TOUCH
@@ -93,8 +93,8 @@ export default function ContactPage() {
       {/* ════════════════════════════════════════════
           SPLIT: FORM + DIRECT CONTACT
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 pb-32 md:px-12">
-        <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2 lg:gap-24">
+      <section className="bg-bg-primary px-6 pb-16 md:pb-32 md:px-12">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:gap-24 md:gap-16">
           {/* ── LEFT: CONTACT FORM ── */}
           <ScrollReveal>
             <div>

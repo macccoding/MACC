@@ -13,7 +13,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-bg-primary px-6 pb-8 pt-24 md:px-12">
+    <footer className="relative overflow-hidden bg-bg-primary px-6 pb-8 pt-16 md:pt-24 md:px-12">
       {/* Social Links */}
       <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-6 border-t border-white/10 pt-12">
         {socialLinks.map((link) => (
@@ -30,7 +30,7 @@ export default function Footer() {
       </div>
 
       {/* Giant Ghosted Watermark */}
-      <div className="relative my-16 flex items-center justify-center overflow-hidden">
+      <div className="relative my-10 md:my-16 flex items-center justify-center overflow-hidden">
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

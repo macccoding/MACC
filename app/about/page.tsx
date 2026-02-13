@@ -40,7 +40,7 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 1: HERO PORTRAIT
       ════════════════════════════════════════════ */}
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-bg-primary px-6 pt-24 pb-32 md:px-12">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-bg-primary px-6 pt-24 pb-16 md:pb-32 md:px-12">
         {/* Ghost text behind portrait */}
         <motion.span
           initial={{ opacity: 0 }}
@@ -101,20 +101,20 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 2: THE STORY
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-32 md:px-12">
+      <section className="bg-bg-primary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto max-w-3xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               01 &mdash; THE STORY
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-5xl font-bold leading-tight md:text-7xl">
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
               Two Cultures,
               <br />
               <span className="italic text-accent">One Builder.</span>
             </h2>
           </ScrollReveal>
 
-          <div className="mt-16 space-y-8">
+          <div className="mt-10 md:mt-16 space-y-8">
             <ScrollReveal delay={0.1}>
               <p className="text-lg leading-relaxed text-text-primary/80">
                 I grew up Jamaican-Chinese in Kingston &mdash; between two cultures that
@@ -156,18 +156,18 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 3: BY THE NUMBERS
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-secondary px-6 py-32 md:px-12">
+      <section className="bg-bg-secondary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               02 &mdash; BY THE NUMBERS
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-5xl font-bold leading-tight md:text-7xl">
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
               The <span className="italic text-accent">Stats.</span>
             </h2>
           </ScrollReveal>
 
-          <div className="mt-20 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
+          <div className="mt-12 md:mt-20 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
             {stats.map((stat, i) => (
               <ScrollReveal key={stat.label} delay={i * 0.1}>
                 <div className="flex flex-col gap-3">
@@ -188,13 +188,13 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 4: NOW
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-32 md:px-12">
+      <section className="bg-bg-primary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto max-w-3xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               03 &mdash; NOW
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-5xl font-bold leading-tight md:text-7xl">
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
               What I&apos;m Doing
               <br />
               <span className="italic text-accent">Right Now.</span>
@@ -204,7 +204,7 @@ export default function AboutPage() {
             </p>
           </ScrollReveal>
 
-          <div className="mt-16 space-y-0 divide-y divide-white/5">
+          <div className="mt-10 md:mt-16 space-y-0 divide-y divide-white/5">
             {nowItems.map((item, i) => (
               <ScrollReveal key={item.label} delay={i * 0.08}>
                 <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
@@ -224,7 +224,7 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 5: LOCATION BLOCK
       ════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-bg-secondary px-6 py-32 md:px-12">
+      <section className="relative overflow-hidden bg-bg-secondary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-center text-center">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
@@ -232,7 +232,7 @@ export default function AboutPage() {
             </span>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h2 className="mt-8 font-[family-name:var(--font-playfair)] text-6xl font-bold leading-tight text-text-primary md:text-8xl lg:text-9xl">
+            <h2 className="mt-8 font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-bold leading-tight text-text-primary md:text-8xl lg:text-9xl">
               KINGSTON,
               <br />
               <span className="italic text-accent">JAMAICA</span>
@@ -249,18 +249,18 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 6: TOOLS I USE
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-32 md:px-12">
+      <section className="bg-bg-primary px-6 py-16 md:py-32 md:px-12">
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               05 &mdash; TOOLKIT
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-5xl font-bold leading-tight md:text-7xl">
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
               Tools I <span className="italic text-accent">Use.</span>
             </h2>
           </ScrollReveal>
 
-          <div className="mt-20 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 md:mt-20 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
             {toolCategories.map((cat, i) => (
               <ScrollReveal key={cat.category} delay={i * 0.1}>
                 <div className="flex flex-col gap-5">

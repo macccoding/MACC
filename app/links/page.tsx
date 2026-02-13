@@ -49,7 +49,7 @@ export default function LinksPage() {
             alt="MACC"
             width={40}
             height={40}
-            className="invert brightness-200"
+            className="brightness-0 invert"
           />
         </Link>
       </header>
