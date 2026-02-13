@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollReveal from "./components/ScrollReveal";
@@ -93,12 +93,46 @@ const galleryItems = Array.from({ length: 10 }, (_, i) => ({
 
 export default function Home() {
   const heroRef = useRef(null);
+  const venturesSectionRef = useRef<HTMLElement>(null);
+  const [venturesVisible, setVenturesVisible] = useState(false);
+  const [activeVenture, setActiveVenture] = useState("01");
+
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+
+  // Track ventures section visibility
+  useEffect(() => {
+    const section = venturesSectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setVenturesVisible(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // Track active venture based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      for (let i = ventures.length - 1; i >= 0; i--) {
+        const el = document.getElementById(`venture-${ventures[i].num}`);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 200) {
+            setActiveVenture(ventures[i].num);
+            return;
+          }
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
@@ -309,29 +343,37 @@ export default function Home() {
           SECTION 4: FEATURED VENTURES
       ════════════════════════════════════════════ */}
 
-      {/* Sticky Ventures Nav */}
-      <div className="sticky top-0 z-40 border-b border-white/5 bg-bg-secondary/80 backdrop-blur-lg">
-        <div className="mx-auto flex max-w-7xl items-center justify-center gap-6 overflow-x-auto px-6 py-4 md:gap-8 md:px-12">
+      {/* Sticky Ventures Nav — only visible when ventures section is in view */}
+      <div
+        className={`sticky top-0 z-40 border-b border-white/5 bg-bg-secondary/80 backdrop-blur-lg transition-all duration-300 ${
+          venturesVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-full pointer-events-none"
+        }`}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-center gap-6 overflow-x-auto px-6 py-4 scrollbar-hide md:gap-8 md:px-12">
           {ventures.map((v) => (
             <a
               key={v.num}
               href={`#venture-${v.num}`}
-              className="shrink-0 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-accent"
+              className={`shrink-0 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-colors hover:text-accent ${
+                activeVenture === v.num ? "text-accent" : "text-text-muted"
+              }`}
             >
-              FEATURED VENTURE {v.num}
+              {v.name}
             </a>
           ))}
           <span className="hidden text-white/10 md:inline">·</span>
           <Link
             href="/ventures"
-            className="group shrink-0 inline-flex items-center gap-1 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-accent transition-opacity hover:opacity-70"
+            className="group shrink-0 inline-flex items-center gap-1 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-accent"
           >
             SEE ALL <span className="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
           </Link>
         </div>
       </div>
 
-      <section className="bg-bg-secondary px-6 py-32 md:px-12">
+      <section ref={venturesSectionRef} className="bg-bg-secondary px-6 py-32 md:px-12">
         <div className="mx-auto max-w-7xl">
           {/* Section Header */}
           <ScrollReveal>
@@ -455,7 +497,7 @@ export default function Home() {
                         </span>
                       </div>
                     </div>
-                    <span className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/30 transition-colors group-hover:text-accent">
+                    <span className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/30 transition-all group-hover:translate-x-2 group-hover:text-accent">
                       &rarr;
                     </span>
                   </div>

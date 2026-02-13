@@ -72,7 +72,7 @@ export default function LinksPage() {
                 alt="MACC Logo"
                 width={80}
                 height={80}
-                className="drop-shadow-[0_0_30px_rgba(212,168,67,0.15)]"
+                className="drop-shadow-[0_0_30px_rgba(229,184,32,0.2)]"
               />
             </div>
             <h1 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-text-primary">

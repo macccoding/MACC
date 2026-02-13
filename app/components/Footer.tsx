@@ -22,7 +22,7 @@ export default function Footer() {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
+            className="relative font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
           >
             {link.label}
           </a>
@@ -49,7 +49,7 @@ export default function Footer() {
         </span>
         <Link
           href="/links"
-          className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
+          className="relative font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
         >
           LINKS
         </Link>

@@ -227,7 +227,7 @@ export default function ContactPage() {
                           <span className="font-[family-name:var(--font-playfair)] text-lg text-text-primary transition-colors group-hover:text-accent">
                             {item.label}
                           </span>
-                          <span className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40 transition-colors group-hover:text-accent">
+                          <span className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40 transition-all group-hover:translate-x-2 group-hover:text-accent">
                             &rarr;
                           </span>
                         </a>

@@ -282,7 +282,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
                             <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/50">
                               {post.readTime}
                             </span>
-                            <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted/30 transition-colors group-hover:text-accent">
+                            <span className="inline-block font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted/30 transition-all group-hover:translate-x-1 group-hover:text-accent">
                               &rarr;
                             </span>
                           </div>
@@ -290,7 +290,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
 
                         {/* Arrow (desktop) */}
                         <div className="hidden items-center justify-end md:col-span-1 md:flex">
-                          <span className="font-[family-name:var(--font-jetbrains)] text-lg text-text-muted/20 transition-colors group-hover:text-accent">
+                          <span className="inline-block font-[family-name:var(--font-jetbrains)] text-lg text-text-muted/20 transition-all group-hover:translate-x-2 group-hover:text-accent">
                             &rarr;
                           </span>
                         </div>
@@ -353,7 +353,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
                       {cat.description}
                     </p>
                   </div>
-                  <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/20 transition-colors group-hover:text-accent">
+                  <span className="mt-1 inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/20 transition-all group-hover:translate-x-2 group-hover:text-accent">
                     &rarr;
                   </span>
                 </button>

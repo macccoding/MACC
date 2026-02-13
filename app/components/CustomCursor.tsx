@@ -1,57 +1,79 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
   const [visible, setVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(true);
 
   const cursorX = useSpring(0, { damping: 25, stiffness: 300 });
   const cursorY = useSpring(0, { damping: 25, stiffness: 300 });
   const trailX = useSpring(0, { damping: 20, stiffness: 150 });
   const trailY = useSpring(0, { damping: 20, stiffness: 150 });
 
-  useEffect(() => {
-    // Hide on touch devices
-    if (typeof window !== "undefined" && "ontouchstart" in window) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       trailX.set(e.clientX);
       trailY.set(e.clientY);
       if (!visible) setVisible(true);
-    };
+    },
+    [cursorX, cursorY, trailX, trailY, visible]
+  );
 
-    const handleMouseEnterInteractive = () => setIsHovering(true);
-    const handleMouseLeaveInteractive = () => setIsHovering(false);
+  useEffect(() => {
+    // Detect touch device
+    const isTouch =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    setIsTouchDevice(isTouch);
+    if (isTouch) return;
+
+    // Hide default cursor site-wide
+    document.documentElement.style.cursor = "none";
+    const style = document.createElement("style");
+    style.id = "custom-cursor-hide";
+    style.textContent = "*, *::before, *::after { cursor: none !important; }";
+    document.head.appendChild(style);
 
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Observe interactive elements
-    const interactiveElements = document.querySelectorAll("a, button, [role='button']");
-    interactiveElements.forEach((el) => {
-      el.addEventListener("mouseenter", handleMouseEnterInteractive);
-      el.addEventListener("mouseleave", handleMouseLeaveInteractive);
-    });
+    // Event delegation for interactive hover detection
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest("a, button, [role='button'], input, textarea, select, label[for]")) {
+        setIsHovering(true);
+      }
+    };
+    const handleMouseOut = (e: MouseEvent) => {
+      const target = e.relatedTarget as HTMLElement | null;
+      if (!target || !target.closest("a, button, [role='button'], input, textarea, select, label[for]")) {
+        setIsHovering(false);
+      }
+    };
+
+    document.addEventListener("mouseover", handleMouseOver);
+    document.addEventListener("mouseout", handleMouseOut);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      interactiveElements.forEach((el) => {
-        el.removeEventListener("mouseenter", handleMouseEnterInteractive);
-        el.removeEventListener("mouseleave", handleMouseLeaveInteractive);
-      });
+      document.removeEventListener("mouseover", handleMouseOver);
+      document.removeEventListener("mouseout", handleMouseOut);
+      document.documentElement.style.cursor = "";
+      const el = document.getElementById("custom-cursor-hide");
+      if (el) el.remove();
     };
-  }, [cursorX, cursorY, trailX, trailY, visible]);
+  }, [handleMouseMove]);
 
-  if (!visible) return null;
+  if (isTouchDevice || !visible) return null;
 
   return (
     <>
       {/* Main dot */}
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[10000] hidden md:block"
+        className="pointer-events-none fixed left-0 top-0 z-[10001] hidden md:block"
         style={{
           x: cursorX,
           y: cursorY,
@@ -71,7 +93,7 @@ export default function CustomCursor() {
 
       {/* Trail ring */}
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[9999] hidden md:block"
+        className="pointer-events-none fixed left-0 top-0 z-[10001] hidden md:block"
         style={{
           x: trailX,
           y: trailY,
