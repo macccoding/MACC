@@ -135,12 +135,11 @@ export default function AboutPage() {
               01 &mdash; THE STORY
             </span>
           </ScrollReveal>
-          <TextReveal
-            text="Two Cultures, One Builder."
-            as="h2"
-            className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight text-text-primary"
-            style={{ fontSize: "var(--text-heading)" }}
-          />
+          <ScrollReveal delay={0.1}>
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight text-text-primary" style={{ fontSize: "var(--text-heading)" }}>
+              Two Cultures, One <span className="italic text-accent">Builder.</span>
+            </h2>
+          </ScrollReveal>
 
           <div className="mt-10 md:mt-16 space-y-8">
             <ScrollReveal delay={0.1}>

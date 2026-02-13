@@ -244,9 +244,13 @@ export default function ContactPage() {
                     </motion.div>
                   ) : (
                     <motion.div key="button" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      <AnimatedButton type="submit" variant="primary" className="w-full">
+                      <motion.button
+                        type="submit"
+                        whileTap={{ scale: 0.98 }}
+                        className="group relative w-full overflow-hidden rounded-lg bg-accent py-4 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary transition-all hover:bg-accent/90 min-h-[48px]"
+                      >
                         SEND MESSAGE
-                      </AnimatedButton>
+                      </motion.button>
                     </motion.div>
                   )}
                 </AnimatePresence>
