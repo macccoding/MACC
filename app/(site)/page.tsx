@@ -50,7 +50,7 @@ const ventures = [
     meta: "FOUNDER \u00b7 ACTIVELY BUILDING",
     tags: ["ARTIFICIAL INTELLIGENCE", "PRODUCTIVITY", "PRODUCT"],
     description:
-      "An AI product I\u2019m actively building. Code, design, and ship \u2014 from Kingston to the world.",
+      "An AI product I\u2019m actively building. Code, design, and ship \u2014 from Mandeville to the world.",
     color: "#E5B820",
   },
   {
@@ -463,67 +463,69 @@ export default function Home() {
           SECTION 3: ABOUT CARD
       ════════════════════════════════════════════ */}
       <section className="relative flex items-center justify-center bg-bg-primary px-6 py-20 md:py-32">
-        <GlowBorder glowColor="rgba(229,184,32,0.35)" hoverOnly={true} borderRadius={16}>
-          <motion.div
-            initial={{ scale: 0.92, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            whileHover={{ scale: 1.01 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <div className="mx-auto w-full max-w-3xl rounded-2xl bg-accent px-[clamp(2.5rem,8vw,7rem)] py-[clamp(2.5rem,6vw,5rem)] text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] backdrop-blur-sm">
-              {/* Name + Rotating Role */}
-              <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
-                Mike Chen
-              </p>
-              <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
-                does
-              </p>
-              <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
-                <RotatingText
-                  words={[
-                    "entrepreneur",
-                    "builder",
-                    "coder",
-                    "designer",
-                    "foodie",
-                  ]}
-                  interval={2200}
-                />
-              </div>
-
-              {/* Bio */}
-              <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
-                I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
-                businesses, brands, code, and whatever else I can get my hands on.
-                Founder of Istry. Keeping SuperPlus alive as a family legacy.
-                Actively building Kemi. I design, I ship, and I eat everything.
-                Based in Kingston.
-              </p>
-
-              {/* Location */}
-              <div className="mt-10 border-t border-bg-primary/20 pt-6">
-                <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
-                  CURRENTLY BASED IN
-                </span>
-                <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
-                  Kingston, Jamaica
+        <div className="mx-auto w-full max-w-3xl">
+          <GlowBorder glowColor="rgba(229,184,32,0.35)" hoverOnly={true} borderRadius={16}>
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              whileHover={{ scale: 1.01 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              viewport={{ once: true, margin: "-50px" }}
+            >
+              <div className="rounded-2xl bg-accent px-8 py-10 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] backdrop-blur-sm md:px-14 md:py-14">
+                {/* Name + Rotating Role */}
+                <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
+                  Mike Chen
                 </p>
-                <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
-                  18.0179&deg; N, 76.8099&deg; W
+                <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
+                  does
                 </p>
-              </div>
+                <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
+                  <RotatingText
+                    words={[
+                      "entrepreneur",
+                      "builder",
+                      "coder",
+                      "designer",
+                      "foodie",
+                    ]}
+                    interval={2200}
+                  />
+                </div>
 
-              {/* Read More */}
-              <Link
-                href="/about"
-                className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
-              >
-                READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-              </Link>
-            </div>
-          </motion.div>
-        </GlowBorder>
+                {/* Bio */}
+                <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
+                  I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
+                  businesses, brands, code, and whatever else I can get my hands on.
+                  Founder of Istry. Keeping SuperPlus alive as a family legacy.
+                  Actively building Kemi. I design, I ship, and I eat everything.
+                  Based in Mandeville.
+                </p>
+
+                {/* Location */}
+                <div className="mt-10 border-t border-bg-primary/20 pt-6">
+                  <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
+                    CURRENTLY BASED IN
+                  </span>
+                  <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
+                    Mandeville, Jamaica
+                  </p>
+                  <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
+                    18.0416&deg; N, 77.5058&deg; W
+                  </p>
+                </div>
+
+                {/* Read More */}
+                <Link
+                  href="/about"
+                  className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
+                >
+                  READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
+                </Link>
+              </div>
+            </motion.div>
+          </GlowBorder>
+        </div>
       </section>
 
       {/* ── Section Divider ── */}

@@ -26,13 +26,13 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "MACC — Mike Chen",
   description:
-    "Jamaican-Chinese entrepreneur building businesses at the intersection of food, technology, and design. CEO of Istry. Based in Kingston, Jamaica.",
+    "Jamaican-Chinese entrepreneur building businesses at the intersection of food, technology, and design. CEO of Istry. Based in Mandeville, Jamaica.",
   keywords: [
     "Mike Chen",
     "MACC",
     "Istry",
     "SuperPlus",
-    "Kingston Jamaica",
+    "Mandeville Jamaica",
     "Entrepreneur",
     "Food & Beverage",
     "Technology",

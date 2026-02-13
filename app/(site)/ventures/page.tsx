@@ -78,7 +78,7 @@ const ventures = [
     accent: "#E5B820",
     description: [
       "Kemi is an AI product I\u2019m actively building \u2014 from concept to code to design to ship. It\u2019s born from running multiple businesses and realizing the tools I needed didn\u2019t exist, so I\u2019m making them.",
-      "Built with Next.js, designed in Figma, and shipping from Kingston. This is the intersection of everything I care about: technology, design, and solving real problems.",
+      "Built with Next.js, designed in Figma, and shipping from Mandeville. This is the intersection of everything I care about: technology, design, and solving real problems.",
       "Currently in active development. More to come.",
     ],
     stats: [
@@ -158,7 +158,7 @@ export default function VenturesPage() {
           04 VENTURES
         </span>
         <span className="absolute right-6 top-1/2 hidden -translate-y-1/2 rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block">
-          KINGSTON, JAMAICA 2026
+          MANDEVILLE, JAMAICA 2026
         </span>
 
         {/* Title */}

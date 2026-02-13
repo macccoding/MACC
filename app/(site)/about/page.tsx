@@ -75,7 +75,7 @@ export default function AboutPage() {
           MICHAEL ANTHONY CHARLES CHEN
         </span>
         <span className="absolute right-6 top-1/2 hidden -translate-y-1/2 rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block">
-          KINGSTON, JAMAICA
+          MANDEVILLE, JAMAICA
         </span>
 
         {/* Scroll Indicator */}
@@ -117,7 +117,7 @@ export default function AboutPage() {
           <div className="mt-10 md:mt-16 space-y-8">
             <ScrollReveal delay={0.1}>
               <p className="text-lg leading-relaxed text-text-primary/80">
-                I grew up Jamaican-Chinese in Kingston &mdash; between two cultures that
+                I grew up Jamaican-Chinese in Mandeville &mdash; between two cultures that
                 both value family above everything and understand that hustle isn&apos;t
                 something you learn, it&apos;s something you inherit. My grandmother,
                 Hyacinth Gloria Chen, built SuperPlus from the ground up. My uncles,
@@ -146,7 +146,7 @@ export default function AboutPage() {
                 something real that people can touch, taste, or use. I love food, I
                 love technology, I love design, and I love figuring out how they all
                 connect. I want to prove that world-class things can be built from
-                Kingston, not just consumed here.
+                Jamaica, not just consumed here.
               </p>
             </ScrollReveal>
           </div>
@@ -233,14 +233,14 @@ export default function AboutPage() {
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <h2 className="mt-8 font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-bold leading-tight text-text-primary md:text-8xl lg:text-9xl">
-              KINGSTON,
+              MANDEVILLE,
               <br />
               <span className="italic text-accent">JAMAICA</span>
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
             <p className="mt-6 font-[family-name:var(--font-jetbrains)] text-sm tracking-[0.1em] text-text-muted">
-              18.0179&deg; N, 76.8099&deg; W
+              18.0416&deg; N, 77.5058&deg; W
             </p>
           </ScrollReveal>
         </div>
