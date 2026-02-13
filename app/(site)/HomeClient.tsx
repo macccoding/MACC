@@ -16,7 +16,6 @@ import BrushStrokeDivider from "@/app/components/BrushStrokeDivider";
 import GlowBorder from "@/app/components/GlowBorder";
 import ParallaxLayer from "@/app/components/ParallaxLayer";
 import AnimatedButton from "@/app/components/AnimatedButton";
-import StaggeredGrid from "@/app/components/StaggeredGrid";
 import CoinFlip from "@/app/components/CoinFlip";
 import TextReveal from "@/app/components/TextReveal";
 import InkSplash from "@/app/components/InkSplash";
@@ -118,7 +117,7 @@ function VentureCard({
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.05 }}
                   viewport={{ once: true }}
-                  className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-text-muted"
+                  className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-wider text-text-muted"
                 >
                   {tag}
                 </motion.span>
@@ -280,6 +279,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
   return (
     <>
       <Navbar />
+      <main>
 
       {/* ════════════════════════════════════════════
           SECTION 1: HERO
@@ -336,10 +336,10 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
           transition={{ delay: 0.5, duration: 0.8 }}
           className="absolute top-24 flex gap-6 text-center md:hidden"
         >
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             MANDEVILLE TO THE WORLD
           </span>
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             2026
           </span>
         </motion.div>
@@ -414,7 +414,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <TextReveal
             text="Abundance favors the persistent, not the deserving."
-            as="h2"
+            as="p"
             className="font-[family-name:var(--font-playfair)] text-4xl font-bold leading-snug text-text-primary md:text-6xl lg:text-7xl"
           />
           <motion.p
@@ -501,7 +501,6 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
       ════════════════════════════════════════════ */}
       <section className="relative flex items-center justify-center bg-bg-primary px-6" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <ParallaxLayer speed={0.15}>
-          <GlowBorder glowColor="rgba(229,184,32,0.4)" hoverOnly borderRadius={16}>
             <motion.div
               initial={{ scale: 0.92, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
@@ -555,7 +554,6 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
                 </Link>
               </div>
             </motion.div>
-          </GlowBorder>
         </ParallaxLayer>
       </section>
 
@@ -672,7 +670,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
                           <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
                             {post.date}
                           </span>
-                          <span className="rounded-full border border-accent/30 px-3 py-0.5 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-accent">
+                          <span className="rounded-full border border-accent/30 px-3 py-0.5 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-wider text-accent">
                             {post.category}
                           </span>
                         </div>
@@ -730,7 +728,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
                         <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
                           {item.num}
                         </span>
-                        <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
+                        <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
                           {item.category}
                         </span>
                       </div>
@@ -764,7 +762,7 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
                           <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
                             {item.num}
                           </span>
-                          <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
+                          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
                             {item.category}
                           </span>
                         </div>
@@ -777,6 +775,8 @@ export default function HomeClient({ ventures }: { ventures: VenturePreview[] })
           </div>
         </div>
       </section>
+
+      </main>
 
       {/* ════════════════════════════════════════════
           FOOTER

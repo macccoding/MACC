@@ -1,25 +1,25 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 
 interface SealStampProps {
   character: string;
   className?: string;
-  size?: number;
 }
 
 export default function SealStamp({
   character,
   className = "",
-  size = 32,
 }: SealStampProps) {
   const prefersReducedMotion = useReducedMotion();
 
   // Slight random rotation per stamp — feels hand-pressed
-  const rotation = useMemo(() => Math.random() * 4 - 2, []);
-
-  const mobileSize = Math.round(size * 0.75);
+  // Use useEffect to avoid hydration mismatch from Math.random()
+  const [rotation, setRotation] = useState(0);
+  useEffect(() => {
+    setRotation(Math.random() * 4 - 2);
+  }, []);
 
   return (
     <motion.div
@@ -30,15 +30,10 @@ export default function SealStamp({
       viewport={{ once: true }}
       aria-hidden="true"
     >
+      {/* 24px mobile, 32px desktop */}
       <svg
-        width={size}
-        height={size}
         viewBox="0 0 32 32"
-        className={`md:w-[${size}px] md:h-[${size}px]`}
-        style={{
-          width: mobileSize,
-          height: mobileSize,
-        }}
+        className="h-6 w-6 shrink-0 md:h-8 md:w-8"
       >
         {/* Seal border — slightly rough for authenticity */}
         <rect
@@ -48,7 +43,7 @@ export default function SealStamp({
           height="30"
           rx="2"
           fill="none"
-          stroke="#C41E3A"
+          stroke="var(--accent-secondary)"
           strokeWidth="2"
           opacity="0.85"
         />
@@ -60,7 +55,7 @@ export default function SealStamp({
           height="26"
           rx="1"
           fill="none"
-          stroke="#C41E3A"
+          stroke="var(--accent-secondary)"
           strokeWidth="0.5"
           opacity="0.4"
         />
@@ -70,7 +65,7 @@ export default function SealStamp({
           y="17"
           textAnchor="middle"
           dominantBaseline="central"
-          fill="#C41E3A"
+          fill="var(--accent-secondary)"
           fontSize="16"
           fontFamily="'Noto Serif SC', 'Songti SC', 'STSong', serif"
           fontWeight="700"

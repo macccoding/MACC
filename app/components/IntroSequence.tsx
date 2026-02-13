@@ -50,7 +50,7 @@ export default function IntroSequence() {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-[#0B0A09]"
+        className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-bg-primary"
         animate={phase >= 6 ? { y: "-100%" } : {}}
         transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
       >
@@ -87,7 +87,7 @@ export default function IntroSequence() {
 
         {/* Phase 3: Gold Line */}
         <motion.div
-          className="mt-6 h-[1px] bg-[#E5B820]"
+          className="mt-6 h-[1px] bg-accent"
           initial={{ width: 0 }}
           animate={phase >= 3 ? { width: 120 } : {}}
           transition={{ duration: 0.4, ease: "easeOut" }}
@@ -101,7 +101,7 @@ export default function IntroSequence() {
           transition={{ duration: 0.4 }}
         >
           <motion.span
-            className="block font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.4em] text-[#8A8580]"
+            className="block font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.4em] text-text-muted"
             initial={{ y: 20 }}
             animate={phase >= 4 ? { y: 0 } : {}}
             transition={{ duration: 0.4, ease: "easeOut" }}
@@ -117,7 +117,7 @@ export default function IntroSequence() {
           animate={phase >= 5 ? { opacity: 1 } : { opacity: 0 }}
         >
           <motion.span
-            className="block font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.25em] text-[#E5B820]/50 md:text-[10px]"
+            className="block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.25em] text-accent/50"
             initial={{ y: 12 }}
             animate={phase >= 5 ? { y: 0 } : {}}
             transition={{ duration: 0.3, ease: "easeOut" }}

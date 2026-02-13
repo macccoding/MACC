@@ -6,7 +6,6 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import ScrollReveal from "@/app/components/ScrollReveal";
 import AnimatedCounter from "@/app/components/AnimatedCounter";
-import TextReveal from "@/app/components/TextReveal";
 import GlowBorder from "@/app/components/GlowBorder";
 import StaggeredGrid from "@/app/components/StaggeredGrid";
 import ParallaxLayer from "@/app/components/ParallaxLayer";
@@ -66,6 +65,7 @@ export default function AboutClient({ portrait }: { portrait: string }) {
   return (
     <>
       <Navbar />
+      <main>
 
       {/* ════════════════════════════════════════════
           SECTION 1: HERO PORTRAIT
@@ -136,10 +136,10 @@ export default function AboutClient({ portrait }: { portrait: string }) {
 
         {/* Mobile flanking text */}
         <div className="absolute top-28 flex gap-4 text-center md:hidden">
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             MICHAEL CHEN
           </span>
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             MANDEVILLE, JA
           </span>
         </div>
@@ -179,109 +179,143 @@ export default function AboutClient({ portrait }: { portrait: string }) {
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight text-text-primary" style={{ fontSize: "var(--text-heading)" }}>
-              Two Cultures, One <span className="italic text-accent">Builder.</span>
+              Likkle Bit of <span className="italic text-accent">Everything.</span>
             </h2>
           </ScrollReveal>
 
           <div className="mt-10 md:mt-16 space-y-8">
             <ScrollReveal delay={0.1}>
               <p className="text-lg leading-relaxed text-text-primary/80">
-                I grew up Jamaican-Chinese in Mandeville &mdash; between two cultures that
-                both value family above everything and understand that hustle isn&apos;t
-                something you learn, it&apos;s something you inherit. They&apos;re blended
-                for me. My grandmother, Hyacinth Gloria Chen, built SuperPlus from the
-                ground up. My uncles, my father, and my aunt carried it forward. I grew up
-                behind the counter, bagging groceries and counting inventory before I could
-                drive. That store taught me everything &mdash; retail, margins, community,
-                and how to talk to anyone. There is a large sense of family duty, duty to
-                the community &mdash; hustle was born into us.
+                I grew up Jamaican-Chinese in Mandeville. If you know what that means, you already
+                understand. If you don&apos;t, just imagine two cultures that are both convinced
+                their food is the best in the world, both obsessed with family, and both certain
+                that hard work isn&apos;t a choice. Now put them in the same house. That&apos;s
+                where I come from.
               </p>
             </ScrollReveal>
 
             <ScrollReveal delay={0.15}>
               <p className="text-lg leading-relaxed text-text-primary/80">
-                They call us the Chen clan because of how tight we are. Cousins feel like
-                brothers and sisters. Uncles feel like fathers and aunts feel like moms. And
-                food is what brings us together. We love our flavors. Christmas dinner,
-                Sunday lunches, random Tuesday night dinners &mdash; that is how our large
-                family communes. It&apos;s how we grew up. It&apos;s how we eat, how we work,
-                what family means.
+                My grandmother, Hyacinth Gloria Chen, built SuperPlus from the ground up. The
+                whole family carried it forward. I was behind the counter bagging groceries and
+                counting inventory before I could see over it. That store was my MBA. Retail,
+                margins, community, how to talk to literally anyone. Also how to smile when
+                someone is complaining about the price of cooking oil for the fourth time that week.
               </p>
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
               <p className="text-lg leading-relaxed text-text-primary/80">
-                I was my mom&apos;s &ldquo;handbag&rdquo; &mdash; everywhere she went, I
-                went. But I&apos;m also very calm, composed. I bring people and ideas
-                together, natural leader. I don&apos;t try to steal the room but sometimes
-                the room comes to me. I&apos;m not the usual creative &mdash; I didn&apos;t
-                grow up drawing, painting, sketching. It&apos;s how my brain works. How I
-                put together a room, an outfit, what colors go together. My brain identifies
-                automatically when things look off, if the font is wrong. My creative energy
-                knows no bounds, it&apos;s just not the traditional kind.
+                They call us the Chen&apos;s, the Chen clan to be precise. Cousins feel like
+                siblings. Uncles feel like fathers. Food is what holds it all together. Christmas
+                dinner, Sunday lunch, a random Tuesday when someone just decided to cook.
+                That&apos;s how we commune. Always has been.
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.25}>
+            {/* ── Why that look suh? ── */}
+            <ScrollReveal delay={0.1}>
+              <h3 className="mt-8 font-[family-name:var(--font-playfair)] text-2xl font-bold italic text-accent md:text-3xl">
+                Why that look suh?
+              </h3>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15}>
               <p className="text-lg leading-relaxed text-text-primary/80">
-                My life is a lot about music. AirPods are always on my ears. It dictates how
-                I&apos;m feeling. You might see me jamming to Not Like Us by Kendrick
-                straight into Monaco by Bad Bunny, then into some R&amp;B Drake, Chicago
-                Freestyle cruising down the I-95. Then you might get hit with some EDM. When
-                I&apos;m deep in code, anything high tempo plays. The vibe at an Istry event
-                is Afrobeats, light hip hop. Family dinner is old school Jamaican music.
-                Sometimes when I&apos;m driving in the Ioniq, it&apos;s Vybz Kartel and more.
+                I was my mom&apos;s handbag. Everywhere she went, I went. That meant, when she
+                was trying on clothes, picking shoes, and deliberating what paint she was buying
+                for the house even though she just painted it 5 months ago... My mom is loud,
+                emotional, unapologetically herself, and I love her to death. Because of this
+                I&apos;m also the calm one in most rooms. I bring people and ideas together without
+                trying to steal anything. Sometimes the room just finds me. I&apos;m not the usual
+                creative either. Never grew up drawing or painting (I guess I was busy at the
+                supermarket or playing gameboy). It&apos;s more how my brain works. I walk into a
+                space and I can tell you what&apos;s off before I can tell you why. Wrong font,
+                bad spacing, a brand that looks like it was built in Canva on a free trial. My eye
+                catches it. My creative energy is relentless, it just doesn&apos;t come with a
+                sketchbook.
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.3}>
+            {/* ── Always Playing Something ── */}
+            <ScrollReveal delay={0.1}>
+              <h3 className="mt-8 font-[family-name:var(--font-playfair)] text-2xl font-bold italic text-accent md:text-3xl">
+                Always Playing Something
+              </h3>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15}>
               <p className="text-lg leading-relaxed text-text-primary/80">
-                Today I&apos;m still at the heart of a couple SuperPlus locations
-                day-to-day &mdash; advising, operating, keeping the legacy alive. But
-                I also build my own things. I founded Istry, a bespoke food and beverage
-                company. I&apos;m actively building Kemi, an AI product. I write code,
-                design brands in Figma, 3D print prototypes on my BambuLab, and shoot
-                with my Sony A7IV and DJI drone. I love building things, getting them to a
-                point &mdash; then going on and working on the next thing. I don&apos;t have
-                one lane. I have a workshop.
+                AirPods are permanently in my ears. Music runs the whole operation.
+                You might catch me going from Not Like Us by Kendrick straight into Monaco by
+                Bad Bunny, then cruising the I-95 to Chicago Freestyle like it&apos;s a movie
+                scene. Then out of nowhere, EDM. And sometimes in the whip it&apos;s Vybz Kartel
+                and I have nothing else to say about that.
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.35}>
+            {/* ── What I Actually Do ── */}
+            <ScrollReveal delay={0.1}>
+              <h3 className="mt-8 font-[family-name:var(--font-playfair)] text-2xl font-bold italic text-accent md:text-3xl">
+                What I Actually Do
+              </h3>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15}>
               <p className="text-lg leading-relaxed text-text-primary/80">
-                What drives me is making things &mdash; the moment an idea becomes
-                something real that people can touch, taste, or use. I love food, I
-                love technology, I love design, and I love figuring out how they all
-                connect. I want to prove that world-class things can be built from
-                Jamaica, not just consumed here.
+                I&apos;m still at the heart of SuperPlus day to day. Advising, operating, keeping
+                the legacy alive. But I also build my own things. Istry is a bespoke food and
+                beverage company I founded. I write code, design brands in Figma, 3D print on my
+                BambuLab, shoot on my Sony A7IV and DJI drone. I love getting something to the
+                point where it works. Then I go build the next thing.
+              </p>
+            </ScrollReveal>
+
+            {/* ── The Point ── */}
+            <ScrollReveal delay={0.1}>
+              <h3 className="mt-8 font-[family-name:var(--font-playfair)] text-2xl font-bold italic text-accent md:text-3xl">
+                The Point
+              </h3>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15}>
+              <p className="text-lg leading-relaxed text-text-primary/80">
+                What drives all of it is pretty simple. I love food, I love technology, I love
+                design, and I love the moment an idea turns into something real that someone can
+                touch, taste, or use. I want to prove that world-class things can be built from
+                Jamaica. Not just consumed here.
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.2}>
+              <p className="text-lg leading-relaxed text-text-primary/60 italic">
+                That&apos;s it. That&apos;s the whole thing.
               </p>
             </ScrollReveal>
           </div>
-        </div>
-      </section>
 
-      {/* ════════════════════════════════════════════
-          SECTION 2.5: GENERATIONAL THREAD
-      ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 md:px-12" style={{ paddingBottom: "var(--space-section)" }}>
-        <div className="mx-auto max-w-5xl">
-          <div className="grid gap-6 md:grid-cols-3 md:gap-8">
-            {generations.map((gen, i) => (
-              <ScrollReveal key={gen.era} delay={i * 0.15}>
-                <div className="relative border-l-2 border-accent-secondary/40 pl-6 py-4">
-                  <SealStamp character={gen.character} className="mb-4" />
-                  <span className="block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-accent-secondary">
-                    {gen.era}
-                  </span>
-                  <h3 className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold text-text-primary">
-                    {gen.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-text-primary/60">
-                    {gen.description}
-                  </p>
-                </div>
-              </ScrollReveal>
-            ))}
+          {/* ── Generational Thread ── */}
+          <div className="mt-16 md:mt-24">
+            <div className="mx-auto max-w-3xl">
+              <div className="grid gap-6 md:grid-cols-3 md:gap-8">
+                {generations.map((gen, i) => (
+                  <ScrollReveal key={gen.era} delay={i * 0.15}>
+                    <div className="relative border-l-2 border-accent-secondary/40 pl-6 py-4">
+                      <SealStamp character={gen.character} className="mb-4" />
+                      <span className="block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-accent-secondary">
+                        {gen.era}
+                      </span>
+                      <h3 className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold text-text-primary">
+                        {gen.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-text-primary/60">
+                        {gen.description}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -303,7 +337,7 @@ export default function AboutClient({ portrait }: { portrait: string }) {
             </h2>
           </ScrollReveal>
 
-          <StaggeredGrid columns={5} className="mt-12 md:mt-20 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
+          <StaggeredGrid columns={2} className="mt-12 md:mt-20 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
             {stats.map((stat) => (
               <GlowBorder key={stat.label} hoverOnly borderRadius={12}>
                 <div className="glass-card flex flex-col gap-3 rounded-lg p-5 card-hover">
@@ -421,7 +455,7 @@ export default function AboutClient({ portrait }: { portrait: string }) {
             </h2>
           </ScrollReveal>
 
-          <StaggeredGrid columns={4} className="mt-12 md:mt-20 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <StaggeredGrid columns={2} className="mt-12 md:mt-20 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
             {toolCategories.map((cat) => (
               <GlowBorder key={cat.category} hoverOnly borderRadius={12}>
                 <div className="glass-card flex flex-col gap-5 rounded-lg p-5 card-hover">
@@ -446,6 +480,8 @@ export default function AboutClient({ portrait }: { portrait: string }) {
           </StaggeredGrid>
         </div>
       </section>
+
+      </main>
 
       {/* ════════════════════════════════════════════
           FOOTER

@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, useReducedMotion } from "framer-motion";
 
 interface CoinFlipProps {
   className?: string;
@@ -14,6 +14,7 @@ export default function CoinFlip({ className = "" }: CoinFlipProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const controls = useAnimation();
   const flipCount = useRef(0);
+  const prefersReducedMotion = useReducedMotion();
 
   const handleFlip = async () => {
     if (isAnimating) return;
@@ -23,26 +24,32 @@ export default function CoinFlip({ className = "" }: CoinFlipProps) {
     flipCount.current += 1;
     const nextFlipped = !flipped;
 
-    // 540° total = 1.5 full spins, landing on the opposite face
-    // Even flips: 0 → 540 (lands on back at 540 = 180 equivalent)
-    // Odd flips:  540 → 1080 (lands on front at 1080 = 0 equivalent)
-    const targetRotation = flipCount.current * 540;
+    if (prefersReducedMotion) {
+      // Simple crossfade for reduced motion
+      await controls.start({
+        rotateY: flipCount.current * 180,
+        transition: { duration: 0 },
+      });
+    } else {
+      // 540° total = 1.5 full spins, landing on the opposite face
+      const targetRotation = flipCount.current * 540;
 
-    await controls.start({
-      rotateY: targetRotation,
-      scale: [1, 1.15, 1.1, 1],
-      transition: {
-        rotateY: {
-          duration: 1.1,
-          ease: [0.2, 0.9, 0.3, 1],
+      await controls.start({
+        rotateY: targetRotation,
+        scale: [1, 1.15, 1.1, 1],
+        transition: {
+          rotateY: {
+            duration: 1.1,
+            ease: [0.2, 0.9, 0.3, 1],
+          },
+          scale: {
+            duration: 1.1,
+            times: [0, 0.3, 0.6, 1],
+            ease: "easeOut",
+          },
         },
-        scale: {
-          duration: 1.1,
-          times: [0, 0.3, 0.6, 1],
-          ease: "easeOut",
-        },
-      },
-    });
+      });
+    }
 
     setFlipped(nextFlipped);
     setIsAnimating(false);
@@ -68,7 +75,7 @@ export default function CoinFlip({ className = "" }: CoinFlipProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 0.6 }}
-          className="absolute -bottom-8 left-1/2 -translate-x-1/2 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40 md:hidden"
+          className="absolute -bottom-8 left-1/2 -translate-x-1/2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/40 md:hidden"
         >
           TAP TO FLIP
         </motion.span>

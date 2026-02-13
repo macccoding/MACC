@@ -6,7 +6,6 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import ScrollReveal from "@/app/components/ScrollReveal";
 import GlowBorder from "@/app/components/GlowBorder";
-import AnimatedButton from "@/app/components/AnimatedButton";
 
 const subjects = [
   "General Inquiry",
@@ -75,6 +74,7 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
+      <main>
 
       {/* ════════════════════════════════════════════
           HERO
@@ -313,6 +313,8 @@ export default function ContactPage() {
           </ScrollReveal>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </>

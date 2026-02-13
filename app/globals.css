@@ -84,7 +84,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--ghost);
   border-radius: 3px;
 }
 
@@ -134,7 +134,7 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 1.125rem;
   line-height: 1.8;
-  color: rgba(237, 237, 237, 0.8);
+  color: rgba(237, 233, 227, 0.8);
 }
 
 .prose-article h2 {
@@ -209,7 +209,7 @@ body {
   border-left: 3px solid var(--accent-primary);
   padding-left: 1.25rem;
   margin: 2rem 0;
-  color: rgba(237, 237, 237, 0.6);
+  color: rgba(237, 233, 227, 0.6);
   font-style: italic;
   font-family: var(--font-serif), serif;
   font-size: 1.25rem;

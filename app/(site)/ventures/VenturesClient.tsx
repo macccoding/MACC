@@ -3,13 +3,11 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import ScrollReveal from "@/app/components/ScrollReveal";
 import ImageReveal from "@/app/components/ImageReveal";
 import TextScramble from "@/app/components/TextScramble";
-import TextReveal from "@/app/components/TextReveal";
 import BrushStrokeDivider from "@/app/components/BrushStrokeDivider";
 import AnimatedButton from "@/app/components/AnimatedButton";
 import AnimatedCounter from "@/app/components/AnimatedCounter";
@@ -46,6 +44,7 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
   return (
     <>
       <Navbar />
+      <main>
 
       {/* ════════════════════════════════════════════
           HERO
@@ -74,10 +73,10 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
 
         {/* Mobile flanking text */}
         <div className="absolute top-28 flex gap-4 text-center md:hidden">
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             04 VENTURES
           </span>
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             MANDEVILLE 2026
           </span>
         </div>
@@ -234,7 +233,7 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
                           whileInView={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.2 + i * 0.05 }}
                           viewport={{ once: true }}
-                          className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-text-muted transition-colors hover:border-white/20 hover:text-text-primary"
+                          className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-wider text-text-muted transition-colors hover:border-white/20 hover:text-text-primary"
                         >
                           {tag}
                         </motion.span>
@@ -293,7 +292,7 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
                               value={stat.value}
                               className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-5xl"
                             />
-                            <p className="mt-2 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted">
+                            <p className="mt-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
                               {stat.label}
                             </p>
                           </div>
@@ -326,7 +325,7 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
                                 <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold" style={{ color: `${venture.accent}10` }}>
                                   {img.label}
                                 </span>
-                                <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                                <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/40">
                                   PHOTO COMING SOON
                                 </p>
                               </div>
@@ -334,12 +333,6 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
                           )}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                  {/* Pagination dots */}
-                  <div className="mt-4 flex justify-center gap-2">
-                    {venture.images.map((_, i) => (
-                      <div key={i} className="h-1.5 w-1.5 rounded-full bg-white/20" />
                     ))}
                   </div>
                 </div>
@@ -359,7 +352,7 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
                                 <span className="font-[family-name:var(--font-playfair)] text-4xl font-bold" style={{ color: `${venture.accent}10` }}>
                                   {img.label}
                                 </span>
-                                <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                                <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/40">
                                   PHOTO COMING SOON
                                 </p>
                               </div>
@@ -411,6 +404,8 @@ export default function VenturesClient({ ventures }: { ventures: VentureData[] }
           </div>
         </ScrollReveal>
       </section>
+
+      </main>
 
       {/* ════════════════════════════════════════════
           FOOTER

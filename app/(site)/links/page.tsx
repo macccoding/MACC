@@ -72,7 +72,7 @@ export default function LinksPage() {
                       <span className="font-[family-name:var(--font-jetbrains)] text-[12px] uppercase tracking-[0.2em] text-text-primary transition-colors group-hover:text-accent">
                         {link.label}
                       </span>
-                      <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.15em] text-text-muted/50">
+                      <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted/50">
                         {link.description}
                       </span>
                     </motion.div>
@@ -88,7 +88,7 @@ export default function LinksPage() {
                     <span className="font-[family-name:var(--font-jetbrains)] text-[12px] uppercase tracking-[0.2em] text-text-primary transition-colors group-hover:text-accent">
                       {link.label}
                     </span>
-                    <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.15em] text-text-muted/50">
+                    <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted/50">
                       {link.description}
                     </span>
                   </motion.a>

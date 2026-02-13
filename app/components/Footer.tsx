@@ -110,7 +110,7 @@ function ArcadeScore() {
   return (
     <div className="flex items-center justify-center gap-8">
       <div className="text-center">
-        <span className="block font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.3em] text-text-muted/40">
+        <span className="block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted/40">
           SCORE
         </span>
         <span className="block font-[family-name:var(--font-jetbrains)] text-sm tabular-nums text-accent/60">
@@ -118,7 +118,7 @@ function ArcadeScore() {
         </span>
       </div>
       <div className="text-center">
-        <span className="block font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.3em] text-text-muted/40">
+        <span className="block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted/40">
           HI-SCORE
         </span>
         <span className="block font-[family-name:var(--font-jetbrains)] text-sm tabular-nums text-accent/60">
@@ -155,7 +155,7 @@ export default function Footer() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.3em] text-text-muted/30"
+          className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted/30"
         >
           INSERT COIN TO CONTINUE
         </motion.p>

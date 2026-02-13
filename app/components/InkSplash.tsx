@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 interface Splash {
   id: number;
@@ -19,8 +19,21 @@ export default function InkSplash({
   className?: string;
 }) {
   const [splashes, setSplashes] = useState<Splash[]>([]);
+  const prefersReducedMotion = useReducedMotion();
+  const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  // Clean up all timers on unmount
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, []);
 
   const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (prefersReducedMotion) return;
+
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -29,10 +42,12 @@ export default function InkSplash({
     setSplashes((prev) => [...prev, { id, x, y }]);
 
     // Clean up after animation
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setSplashes((prev) => prev.filter((s) => s.id !== id));
+      timersRef.current.delete(timer);
     }, 600);
-  }, []);
+    timersRef.current.add(timer);
+  }, [prefersReducedMotion]);
 
   return (
     <div
@@ -52,6 +67,7 @@ export default function InkSplash({
               top: splash.y,
               transform: "translate(-50%, -50%)",
             }}
+            aria-hidden="true"
           >
             {/* 3 offset circles with varying opacity */}
             {[0, 1, 2].map((i) => (

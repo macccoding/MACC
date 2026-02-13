@@ -195,10 +195,10 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
         </span>
 
         <div className="absolute top-28 flex gap-4 text-center md:hidden">
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             VISUAL ARCHIVE
           </span>
-          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
             {filteredItems.length} FRAMES
           </span>
         </div>
@@ -331,7 +331,7 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
                       <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.15em] text-text-muted/60 transition-colors group-hover:text-accent">
                         {item.num}
                       </span>
-                      <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
+                      <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
                         {item.category}
                       </span>
                     </div>
