@@ -3,9 +3,14 @@ title: "Food at the Intersection of Jamaica and China"
 date: "2026-02-08"
 category: "FOOD"
 readTime: "6 min read"
-excerpt: "I grew up eating ackee and saltfish for breakfast and char siu for dinner. Being Jamaican-Chinese means you exist at the intersection of two of the most flavour-obsessed cultures on earth."
-slug: "food-at-the-intersection-of-jamaica-and-china"
+excerpt: "I grew up eating ackee and saltfish for breakfast and char siu for dinner. My tastebuds never picked a side."
+slug: "03-food-at-the-intersection-of-jamaica-and-china"
 featured: false
+publishedAt: "2026-02-13T06:04:34.256Z"
+status: "published"
+author:
+  name: "MACC"
+  picture: ""
 ---
 
 I grew up eating ackee and saltfish for breakfast and char siu for dinner. That's not a metaphor. That's literally what happened in my house.

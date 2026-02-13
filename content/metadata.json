@@ -1,6 +1,6 @@
 {
-  "commit": "32e7b76ef35cd297fe3a6236866c9f9e74f08b96",
-  "generated": "2026-02-13T06:34:28.349Z",
+  "commit": "2893b2c75c4e5aafaa64d7d73f487b89ca89e76f",
+  "generated": "2026-02-13T06:35:28.024Z",
   "metadata": [
     {
       "__outstatic": {
@@ -43,6 +43,27 @@
       "slug": "01-why-im-building-a-personal-site",
       "status": "published",
       "title": "Why I'm Building a Personal Site in 2026"
+    },
+    {
+      "__outstatic": {
+        "commit": "2893b2c75c4e5aafaa64d7d73f487b89ca89e76f",
+        "hash": "2688065541",
+        "path": "content/journal/03-food-at-the-intersection-of-jamaica-and-china.md"
+      },
+      "author": {
+        "name": "MACC",
+        "picture": ""
+      },
+      "category": "FOOD",
+      "collection": "journal",
+      "date": "2026-02-08",
+      "excerpt": "I grew up eating ackee and saltfish for breakfast and char siu for dinner. My tastebuds never picked a side.",
+      "featured": false,
+      "publishedAt": "2026-02-13T06:04:34.256Z",
+      "readTime": "6 min read",
+      "slug": "03-food-at-the-intersection-of-jamaica-and-china",
+      "status": "published",
+      "title": "Food at the Intersection of Jamaica and China"
     }
   ]
 }
