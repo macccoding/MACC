@@ -37,9 +37,7 @@ Put those two together and you get a way of thinking about food that I haven't f
 
 ## How This Shapes Istry
 
-When I started Istry, people asked me what kind of food company it was. Jamaican? Chinese? Fusion? I never had a good answer because the question itself felt wrong. Istry is a food company built by someone who grew up eating both. The products aren't fusion — they're personal. They come from a specific place and a specific experience. Mine.
-
-Every product we develop goes through the same test: would this hold up at my grandmother's table? That's the bar. Not trends, not what's selling on TikTok, not what looks good in packaging. Would the people who taught me to eat — who taught me to care about food — would they reach for a second serving?
+Would the people who taught me to eat — who taught me to care about food — would they reach for a second serving?
 
 If the answer is yes, we make it.
 
@@ -47,13 +45,13 @@ If the answer is yes, we make it.
 
 Something people outside Jamaica don't know is how deeply Chinese food is embedded in Jamaican culture. Chinese Jamaicans have been here for over 170 years. We're not recent arrivals. The local Chinese restaurant isn't exotic — it's the neighbourhood spot. Every town has one. Everyone has a favourite.
 
-Jamaican-Chinese food is its own thing. It's not mainland Chinese food. It's not Jamaican food. It's something that only exists because two cultures spent generations cooking next to each other, borrowing from each other, and feeding each other. Sweet and sour chicken with festival. Fried rice with pepper shrimp. Wonton soup with a side of hard dough bread.
+Jamaican-Chinese food is its own thing. It's not mainland Chinese food. It's not Jamaican food. It's something that only exists because two cultures spent generations cooking next to each other, borrowing from each other, and feeding each other. Sweet and sour chicken with fried dumpling. Fried rice with pepper shrimp. Wonton soup with a side of hard dough bread. Leftovers were always interesting. lol.
 
 If you've never had it, you're missing one of the most underrated food cultures in the Caribbean.
 
 ## What Food Means to Me
 
-I'm not a chef. I'm not trying to open a restaurant. But food is at the centre of almost everything I do. Istry is a food company. SuperPlus is a supermarket. My favourite way to explore a new place is to eat my way through it.
+I'm not a chef. I'm not trying to open a restaurant. But food is at the centre of almost everything I do. Istry is a f&b company. SuperPlus is a supermarket. My favourite way to explore a new place is to eat my way through it. Hopefully, getting to the top first and rolling down after.
 
 Food is the thing that connects everything in my life — family, culture, business, travel. It's the one constant. No matter what else changes, the way I think about flavour, about feeding people, about the table being the centre of everything — that comes from growing up at the intersection of Jamaica and China.
 
@@ -61,4 +59,4 @@ And I wouldn't trade that for anything.
 
 ---
 
-*If you ever find yourself in Kingston and want to know where to eat, reach out. I have opinions.*
+*If you ever find yourself in any of the places I've been in the world and want to know where to eat, reach out. I have opinions.*
