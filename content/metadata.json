@@ -1,0 +1,27 @@
+{
+  "commit": "",
+  "generated": "2026-02-13T04:50:04.775Z",
+  "metadata": [
+    {
+      "__outstatic": {
+        "commit": "",
+        "hash": "2167425138",
+        "path": "content/journal/02-the-tech-stack-behind-my-businesses.md"
+      },
+      "author": {
+        "name": "Mikey C",
+        "picture": ""
+      },
+      "category": "TECH",
+      "collection": "journal",
+      "date": "2026-02-10",
+      "excerpt": "People always ask me what I do. The real answer is that I bounce between running a food company, operating a supermarket, building an AI product, and making things — all in the same day. Here's every tool I use and why.",
+      "featured": false,
+      "publishedAt": "2026-02-13T04:10:53.141Z",
+      "readTime": "8 min read",
+      "slug": "02-the-tech-stack-behind-my-businesses",
+      "status": "published",
+      "title": "The Tech Stack Behind My Businesses"
+    }
+  ]
+}
