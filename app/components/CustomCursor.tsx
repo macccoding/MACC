@@ -109,6 +109,7 @@ export default function CustomCursor() {
           }}
           transition={{ duration: 0.3 }}
           className="rounded-full border border-accent"
+          style={{ mixBlendMode: "difference" }}
         />
       </motion.div>
     </>

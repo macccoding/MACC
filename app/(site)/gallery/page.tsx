@@ -395,12 +395,12 @@ export default function GalleryPage() {
                 >
                   <button
                     onClick={() => openLightbox(index)}
-                    className="group relative block w-full overflow-hidden rounded-lg text-left transition-transform hover:scale-[1.01]"
+                    className="group relative block w-full overflow-hidden rounded-lg text-left transition-transform hover:scale-[1.02]"
                     aria-label={`View image ${item.num}`}
                   >
                     {/* Placeholder Image Area */}
                     <div
-                      className={`${item.aspect} ${item.bg} relative flex w-full items-center justify-center overflow-hidden border border-white/[0.04] transition-all duration-300 group-hover:border-accent/30 group-hover:scale-105`}
+                      className={`${item.aspect} ${item.bg} relative flex w-full items-center justify-center overflow-hidden border border-white/[0.04] transition-all duration-300 group-hover:border-accent/30 group-hover:scale-[1.02] group-hover:ring-1 group-hover:ring-accent/20 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.08)]`}
                     >
                       {/* Large Ghost Number */}
                       <span className="font-[family-name:var(--font-playfair)] text-[8rem] font-bold leading-none text-white/[0.03] transition-all group-hover:text-accent/[0.08]">

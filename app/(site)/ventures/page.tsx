@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ScrollReveal from "../../components/ScrollReveal";
+import ImageReveal from "../../components/ImageReveal";
 import MagneticButton from "../../components/MagneticButton";
 
 /* ─── VENTURE DATA ─── */
@@ -211,7 +212,7 @@ export default function VenturesPage() {
           }`}
         >
           {/* ── HERO IMAGE PLACEHOLDER (full-bleed) ── */}
-          <ScrollReveal>
+          <ImageReveal direction={ventureIndex % 3 === 0 ? "left" : ventureIndex % 3 === 1 ? "right" : "bottom"} delay={0.1}>
             <div className="relative h-[40vh] w-full overflow-hidden md:h-[60vh]">
               <div
                 className="absolute inset-0"
@@ -239,7 +240,7 @@ export default function VenturesPage() {
                 } to-transparent`}
               />
             </div>
-          </ScrollReveal>
+          </ImageReveal>
 
           {/* ── VENTURE CONTENT ── */}
           <div className="relative px-6 pb-16 pt-8 md:pb-32 md:px-12 lg:px-24">

@@ -59,7 +59,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-[1px] after:bg-accent after:transition-all after:duration-300 ${
+                className={`relative font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-all after:absolute after:bottom-[-4px] after:left-0 after:h-[1px] after:bg-accent after:transition-all after:duration-300 hover:-translate-y-0.5 ${
                   isActive(link.href)
                     ? "text-accent after:w-full"
                     : "text-text-muted hover:text-accent after:w-0 hover:after:w-full"

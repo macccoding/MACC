@@ -170,7 +170,7 @@ export default function AboutPage() {
           <div className="mt-12 md:mt-20 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
             {stats.map((stat, i) => (
               <ScrollReveal key={stat.label} delay={i * 0.1}>
-                <div className="flex flex-col gap-3">
+                <div className="glass-card flex flex-col gap-3 rounded-lg p-5">
                   <AnimatedCounter
                     value={stat.value}
                     className="font-[family-name:var(--font-playfair)] text-4xl font-bold text-accent md:text-5xl"
@@ -207,7 +207,7 @@ export default function AboutPage() {
           <div className="mt-10 md:mt-16 space-y-0 divide-y divide-white/5">
             {nowItems.map((item, i) => (
               <ScrollReveal key={item.label} delay={i * 0.08}>
-                <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+                <div className="flex flex-col gap-2 rounded-lg py-6 px-4 transition-all hover:bg-white/[0.02] sm:flex-row sm:items-center sm:justify-between sm:gap-8">
                   <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted">
                     {item.label}
                   </span>
@@ -263,7 +263,7 @@ export default function AboutPage() {
           <div className="mt-12 md:mt-20 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
             {toolCategories.map((cat, i) => (
               <ScrollReveal key={cat.category} delay={i * 0.1}>
-                <div className="flex flex-col gap-5">
+                <div className="glass-card flex flex-col gap-5 rounded-lg p-5">
                   <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-accent">
                     {cat.category}
                   </span>

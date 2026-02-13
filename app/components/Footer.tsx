@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
+import GradientOrb from "./GradientOrb";
 
 const socialLinks = [
   { label: "EMAIL", href: "mailto:hello@mikechen.xyz" },
@@ -12,6 +14,15 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const watermarkRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: watermarkRef,
+    offset: ["start end", "end start"],
+  });
+  const watermarkY = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const watermarkBlur = useTransform(scrollYProgress, [0, 0.5, 1], [8, 0, 0]);
+  const watermarkFilter = useTransform(watermarkBlur, (v) => `blur(${v}px)`);
+
   return (
     <footer className="relative overflow-hidden bg-bg-primary px-6 pb-8 pt-16 md:pt-24 md:px-12">
       {/* Social Links */}
@@ -29,13 +40,28 @@ export default function Footer() {
         ))}
       </div>
 
-      {/* Giant Ghosted Watermark */}
-      <div className="relative my-10 md:my-16 flex items-center justify-center overflow-hidden">
+      {/* Giant Ghosted Watermark with parallax + blur */}
+      <div ref={watermarkRef} className="relative my-10 md:my-16 flex items-center justify-center overflow-hidden">
+        {/* Gold orb behind watermark */}
+        <GradientOrb
+          color="229,184,32"
+          size={350}
+          blur={100}
+          opacity={0.06}
+          position={{ top: "50%", left: "50%" }}
+          duration={20}
+          mobileHidden={true}
+        />
+
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
           viewport={{ once: true }}
+          style={{
+            y: watermarkY,
+            filter: watermarkFilter,
+          }}
           className="select-none font-[family-name:var(--font-playfair)] text-[12vw] font-bold leading-none text-ghost"
         >
           CHEN

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -10,6 +10,9 @@ import ScrollReveal from "../components/ScrollReveal";
 import RotatingText from "../components/RotatingText";
 import HeroCursorTilt from "../components/HeroCursorTilt";
 import SplitReveal from "../components/SplitReveal";
+import GradientOrb from "../components/GradientOrb";
+import TextReveal from "../components/TextReveal";
+import GlowBorder from "../components/GlowBorder";
 
 /* ─── DISCIPLINES ─── */
 const disciplines = [
@@ -92,18 +95,174 @@ const galleryItems = Array.from({ length: 10 }, (_, i) => ({
   category: ["FOOD", "TRAVEL", "GADGETS", "STREET", "PORTRAITS", "FOOD", "TRAVEL", "DRONE", "LIFESTYLE", "MAKING"][i],
 }));
 
+/* ─── VENTURE CARD (Sub-component for per-item hooks) ─── */
+function VentureCard({
+  venture,
+  index,
+}: {
+  venture: (typeof ventures)[number];
+  index: number;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+
+  return (
+    <div ref={cardRef} id={`venture-${venture.num}`} className="scroll-mt-20">
+      {index > 0 && (
+        <div className="relative my-10 overflow-hidden md:my-16">
+          <div className="border-t border-dashed border-white/10" />
+          <div
+            className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent"
+            style={{ animation: "goldLineSweep 3s ease-in-out infinite" }}
+          />
+        </div>
+      )}
+      <ScrollReveal delay={0.1}>
+        <div className="grid gap-8 md:grid-cols-2 md:gap-16">
+          {/* Left: Info */}
+          <div className={`flex flex-col justify-center ${index % 2 === 1 ? "md:order-2" : ""}`}>
+            <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+              FEATURED VENTURE {venture.num}
+            </span>
+            <h3
+              className="mt-4 font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-5xl"
+              style={{ color: venture.color }}
+            >
+              {venture.name}
+            </h3>
+            <p className="mt-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted">
+              {venture.meta}
+            </p>
+            <p className="mt-6 text-lg leading-relaxed text-text-primary/80">
+              {venture.description}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {venture.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-text-muted"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <Link
+              href="/ventures"
+              className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-accent transition-opacity hover:opacity-70"
+            >
+              VIEW VENTURE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
+            </Link>
+          </div>
+
+          {/* Right: Image Placeholder with parallax */}
+          <div className={`${index % 2 === 1 ? "md:order-1" : ""}`}>
+            <HeroCursorTilt>
+              <motion.div
+                style={{ y: imageY }}
+                whileHover={{ scale: 1.03 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bg-primary backdrop-blur-sm border border-white/[0.06] transition-shadow duration-300 hover:shadow-[0_20px_80px_rgba(229,184,32,0.08)]"
+              >
+                <div
+                  className="flex h-full items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${venture.color}08 0%, transparent 50%, ${venture.color}05 100%)`,
+                  }}
+                >
+                  <span
+                    className="font-[family-name:var(--font-playfair)] text-6xl font-bold opacity-10"
+                    style={{ color: venture.color }}
+                  >
+                    {venture.num}
+                  </span>
+                </div>
+              </motion.div>
+            </HeroCursorTilt>
+          </div>
+        </div>
+      </ScrollReveal>
+    </div>
+  );
+}
+
+/* ─── ARCHIVE DRAG SCROLL ─── */
+function ArchiveDragScroll({ children }: { children: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+  const x = useMotionValue(0);
+
+  useEffect(() => {
+    const updateConstraints = () => {
+      if (containerRef.current) {
+        const scrollWidth = containerRef.current.scrollWidth;
+        const clientWidth = containerRef.current.clientWidth;
+        setConstraints({
+          left: -(scrollWidth - clientWidth),
+          right: 0,
+        });
+      }
+    };
+    updateConstraints();
+    window.addEventListener("resize", updateConstraints);
+    return () => window.removeEventListener("resize", updateConstraints);
+  }, []);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      className="flex gap-4 pb-4 cursor-grab active:cursor-grabbing"
+      drag="x"
+      style={{ x }}
+      dragConstraints={constraints}
+      dragElastic={0.1}
+      dragTransition={{ bounceStiffness: 300, bounceDamping: 30 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ─── SECTION GRADIENT DIVIDER ─── */
+function SectionDivider() {
+  return (
+    <div className="relative h-px w-full overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      <div
+        className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent"
+        style={{ animation: "goldLineSweep 3s ease-in-out infinite" }}
+      />
+    </div>
+  );
+}
+
 export default function Home() {
   const heroRef = useRef(null);
   const venturesSectionRef = useRef<HTMLElement>(null);
   const [venturesVisible, setVenturesVisible] = useState(false);
   const [activeVenture, setActiveVenture] = useState("01");
 
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress: heroScrollProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  const heroOpacity = useTransform(heroScrollProgress, [0, 1], [1, 0]);
+  const heroScale = useTransform(heroScrollProgress, [0, 1], [1, 0.95]);
+
+  // Flanking text parallax
+  const leftTextY = useTransform(heroScrollProgress, [0, 1], [0, -80]);
+  const rightTextY = useTransform(heroScrollProgress, [0, 1], [0, 80]);
+
+  // Name reveal scroll-linked scale
+  const nameRef = useRef(null);
+  const { scrollYProgress: nameScrollProgress } = useScroll({
+    target: nameRef,
+    offset: ["start end", "end start"],
+  });
+  const nameScale = useTransform(nameScrollProgress, [0, 0.5, 1], [0.92, 1.05, 0.95]);
 
   // Track ventures section visibility
   useEffect(() => {
@@ -147,21 +306,41 @@ export default function Home() {
         style={{ opacity: heroOpacity, scale: heroScale }}
         className="relative flex h-screen flex-col items-center justify-center overflow-hidden bg-bg-primary"
       >
-        {/* Flanking Text — Left */}
+        {/* Atmospheric Orbs */}
+        <GradientOrb
+          color="229,184,32"
+          size={500}
+          blur={140}
+          opacity={0.1}
+          position={{ top: "10%", right: "-5%" }}
+          duration={22}
+        />
+        <GradientOrb
+          color="100,50,180"
+          size={400}
+          blur={120}
+          opacity={0.08}
+          position={{ bottom: "10%", left: "-5%" }}
+          duration={18}
+        />
+
+        {/* Flanking Text — Left (parallax) */}
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
+          style={{ y: leftTextY }}
           className="absolute left-6 top-1/2 hidden -translate-y-1/2 -rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block"
         >
           A COLLECTION OF VENTURES &amp; VISIONS
         </motion.span>
 
-        {/* Flanking Text — Right */}
+        {/* Flanking Text — Right (parallax) */}
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
+          style={{ y: rightTextY }}
           className="absolute right-6 top-1/2 hidden -translate-y-1/2 rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block"
         >
           MICHAEL CHEN 2026
@@ -173,6 +352,7 @@ export default function Home() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
           className="relative"
+          style={{ animation: "breathe 4s ease-in-out infinite" }}
         >
           <HeroCursorTilt>
             {/* Radial glow halo */}
@@ -221,21 +401,21 @@ export default function Home() {
         </motion.div>
       </motion.section>
 
+      {/* ── Gradient Divider: Hero → Name Reveal ── */}
+      <div className="h-24 bg-gradient-to-b from-bg-primary to-accent md:h-32" />
+
       {/* ════════════════════════════════════════════
           SECTION 2: NAME REVEAL
       ════════════════════════════════════════════ */}
-      <section className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-accent px-6 py-16 md:min-h-screen md:py-24">
-        <motion.div
-          initial={{ scale: 0.85, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          <h1 className="text-center font-[family-name:var(--font-playfair)] text-[18vw] font-bold leading-[0.85] text-bg-primary md:text-[22vw]">
-            MIKE
-            <br />
-            CHEN
-          </h1>
+      <section ref={nameRef} className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-accent px-6 py-16 md:min-h-screen md:py-24">
+        <motion.div style={{ scale: nameScale }}>
+          <TextReveal
+            text="MIKE CHEN"
+            as="h1"
+            splitBy="char"
+            className="text-center font-[family-name:var(--font-playfair)] text-[18vw] font-bold leading-[0.85] text-bg-primary md:text-[22vw]"
+            scrollOffset={["start 0.9", "start 0.2"]}
+          />
         </motion.div>
 
         {/* Numbered Disciplines */}
@@ -276,69 +456,78 @@ export default function Home() {
         </ScrollReveal>
       </section>
 
+      {/* ── Gradient Divider: Name Reveal → About ── */}
+      <div className="h-24 bg-gradient-to-b from-accent to-bg-primary md:h-32" />
+
       {/* ════════════════════════════════════════════
           SECTION 3: ABOUT CARD
       ════════════════════════════════════════════ */}
       <section className="relative flex items-center justify-center bg-bg-primary px-6 py-20 md:py-32">
-        <motion.div
-          initial={{ scale: 0.92, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          viewport={{ once: true, margin: "-50px" }}
-        >
-          <div className="mx-auto w-full max-w-3xl rounded-2xl bg-accent px-[clamp(2.5rem,8vw,7rem)] py-[clamp(2.5rem,6vw,5rem)] text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)]">
-            {/* Name + Rotating Role */}
-            <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
-              Mike Chen
-            </p>
-            <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
-              does
-            </p>
-            <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
-              <RotatingText
-                words={[
-                  "entrepreneur",
-                  "builder",
-                  "coder",
-                  "designer",
-                  "foodie",
-                ]}
-                interval={2200}
-              />
-            </div>
-
-            {/* Bio */}
-            <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
-              I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
-              businesses, brands, code, and whatever else I can get my hands on.
-              Founder of Istry. Keeping SuperPlus alive as a family legacy.
-              Actively building Kemi. I design, I ship, and I eat everything.
-              Based in Kingston.
-            </p>
-
-            {/* Location */}
-            <div className="mt-10 border-t border-bg-primary/20 pt-6">
-              <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
-                CURRENTLY BASED IN
-              </span>
-              <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
-                Kingston, Jamaica
+        <GlowBorder glowColor="rgba(229,184,32,0.35)" hoverOnly={true} borderRadius={16}>
+          <motion.div
+            initial={{ scale: 0.92, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-50px" }}
+          >
+            <div className="mx-auto w-full max-w-3xl rounded-2xl bg-accent px-[clamp(2.5rem,8vw,7rem)] py-[clamp(2.5rem,6vw,5rem)] text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] backdrop-blur-sm">
+              {/* Name + Rotating Role */}
+              <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
+                Mike Chen
               </p>
-              <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
-                18.0179&deg; N, 76.8099&deg; W
+              <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
+                does
               </p>
-            </div>
+              <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
+                <RotatingText
+                  words={[
+                    "entrepreneur",
+                    "builder",
+                    "coder",
+                    "designer",
+                    "foodie",
+                  ]}
+                  interval={2200}
+                />
+              </div>
 
-            {/* Read More */}
-            <Link
-              href="/about"
-              className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
-            >
-              READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-            </Link>
-          </div>
-        </motion.div>
+              {/* Bio */}
+              <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
+                I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
+                businesses, brands, code, and whatever else I can get my hands on.
+                Founder of Istry. Keeping SuperPlus alive as a family legacy.
+                Actively building Kemi. I design, I ship, and I eat everything.
+                Based in Kingston.
+              </p>
+
+              {/* Location */}
+              <div className="mt-10 border-t border-bg-primary/20 pt-6">
+                <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
+                  CURRENTLY BASED IN
+                </span>
+                <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
+                  Kingston, Jamaica
+                </p>
+                <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
+                  18.0179&deg; N, 76.8099&deg; W
+                </p>
+              </div>
+
+              {/* Read More */}
+              <Link
+                href="/about"
+                className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
+              >
+                READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
+              </Link>
+            </div>
+          </motion.div>
+        </GlowBorder>
       </section>
+
+      {/* ── Section Divider ── */}
+      <SectionDivider />
 
       {/* ════════════════════════════════════════════
           SECTION 4: FEATURED VENTURES
@@ -374,7 +563,17 @@ export default function Home() {
         </div>
       </div>
 
-      <section ref={venturesSectionRef} className="bg-bg-secondary px-6 py-16 md:px-12 md:py-32">
+      <section ref={venturesSectionRef} className="relative bg-bg-secondary px-6 py-16 md:px-12 md:py-32">
+        {/* Teal atmospheric orb */}
+        <GradientOrb
+          color="0,180,170"
+          size={450}
+          blur={130}
+          opacity={0.06}
+          position={{ top: "30%", right: "5%" }}
+          duration={24}
+        />
+
         <div className="mx-auto max-w-7xl">
           {/* Section Header */}
           <ScrollReveal>
@@ -396,74 +595,14 @@ export default function Home() {
           {/* Ventures List */}
           <div>
             {ventures.map((venture, i) => (
-              <div key={venture.num} id={`venture-${venture.num}`} className="scroll-mt-20">
-                {i > 0 && (
-                  <div className="border-t border-dashed border-white/10 my-10 md:my-16" />
-                )}
-              <ScrollReveal delay={0.1}>
-                <div className="grid gap-8 md:grid-cols-2 md:gap-16">
-                  {/* Left: Info */}
-                  <div className={`flex flex-col justify-center ${i % 2 === 1 ? "md:order-2" : ""}`}>
-                    <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
-                      FEATURED VENTURE {venture.num}
-                    </span>
-                    <h3
-                      className="mt-4 font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-5xl"
-                      style={{ color: venture.color }}
-                    >
-                      {venture.name}
-                    </h3>
-                    <p className="mt-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted">
-                      {venture.meta}
-                    </p>
-                    <p className="mt-6 text-lg leading-relaxed text-text-primary/80">
-                      {venture.description}
-                    </p>
-                    <div className="mt-6 flex flex-wrap gap-3">
-                      {venture.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-text-muted"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <Link
-                      href="/ventures"
-                      className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-accent transition-opacity hover:opacity-70"
-                    >
-                      VIEW VENTURE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-                    </Link>
-                  </div>
-
-                  {/* Right: Image Placeholder */}
-                  <div className={`${i % 2 === 1 ? "md:order-1" : ""}`}>
-                    <HeroCursorTilt>
-                      <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bg-primary transition-shadow duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-                        <div
-                          className="flex h-full items-center justify-center"
-                          style={{
-                            background: `linear-gradient(135deg, ${venture.color}08 0%, transparent 50%, ${venture.color}05 100%)`,
-                          }}
-                        >
-                          <span
-                            className="font-[family-name:var(--font-playfair)] text-6xl font-bold opacity-10"
-                            style={{ color: venture.color }}
-                          >
-                            {venture.num}
-                          </span>
-                        </div>
-                      </div>
-                    </HeroCursorTilt>
-                  </div>
-                </div>
-              </ScrollReveal>
-              </div>
+              <VentureCard key={venture.num} venture={venture} index={i} />
             ))}
           </div>
         </div>
       </section>
+
+      {/* ── Section Divider ── */}
+      <SectionDivider />
 
       {/* ════════════════════════════════════════════
           SECTION 5: LATEST FROM THE JOURNAL
@@ -487,7 +626,10 @@ export default function Home() {
           <div className="space-y-0 divide-y divide-white/5">
             {journalPosts.map((post, i) => (
               <ScrollReveal key={post.num} delay={i * 0.1}>
-                <Link href={`/journal/${post.slug}`} className="group block py-8 transition-colors hover:bg-[#141414]">
+                <Link
+                  href={`/journal/${post.slug}`}
+                  className="group block border-l-2 border-transparent py-8 pl-4 transition-all hover:border-accent hover:bg-gradient-to-r hover:from-white/[0.02] hover:to-transparent"
+                >
                   <div className="flex items-start gap-6">
                     <span className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40">
                       {post.num}
@@ -505,9 +647,13 @@ export default function Home() {
                         </span>
                       </div>
                     </div>
-                    <span className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/30 transition-all group-hover:translate-x-2 group-hover:text-accent">
+                    <motion.span
+                      className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/30 transition-colors group-hover:text-accent"
+                      whileHover={{ x: [0, 4, 0] }}
+                      transition={{ repeat: Infinity, duration: 1 }}
+                    >
                       &rarr;
-                    </span>
+                    </motion.span>
                   </div>
                 </Link>
               </ScrollReveal>
@@ -515,6 +661,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Section Divider ── */}
+      <SectionDivider />
 
       {/* ════════════════════════════════════════════
           SECTION 6: ARCHIVE / GALLERY PREVIEW
@@ -535,12 +684,23 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          {/* Horizontal Scroll */}
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4">
+          {/* Drag Scroll */}
+          <ArchiveDragScroll>
             {galleryItems.map((item, i) => (
-              <ScrollReveal key={item.num} delay={i * 0.05} className="shrink-0 snap-start">
+              <motion.div
+                key={item.num}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                viewport={{ once: true }}
+                className="shrink-0"
+              >
                 <Link href="/gallery" className="group relative block">
-                  <div className="aspect-square min-w-[200px] md:min-w-[240px] overflow-hidden rounded-lg bg-bg-primary transition-all duration-300 group-hover:ring-2 group-hover:ring-accent/50 group-hover:scale-105">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="aspect-square min-w-[200px] md:min-w-[240px] overflow-hidden rounded-lg bg-bg-primary transition-all duration-300 group-hover:ring-2 group-hover:ring-accent/50 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.1)]"
+                  >
                     <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
                       <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
                         {item.num}
@@ -549,11 +709,11 @@ export default function Home() {
                         {item.category}
                       </span>
                     </div>
-                  </div>
+                  </motion.div>
                 </Link>
-              </ScrollReveal>
+              </motion.div>
             ))}
-          </div>
+          </ArchiveDragScroll>
         </div>
       </section>
 

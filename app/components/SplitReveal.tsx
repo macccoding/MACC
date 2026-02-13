@@ -10,6 +10,13 @@ interface SplitRevealProps {
   as?: "h1" | "h2" | "h3" | "p" | "span";
 }
 
+// Golden ratio stagger for organic feel
+const PHI = 1.618033988749;
+
+function goldenStagger(index: number, base: number): number {
+  return base * (1 - 1 / (1 + index / PHI));
+}
+
 export default function SplitReveal({
   text,
   className = "",
@@ -29,7 +36,7 @@ export default function SplitReveal({
             whileInView={{ y: 0, opacity: 1 }}
             transition={{
               duration: 0.5,
-              delay: delay + i * stagger,
+              delay: delay + goldenStagger(i, stagger * words.length),
               ease: [0.33, 1, 0.68, 1],
             }}
             viewport={{ once: true, margin: "-50px" }}

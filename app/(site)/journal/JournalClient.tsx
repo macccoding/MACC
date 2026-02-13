@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ScrollReveal from "../../components/ScrollReveal";
+import GlowBorder from "../../components/GlowBorder";
 
 /* ─── CATEGORIES ─── */
 const categories = [
@@ -169,8 +170,9 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
               </ScrollReveal>
 
               <ScrollReveal delay={0.1}>
+                <GlowBorder glowColor="rgba(229,184,32,0.3)" hoverOnly={true} borderRadius={16}>
                 <Link href={`/journal/${featuredPost.slug}`} className="group mt-8 block">
-                  <div className="mt-8 grid gap-8 rounded-2xl border border-white/5 bg-bg-secondary p-8 transition-all duration-500 group-hover:border-accent/20 group-hover:bg-bg-secondary/80 md:grid-cols-2 md:gap-16 md:p-14">
+                  <div className="mt-8 grid gap-8 rounded-2xl border border-white/5 bg-bg-secondary p-8 backdrop-blur-sm transition-all duration-500 group-hover:border-accent/20 group-hover:bg-bg-secondary/80 md:grid-cols-2 md:gap-16 md:p-14">
                     {/* Left: Image placeholder */}
                     <div className="aspect-[16/10] overflow-hidden rounded-lg bg-bg-primary">
                       <div className="flex h-full items-center justify-center">
@@ -219,6 +221,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
                     </div>
                   </div>
                 </Link>
+                </GlowBorder>
               </ScrollReveal>
             </div>
           </motion.section>
@@ -251,7 +254,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
               {remainingPosts.length > 0 ? (
                 remainingPosts.map((post, i) => (
                   <ScrollReveal key={post.num} delay={i * 0.1}>
-                    <Link href={`/journal/${post.slug}`} className="group block py-12 transition-colors first:pt-0 hover:bg-[#141414]">
+                    <Link href={`/journal/${post.slug}`} className="group block border-l-2 border-transparent py-12 pl-4 transition-all first:pt-0 hover:border-accent hover:bg-gradient-to-r hover:from-white/[0.02] hover:to-transparent">
                       <div className="grid items-start gap-6 md:grid-cols-12 md:gap-8">
                         {/* Number */}
                         <div className="md:col-span-1">
