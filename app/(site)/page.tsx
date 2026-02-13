@@ -467,7 +467,7 @@ export default function Home() {
           viewport={{ once: true, margin: "-50px" }}
           className="mx-auto w-full max-w-3xl"
         >
-          <div className="rounded-2xl bg-accent px-10 py-12 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] transition-shadow duration-500 hover:shadow-[0_0_120px_rgba(229,184,32,0.25)] md:px-16 md:py-16">
+          <div className="rounded-2xl bg-accent px-8 py-12 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] transition-shadow duration-500 hover:shadow-[0_0_120px_rgba(229,184,32,0.25)] sm:px-12 md:px-20 md:py-16 lg:px-24">
             {/* Name + Rotating Role */}
             <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
               Mike Chen
