@@ -21,7 +21,7 @@ function Word({
   progress: ReturnType<typeof useScroll>["scrollYProgress"];
   range: [number, number];
 }) {
-  const opacity = useTransform(progress, range, [0.15, 1]);
+  const opacity = useTransform(progress, range, [0.25, 1]);
   const y = useTransform(progress, range, [8, 0]);
 
   return (
@@ -43,7 +43,7 @@ function Char({
   progress: ReturnType<typeof useScroll>["scrollYProgress"];
   range: [number, number];
 }) {
-  const opacity = useTransform(progress, range, [0.15, 1]);
+  const opacity = useTransform(progress, range, [0.25, 1]);
   const y = useTransform(progress, range, [6, 0]);
 
   return (

@@ -213,7 +213,7 @@ export default function GalleryPage() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
-          <p className="mt-8 max-w-md text-center font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-[0.15em] text-text-muted">
+          <p className="mt-12 max-w-md text-center font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-[0.15em] text-text-muted md:mt-14">
             Food, travel, gadgets, aerials, people. A curated collection
             shot through my lens across Jamaica and beyond.
           </p>

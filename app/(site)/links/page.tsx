@@ -20,24 +20,9 @@ export default function LinksPage() {
   return (
     <div className="flex min-h-screen flex-col bg-bg-primary">
       {/* ════════════════════════════════════════════
-          MINIMAL HEADER — LOGO ONLY
-      ════════════════════════════════════════════ */}
-      <header className="flex items-center justify-center px-6 pt-10">
-        <Link href="/">
-          <Image
-            src="/images/macc-logo.png"
-            alt="MACC"
-            width={40}
-            height={40}
-            className="brightness-0 invert"
-          />
-        </Link>
-      </header>
-
-      {/* ════════════════════════════════════════════
           MAIN CONTENT
       ════════════════════════════════════════════ */}
-      <main className="relative flex flex-1 flex-col items-center px-6 pb-16 pt-10">
+      <main className="relative flex flex-1 flex-col items-center px-6 pb-16 pt-12">
         {/* Subtle rotating background gradient */}
         <motion.div
           className="pointer-events-none absolute inset-0 opacity-[0.03]"
@@ -57,15 +42,15 @@ export default function LinksPage() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="mb-10 flex flex-col items-center text-center"
           >
-            <div className="relative mb-5">
+            <Link href="/" className="relative mb-5 block transition-transform hover:scale-105">
               <Image
                 src="/images/macc-logo.png"
-                alt="MACC Logo"
+                alt="MACC Logo — Return to Home"
                 width={80}
                 height={80}
                 className="drop-shadow-[0_0_30px_rgba(229,184,32,0.2)]"
               />
-            </div>
+            </Link>
             <h1 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-text-primary">
               MIKE CHEN
             </h1>

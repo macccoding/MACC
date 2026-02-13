@@ -464,7 +464,7 @@ export default function Home() {
               viewport={{ once: true, margin: "-50px" }}
               className="mx-auto w-full max-w-3xl"
             >
-              <div className="rounded-2xl bg-accent px-8 py-12 text-bg-primary sm:px-12 md:px-20 md:py-16 lg:px-24">
+              <div className="rounded-2xl bg-accent px-8 py-12 text-center text-bg-primary sm:px-12 md:px-20 md:py-16 lg:px-24">
                 {/* Name + Rotating Role */}
                 <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
                   Mike Chen
@@ -480,7 +480,7 @@ export default function Home() {
                 </div>
 
                 {/* Bio */}
-                <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
+                <p className="mx-auto mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
                   I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
                   businesses, brands, code, and whatever else I can get my hands on.
                   Founder of Istry. Keeping SuperPlus alive as a family legacy.

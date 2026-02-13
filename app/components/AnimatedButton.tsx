@@ -22,7 +22,7 @@ export default function AnimatedButton({
   type = "button",
   external = false,
 }: AnimatedButtonProps) {
-  const baseClasses = `group relative inline-flex items-center justify-center overflow-hidden rounded-full px-8 py-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-all min-h-[48px] ${className}`;
+  const baseClasses = `group relative inline-flex items-center justify-center overflow-hidden rounded-full px-10 py-4 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-all min-h-[48px] ${className}`;
 
   const variantClasses =
     variant === "primary"

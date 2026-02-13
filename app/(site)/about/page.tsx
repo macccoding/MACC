@@ -138,7 +138,7 @@ export default function AboutPage() {
           <TextReveal
             text="Two Cultures, One Builder."
             as="h2"
-            className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight"
+            className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight text-text-primary"
             style={{ fontSize: "var(--text-heading)" }}
           />
 

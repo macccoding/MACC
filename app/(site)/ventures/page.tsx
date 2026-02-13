@@ -145,7 +145,7 @@ export default function VenturesPage() {
           </ImageReveal>
 
           {/* ── VENTURE CONTENT ── */}
-          <div className="relative px-6 pb-16 pt-8 md:pb-32 md:px-12 lg:px-24">
+          <div className="relative px-6 pb-20 pt-12 md:pb-40 md:pt-16 md:px-12 lg:px-24">
             <div className="mx-auto max-w-7xl">
               {/* Number + Name */}
               <div className="mb-16 md:mb-24">
@@ -335,7 +335,7 @@ export default function VenturesPage() {
 
               {/* ── Venture divider ── */}
               {ventureIndex < ventures.length - 1 && (
-                <BlobDivider color={venture.accent} className="mt-16 md:mt-32" />
+                <BlobDivider color={venture.accent} className="mt-20 md:mt-40" />
               )}
             </div>
           </div>

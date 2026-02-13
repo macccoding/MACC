@@ -109,9 +109,15 @@ export default function ContactPage() {
                 SEND A MESSAGE
               </span>
 
-              <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Name - Floating Label */}
-                <div className="relative">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Name */}
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="mb-2 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
+                  >
+                    YOUR NAME
+                  </label>
                   <input
                     id="name"
                     name="name"
@@ -119,19 +125,19 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder=" "
-                    className="peer w-full rounded-lg border border-white/10 bg-bg-secondary px-5 pt-7 pb-3 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
+                    placeholder="Enter your name"
+                    className="w-full rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 text-[16px] text-text-primary placeholder:text-text-muted/30 transition-colors focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(229,184,32,0.1)]"
                   />
-                  <label
-                    htmlFor="name"
-                    className="pointer-events-none absolute left-5 top-5 origin-left font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-all peer-focus:top-2 peer-focus:scale-90 peer-focus:text-accent peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-90"
-                  >
-                    YOUR NAME
-                  </label>
                 </div>
 
-                {/* Email - Floating Label */}
-                <div className="relative">
+                {/* Email */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
+                  >
+                    EMAIL ADDRESS
+                  </label>
                   <input
                     id="email"
                     name="email"
@@ -139,22 +145,16 @@ export default function ContactPage() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder=" "
-                    className="peer w-full rounded-lg border border-white/10 bg-bg-secondary px-5 pt-7 pb-3 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
+                    placeholder="you@example.com"
+                    className="w-full rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 text-[16px] text-text-primary placeholder:text-text-muted/30 transition-colors focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(229,184,32,0.1)]"
                   />
-                  <label
-                    htmlFor="email"
-                    className="pointer-events-none absolute left-5 top-5 origin-left font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-all peer-focus:top-2 peer-focus:scale-90 peer-focus:text-accent peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-90"
-                  >
-                    EMAIL ADDRESS
-                  </label>
                 </div>
 
-                {/* Subject - Custom Select */}
-                <div className="relative">
+                {/* Subject */}
+                <div>
                   <label
                     htmlFor="subject"
-                    className="mb-3 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
+                    className="mb-2 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
                   >
                     SUBJECT
                   </label>
@@ -165,7 +165,7 @@ export default function ContactPage() {
                       required
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full appearance-none rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 pr-12 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
+                      className="w-full appearance-none rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 pr-12 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(229,184,32,0.1)]"
                     >
                       <option value="" disabled>
                         Select a subject...
@@ -176,7 +176,6 @@ export default function ContactPage() {
                         </option>
                       ))}
                     </select>
-                    {/* Custom chevron */}
                     <svg
                       className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-muted"
                       width="16"
@@ -189,8 +188,14 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Message - Floating Label */}
-                <div className="relative">
+                {/* Message */}
+                <div>
+                  <label
+                    htmlFor="message"
+                    className="mb-2 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
+                  >
+                    MESSAGE
+                  </label>
                   <textarea
                     id="message"
                     name="message"
@@ -198,15 +203,9 @@ export default function ContactPage() {
                     rows={6}
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder=" "
-                    className="peer w-full resize-none rounded-lg border border-white/10 bg-bg-secondary px-5 pt-7 pb-3 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
+                    placeholder="What's on your mind?"
+                    className="w-full resize-none rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 text-[16px] text-text-primary placeholder:text-text-muted/30 transition-colors focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(229,184,32,0.1)]"
                   />
-                  <label
-                    htmlFor="message"
-                    className="pointer-events-none absolute left-5 top-5 origin-left font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-all peer-focus:top-2 peer-focus:scale-90 peer-focus:text-accent peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-90"
-                  >
-                    MESSAGE
-                  </label>
                 </div>
 
                 {/* Submit */}
