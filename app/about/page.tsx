@@ -62,8 +62,8 @@ export default function AboutPage() {
               <span className="font-[family-name:var(--font-playfair)] text-8xl font-bold text-white/5">
                 MC
               </span>
-              <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/40">
-                LIFESTYLE PORTRAIT
+              <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/50">
+                LIFESTYLE PORTRAIT COMING SOON
               </span>
             </div>
           </div>

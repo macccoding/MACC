@@ -251,7 +251,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
               {remainingPosts.length > 0 ? (
                 remainingPosts.map((post, i) => (
                   <ScrollReveal key={post.num} delay={i * 0.1}>
-                    <Link href={`/journal/${post.slug}`} className="group block py-12 transition-colors first:pt-0">
+                    <Link href={`/journal/${post.slug}`} className="group block py-12 transition-colors first:pt-0 hover:bg-[#141414]">
                       <div className="grid items-start gap-6 md:grid-cols-12 md:gap-8">
                         {/* Number */}
                         <div className="md:col-span-1">

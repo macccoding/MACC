@@ -400,7 +400,7 @@ export default function GalleryPage() {
                   >
                     {/* Placeholder Image Area */}
                     <div
-                      className={`${item.aspect} ${item.bg} relative flex w-full items-center justify-center overflow-hidden border border-white/[0.04] transition-all group-hover:border-accent/30`}
+                      className={`${item.aspect} ${item.bg} relative flex w-full items-center justify-center overflow-hidden border border-white/[0.04] transition-all duration-300 group-hover:border-accent/30 group-hover:scale-105`}
                     >
                       {/* Large Ghost Number */}
                       <span className="font-[family-name:var(--font-playfair)] text-[8rem] font-bold leading-none text-white/[0.03] transition-all group-hover:text-accent/[0.08]">

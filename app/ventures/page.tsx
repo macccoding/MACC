@@ -16,7 +16,7 @@ const ventures = [
     year: "2023",
     tagline: "Bespoke food & beverage. Whitelabeling. Events.",
     tags: ["FOOD & BEVERAGE", "WHITELABELING", "EVENTS", "CATERING"],
-    accent: "#D4A843",
+    accent: "#E5B820",
     description: [
       "Istry is a bespoke food and beverage company born from the belief that Jamaica deserves world-class culinary experiences wrapped in homegrown identity. We create whitelabel products, cater events, and develop original brands that sit at the intersection of Caribbean flavor and global ambition.",
       "Every product we develop, every event we cater, carries the same philosophy: quality without compromise, flavor without apology.",
@@ -73,7 +73,7 @@ const ventures = [
     year: "2025",
     tagline: "AI product. Actively building.",
     tags: ["AI", "PRODUCT", "CODE", "DESIGN"],
-    accent: "#D4A843",
+    accent: "#E5B820",
     description: [
       "Kemi is an AI product I\u2019m actively building \u2014 from concept to code to design to ship. It\u2019s born from running multiple businesses and realizing the tools I needed didn\u2019t exist, so I\u2019m making them.",
       "Built with Next.js, designed in Figma, and shipping from Kingston. This is the intersection of everything I care about: technology, design, and solving real problems.",
@@ -226,7 +226,7 @@ export default function VenturesPage() {
                   {venture.num}
                 </span>
                 <span className="absolute font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted/40">
-                  HERO IMAGE PLACEHOLDER
+                  HERO PHOTO COMING SOON
                 </span>
               </div>
               {/* Bottom gradient fade */}
@@ -334,11 +334,11 @@ export default function VenturesPage() {
                   <ScrollReveal delay={0.4}>
                     <a
                       href={venture.link}
-                      className="mt-10 inline-flex items-center gap-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-colors hover:opacity-70"
+                      className="group mt-10 inline-flex items-center gap-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-colors hover:opacity-70"
                       style={{ color: venture.accent }}
                     >
                       {venture.linkLabel}
-                      <span>&rarr;</span>
+                      <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
                     </a>
                   </ScrollReveal>
                 </div>
@@ -397,8 +397,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[0].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -419,8 +419,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[1].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -443,8 +443,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[2].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -465,8 +465,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[3].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -487,8 +487,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[4].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -513,8 +513,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[0].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -535,8 +535,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[1].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -559,8 +559,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[2].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -581,8 +581,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[3].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -607,8 +607,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[0].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -629,8 +629,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[1].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -651,8 +651,8 @@ export default function VenturesPage() {
                             >
                               {venture.images[2].label}
                             </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/30">
-                              IMAGE PLACEHOLDER
+                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                              PHOTO COMING SOON
                             </p>
                           </div>
                         </div>
@@ -666,11 +666,11 @@ export default function VenturesPage() {
               {ventureIndex < ventures.length - 1 && (
                 <ScrollReveal>
                   <div className="mt-32 flex items-center gap-6">
-                    <div className="h-px flex-1 bg-white/5" />
+                    <div className="h-px flex-1 border-t border-dashed border-white/10" />
                     <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted/30">
                       NEXT VENTURE
                     </span>
-                    <div className="h-px flex-1 bg-white/5" />
+                    <div className="h-px flex-1 border-t border-dashed border-white/10" />
                   </div>
                 </ScrollReveal>
               )}
@@ -704,9 +704,9 @@ export default function VenturesPage() {
             </Link>
             <Link
               href="/about"
-              className="inline-block font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
+              className="group inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
             >
-              ABOUT MICHAEL &rarr;
+              ABOUT MICHAEL <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
             </Link>
           </div>
         </ScrollReveal>
