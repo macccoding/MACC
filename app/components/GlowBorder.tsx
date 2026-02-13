@@ -28,6 +28,8 @@ export default function GlowBorder({
       className={`relative ${className}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onTouchStart={() => setHovered(true)}
+      onTouchEnd={() => setHovered(false)}
       style={{ borderRadius }}
     >
       {/* Rotating conic gradient border */}

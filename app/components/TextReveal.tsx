@@ -9,6 +9,7 @@ interface TextRevealProps {
   splitBy?: "char" | "word";
   scrollOffset?: [string, string];
   className?: string;
+  style?: React.CSSProperties;
 }
 
 function Word({
@@ -58,6 +59,7 @@ export default function TextReveal({
   splitBy = "word",
   scrollOffset = ["start 0.9", "start 0.25"],
   className = "",
+  style,
 }: TextRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -68,7 +70,7 @@ export default function TextReveal({
   if (splitBy === "word") {
     const words = text.split(" ");
     return (
-      <Tag ref={ref as React.Ref<HTMLHeadingElement>} className={className}>
+      <Tag ref={ref as React.Ref<HTMLHeadingElement>} className={className} style={style}>
         {words.map((word, i) => {
           const start = i / words.length;
           const end = start + 1 / words.length;
@@ -84,7 +86,7 @@ export default function TextReveal({
 
   const chars = text.split("");
   return (
-    <Tag ref={ref as React.Ref<HTMLHeadingElement>} className={className}>
+    <Tag ref={ref as React.Ref<HTMLHeadingElement>} className={className} style={style}>
       {chars.map((char, i) => {
         const start = i / chars.length;
         const end = start + 1 / chars.length;

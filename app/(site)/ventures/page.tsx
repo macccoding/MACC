@@ -3,125 +3,17 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ScrollReveal from "../../components/ScrollReveal";
-import ImageReveal from "../../components/ImageReveal";
-import MagneticButton from "../../components/MagneticButton";
-
-/* ─── VENTURE DATA ─── */
-const ventures = [
-  {
-    num: "01",
-    name: "Istry",
-    role: "Founder",
-    year: "2023",
-    tagline: "Bespoke food & beverage. Whitelabeling. Events.",
-    tags: ["FOOD & BEVERAGE", "WHITELABELING", "EVENTS", "CATERING"],
-    accent: "#E5B820",
-    description: [
-      "Istry is a bespoke food and beverage company born from the belief that Jamaica deserves world-class culinary experiences wrapped in homegrown identity. We create whitelabel products, cater events, and develop original brands that sit at the intersection of Caribbean flavor and global ambition.",
-      "Every product we develop, every event we cater, carries the same philosophy: quality without compromise, flavor without apology.",
-      "What started as a side project has grown into a full-service operation with a growing client roster and a pipeline of products hitting shelves across Jamaica. We are just getting started.",
-    ],
-    stats: [
-      { value: "2023", label: "YEAR FOUNDED" },
-      { value: "JA", label: "BORN & BASED" },
-      { value: "F&B", label: "INDUSTRY" },
-      { value: "MINE", label: "BUILT FROM SCRATCH" },
-    ],
-    images: [
-      { aspect: "aspect-[4/5]", label: "KITCHEN" },
-      { aspect: "aspect-[3/2]", label: "EVENT SETUP" },
-      { aspect: "aspect-[1/1]", label: "PRODUCT LINE" },
-      { aspect: "aspect-[3/4]", label: "CATERING" },
-      { aspect: "aspect-[16/9]", label: "TEAM" },
-    ],
-    link: "#",
-    linkLabel: "VISIT ISTRY",
-  },
-  {
-    num: "02",
-    name: "SuperPlus",
-    role: "Legacy",
-    year: "EST.",
-    tagline: "Family supermarket. Built by my grandmother. Kept alive by us.",
-    tags: ["RETAIL", "COMMUNITY", "GROCERY", "FAMILY LEGACY"],
-    accent: "#C41E3A",
-    description: [
-      "SuperPlus was built from the ground up by my grandmother, Hyacinth Gloria Chen. It was then carried forward by my uncles, my father, and my aunt. Today I\u2019m at the heart of a couple of the stores day-to-day \u2014 operating, advising, and keeping the family legacy alive.",
-      "Running a community store in Jamaica is an education in patience, relationships, and resilience. Every shelf stocked, every credit extended to a neighbor who promises to pay Friday \u2014 it all adds up to something bigger than commerce. It is trust, built daily.",
-      "This is where I learned everything. Retail, margins, community, and how to talk to anyone. SuperPlus isn\u2019t just a business \u2014 it\u2019s where I come from.",
-    ],
-    stats: [
-      { value: "3", label: "GENERATIONS DEEP" },
-      { value: "DAILY", label: "I\u2019M THERE" },
-      { value: "ROOTS", label: "WHERE I STARTED" },
-      { value: "LEGACY", label: "WHAT IT MEANS" },
-    ],
-    images: [
-      { aspect: "aspect-[16/9]", label: "STOREFRONT" },
-      { aspect: "aspect-[1/1]", label: "AISLES" },
-      { aspect: "aspect-[4/5]", label: "THE COUNTER" },
-      { aspect: "aspect-[3/2]", label: "COMMUNITY" },
-    ],
-    link: "#",
-    linkLabel: "THE LEGACY",
-  },
-  {
-    num: "03",
-    name: "Kemi",
-    role: "Founder",
-    year: "2025",
-    tagline: "AI product. Actively building.",
-    tags: ["AI", "PRODUCT", "CODE", "DESIGN"],
-    accent: "#E5B820",
-    description: [
-      "Kemi is an AI product I\u2019m actively building \u2014 from concept to code to design to ship. It\u2019s born from running multiple businesses and realizing the tools I needed didn\u2019t exist, so I\u2019m making them.",
-      "Built with Next.js, designed in Figma, and shipping from Mandeville. This is the intersection of everything I care about: technology, design, and solving real problems.",
-      "Currently in active development. More to come.",
-    ],
-    stats: [
-      { value: "AI", label: "POWERED" },
-      { value: "1", label: "BUILDER" },
-      { value: "2025", label: "IN PROGRESS" },
-      { value: "\u221E", label: "ITERATIONS" },
-    ],
-    images: [
-      { aspect: "aspect-[3/2]", label: "UI CONCEPT" },
-      { aspect: "aspect-[1/1]", label: "LOGO MARK" },
-      { aspect: "aspect-[4/5]", label: "INTERFACE" },
-    ],
-    link: "#",
-    linkLabel: "STAY TUNED",
-  },
-  {
-    num: "04",
-    name: "Caricom Freight",
-    role: "Family",
-    year: "EST.",
-    tagline: "Family freight & logistics. Keeping goods moving across the Caribbean.",
-    tags: ["FREIGHT", "LOGISTICS", "SHIPPING", "CARIBBEAN"],
-    accent: "#C41E3A",
-    description: [
-      "Caricom Freight is the family logistics business. Caribbean shipping infrastructure that keeps goods moving across the islands.",
-      "This is my father\u2019s world \u2014 the logistics backbone that supports everything from retail inventory to commercial freight. Being close to this operation gives me a perspective on supply chain and trade that most tech people never get.",
-    ],
-    stats: [
-      { value: "JA", label: "BASED" },
-      { value: "CARIB", label: "COVERAGE" },
-      { value: "FAMILY", label: "OPERATED" },
-      { value: "EST.", label: "GENERATION" },
-    ],
-    images: [
-      { aspect: "aspect-[16/9]", label: "OPERATIONS" },
-      { aspect: "aspect-[1/1]", label: "LOGISTICS" },
-      { aspect: "aspect-[3/2]", label: "FLEET" },
-    ],
-    link: "#",
-    linkLabel: "CARICOM FREIGHT",
-  },
-];
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import ScrollReveal from "@/app/components/ScrollReveal";
+import ImageReveal from "@/app/components/ImageReveal";
+import TextScramble from "@/app/components/TextScramble";
+import TextReveal from "@/app/components/TextReveal";
+import BlobDivider from "@/app/components/BlobDivider";
+import AnimatedButton from "@/app/components/AnimatedButton";
+import AnimatedCounter from "@/app/components/AnimatedCounter";
+import GlowBorder from "@/app/components/GlowBorder";
+import { ventures } from "@/lib/data/ventures";
 
 /* ─── PAGE COMPONENT ─── */
 export default function VenturesPage() {
@@ -161,6 +53,16 @@ export default function VenturesPage() {
           MANDEVILLE, JAMAICA 2026
         </span>
 
+        {/* Mobile flanking text */}
+        <div className="absolute top-28 flex gap-4 text-center md:hidden">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            04 VENTURES
+          </span>
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            MANDEVILLE 2026
+          </span>
+        </div>
+
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -171,8 +73,8 @@ export default function VenturesPage() {
           <p className="mb-6 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted">
             THE PORTFOLIO
           </p>
-          <h1 className="font-[family-name:var(--font-playfair)] text-[14vw] font-bold leading-[0.85] text-text-primary md:text-[10vw]">
-            Ventures
+          <h1 className="font-[family-name:var(--font-playfair)] font-bold leading-[0.85] text-text-primary" style={{ fontSize: "var(--text-hero)" }}>
+            <TextScramble text="Ventures" delay={300} />
           </h1>
           <p className="mx-auto mt-8 max-w-xl font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-[0.15em] text-text-muted">
             Businesses, legacy, and things I&apos;m building.
@@ -294,13 +196,17 @@ export default function VenturesPage() {
                     </div>
                     <span className="hidden text-white/10 md:inline">|</span>
                     <div className="flex flex-wrap gap-2">
-                      {venture.tags.map((tag) => (
-                        <span
+                      {venture.tags.map((tag, i) => (
+                        <motion.span
                           key={tag}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.2 + i * 0.05 }}
+                          viewport={{ once: true }}
                           className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-text-muted transition-colors hover:border-white/20 hover:text-text-primary"
                         >
                           {tag}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>
@@ -324,7 +230,7 @@ export default function VenturesPage() {
                       {venture.tagline}
                     </p>
                   </ScrollReveal>
-                  {venture.description.map((para, i) => (
+                  {(Array.isArray(venture.description) ? venture.description : [venture.description]).map((para, i) => (
                     <ScrollReveal key={i} delay={0.15 + i * 0.1}>
                       <p className="mt-6 text-base leading-[1.8] text-text-primary/75 md:text-lg">
                         {para}
@@ -334,14 +240,9 @@ export default function VenturesPage() {
 
                   {/* CTA link */}
                   <ScrollReveal delay={0.4}>
-                    <a
-                      href={venture.link}
-                      className="group mt-10 inline-flex items-center gap-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-colors hover:opacity-70"
-                      style={{ color: venture.accent }}
-                    >
-                      {venture.linkLabel}
-                      <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-                    </a>
+                    <AnimatedButton href={venture.link} variant="outline" className="mt-10" external>
+                      {venture.linkLabel} &rarr;
+                    </AnimatedButton>
                   </ScrollReveal>
                 </div>
 
@@ -355,24 +256,24 @@ export default function VenturesPage() {
                   <div className="grid grid-cols-2 gap-6">
                     {venture.stats.map((stat, i) => (
                       <ScrollReveal key={stat.label} delay={0.1 + i * 0.1}>
-                        <div className="border-t border-white/10 pt-6">
-                          <span
-                            className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-5xl"
-                            style={{ color: venture.accent }}
-                          >
-                            {stat.value}
-                          </span>
-                          <p className="mt-2 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted">
-                            {stat.label}
-                          </p>
-                        </div>
+                        <GlowBorder hoverOnly borderRadius={8} glowColor={`${venture.accent}66`}>
+                          <div className="border-t border-white/10 pt-6 px-2 pb-2">
+                            <AnimatedCounter
+                              value={stat.value}
+                              className="font-[family-name:var(--font-playfair)] text-4xl font-bold md:text-5xl"
+                            />
+                            <p className="mt-2 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted">
+                              {stat.label}
+                            </p>
+                          </div>
+                        </GlowBorder>
                       </ScrollReveal>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* ── Photo Gallery Placeholder (Asymmetric) ── */}
+              {/* ── Photo Gallery Placeholder ── */}
               <div className="mt-16 md:mt-32">
                 <ScrollReveal>
                   <p className="mb-10 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted">
@@ -380,301 +281,61 @@ export default function VenturesPage() {
                   </p>
                 </ScrollReveal>
 
-                {/* Asymmetric image grid */}
-                {venture.images.length === 5 ? (
-                  <div className="grid gap-4 md:grid-cols-12 md:gap-6">
-                    {/* Row 1: 2 images */}
-                    <ScrollReveal
-                      delay={0.05}
-                      className="md:col-span-7"
-                    >
-                      <div
-                        className={`${venture.images[0].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-5xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[0].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
+                {/* Mobile: swipeable carousel */}
+                <div className="md:hidden">
+                  <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                    {venture.images.map((img, i) => (
+                      <div key={i} className="shrink-0 snap-center w-[80vw]">
+                        <div className={`${img.aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}>
+                          <div className="flex h-full items-center justify-center">
+                            <div className="text-center">
+                              <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold" style={{ color: `${venture.accent}10` }}>
+                                {img.label}
+                              </span>
+                              <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                                PHOTO COMING SOON
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                      delay={0.15}
-                      className="md:col-span-5"
-                    >
-                      <div
-                        className={`${venture.images[1].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-5xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[1].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
+                    ))}
+                  </div>
+                  {/* Pagination dots */}
+                  <div className="mt-4 flex justify-center gap-2">
+                    {venture.images.map((_, i) => (
+                      <div key={i} className="h-1.5 w-1.5 rounded-full bg-white/20" />
+                    ))}
+                  </div>
+                </div>
 
-                    {/* Row 2: 3 images */}
-                    <ScrollReveal
-                      delay={0.1}
-                      className="md:col-span-4"
-                    >
-                      <div
-                        className={`${venture.images[2].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-4xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[2].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
+                {/* Desktop: Asymmetric grid */}
+                <div className="hidden md:grid gap-4 md:grid-cols-12 md:gap-6">
+                  {venture.images.map((img, i) => {
+                    const colSpan = i === 0 ? "md:col-span-7" : i === 1 ? "md:col-span-5" : i === venture.images.length - 1 ? "md:col-span-5" : "md:col-span-4";
+                    return (
+                      <ScrollReveal key={i} delay={0.05 + i * 0.1} className={colSpan}>
+                        <div className={`${img.aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}>
+                          <div className="flex h-full items-center justify-center">
+                            <div className="text-center">
+                              <span className="font-[family-name:var(--font-playfair)] text-4xl font-bold" style={{ color: `${venture.accent}10` }}>
+                                {img.label}
+                              </span>
+                              <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
+                                PHOTO COMING SOON
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                      delay={0.2}
-                      className="md:col-span-3"
-                    >
-                      <div
-                        className={`${venture.images[3].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-3xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[3].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                      delay={0.25}
-                      className="md:col-span-5"
-                    >
-                      <div
-                        className={`${venture.images[4].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-4xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[4].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                  </div>
-                ) : venture.images.length === 4 ? (
-                  <div className="grid gap-4 md:grid-cols-12 md:gap-6">
-                    {/* Row 1: 1 wide image */}
-                    <ScrollReveal
-                      delay={0.05}
-                      className="md:col-span-8"
-                    >
-                      <div
-                        className={`${venture.images[0].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-5xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[0].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                      delay={0.15}
-                      className="md:col-span-4"
-                    >
-                      <div
-                        className={`${venture.images[1].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-4xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[1].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-
-                    {/* Row 2: 2 images */}
-                    <ScrollReveal
-                      delay={0.1}
-                      className="md:col-span-5"
-                    >
-                      <div
-                        className={`${venture.images[2].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-4xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[2].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                      delay={0.2}
-                      className="md:col-span-7"
-                    >
-                      <div
-                        className={`${venture.images[3].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-4xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[3].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                  </div>
-                ) : (
-                  /* 3 images (Kemi) */
-                  <div className="grid gap-4 md:grid-cols-12 md:gap-6">
-                    <ScrollReveal
-                      delay={0.05}
-                      className="md:col-span-6"
-                    >
-                      <div
-                        className={`${venture.images[0].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-5xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[0].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                      delay={0.15}
-                      className="md:col-span-3"
-                    >
-                      <div
-                        className={`${venture.images[1].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-3xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[1].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                    <ScrollReveal
-                      delay={0.2}
-                      className="md:col-span-3"
-                    >
-                      <div
-                        className={`${venture.images[2].aspect} w-full overflow-hidden rounded-lg bg-white/[0.03]`}
-                      >
-                        <div className="flex h-full items-center justify-center">
-                          <div className="text-center">
-                            <span
-                              className="font-[family-name:var(--font-playfair)] text-3xl font-bold"
-                              style={{ color: `${venture.accent}10` }}
-                            >
-                              {venture.images[2].label}
-                            </span>
-                            <p className="mt-3 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/40">
-                              PHOTO COMING SOON
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                  </div>
-                )}
+                      </ScrollReveal>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* ── Venture divider ── */}
               {ventureIndex < ventures.length - 1 && (
-                <ScrollReveal>
-                  <div className="mt-16 flex items-center gap-6 md:mt-32">
-                    <div className="h-px flex-1 border-t border-dashed border-white/10" />
-                    <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted/30">
-                      NEXT VENTURE
-                    </span>
-                    <div className="h-px flex-1 border-t border-dashed border-white/10" />
-                  </div>
-                </ScrollReveal>
+                <BlobDivider color={venture.accent} className="mt-16 md:mt-32" />
               )}
             </div>
           </div>
@@ -698,20 +359,12 @@ export default function VenturesPage() {
             Let&apos;s <span className="italic text-accent">Talk</span>
           </h2>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
-            <MagneticButton>
-              <Link
-                href="/contact"
-                className="inline-block rounded-full border border-accent bg-accent px-8 py-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary transition-all hover:bg-transparent hover:text-accent"
-              >
-                GET IN TOUCH
-              </Link>
-            </MagneticButton>
-            <Link
-              href="/about"
-              className="group inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
-            >
-              ABOUT MICHAEL <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-            </Link>
+            <AnimatedButton href="/contact" variant="primary">
+              GET IN TOUCH
+            </AnimatedButton>
+            <AnimatedButton href="/about" variant="outline">
+              ABOUT MICHAEL &rarr;
+            </AnimatedButton>
           </div>
         </ScrollReveal>
       </section>

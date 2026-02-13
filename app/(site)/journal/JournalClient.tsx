@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ScrollReveal from "../../components/ScrollReveal";
-import GlowBorder from "../../components/GlowBorder";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import ScrollReveal from "@/app/components/ScrollReveal";
+import GlowBorder from "@/app/components/GlowBorder";
+import AnimatedButton from "@/app/components/AnimatedButton";
 
 /* ─── CATEGORIES ─── */
 const categories = [
@@ -65,7 +66,7 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <h1 className="mt-6 font-[family-name:var(--font-playfair)] text-[12vw] font-bold leading-[0.85] text-text-primary md:text-[8vw]">
+            <h1 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-[0.85] text-text-primary" style={{ fontSize: "var(--text-hero)" }}>
               Thoughts,
               <br />
               <span className="italic text-accent">Stories</span> &amp;
@@ -101,13 +102,20 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
               {/* ALL pill */}
               <button
                 onClick={() => setActiveCategory("ALL")}
-                className={`rounded-full border px-5 py-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-all ${
+                className={`relative rounded-full border px-5 py-3 min-h-[44px] font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-all ${
                   activeCategory === "ALL"
                     ? "border-accent bg-accent text-bg-primary"
                     : "border-white/10 text-text-muted hover:border-accent/50 hover:text-accent"
                 }`}
               >
                 ALL
+                {activeCategory === "ALL" && (
+                  <motion.div
+                    layoutId="category-indicator"
+                    className="absolute inset-0 rounded-full bg-accent -z-10"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
               </button>
 
               {/* Category pills */}
@@ -119,13 +127,20 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
                       activeCategory === cat.slug ? "ALL" : cat.slug
                     )
                   }
-                  className={`rounded-full border px-5 py-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-all ${
+                  className={`relative rounded-full border px-5 py-3 min-h-[44px] font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-all ${
                     activeCategory === cat.slug
                       ? "border-accent bg-accent text-bg-primary"
                       : "border-white/10 text-text-muted hover:border-accent/50 hover:text-accent"
                   }`}
                 >
                   <span className="opacity-40">{cat.num}</span> {cat.label}
+                  {activeCategory === cat.slug && (
+                    <motion.div
+                      layoutId="category-indicator"
+                      className="absolute inset-0 rounded-full bg-accent -z-10"
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
                 </button>
               ))}
             </div>
@@ -254,7 +269,15 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
               {remainingPosts.length > 0 ? (
                 remainingPosts.map((post, i) => (
                   <ScrollReveal key={post.num} delay={i * 0.1}>
-                    <Link href={`/journal/${post.slug}`} className="group block border-l-2 border-transparent py-12 pl-4 transition-all first:pt-0 hover:border-accent hover:bg-gradient-to-r hover:from-white/[0.02] hover:to-transparent">
+                    <Link href={`/journal/${post.slug}`} className="group relative block py-12 pl-4 transition-all first:pt-0 hover:bg-gradient-to-r hover:from-white/[0.02] hover:to-transparent">
+                      {/* Animated accent bar on hover */}
+                      <motion.div
+                        className="absolute left-0 top-0 bottom-0 w-[2px] bg-accent"
+                        initial={{ scaleY: 0 }}
+                        whileHover={{ scaleY: 1 }}
+                        transition={{ duration: 0.3 }}
+                        style={{ originY: 0 }}
+                      />
                       <div className="grid items-start gap-6 md:grid-cols-12 md:gap-8">
                         {/* Number */}
                         <div className="md:col-span-1">
@@ -302,7 +325,6 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
                   </ScrollReveal>
                 ))
               ) : (
-                /* If only featured post matches (or no posts at all) */
                 !featuredPost && (
                   <div className="py-24 text-center">
                     <span className="font-[family-name:var(--font-playfair)] text-2xl text-text-muted/30">
@@ -394,19 +416,16 @@ export default function JournalClient({ posts }: { posts: PostData[] }) {
               <input
                 type="email"
                 placeholder="your@email.com"
-                className="w-full max-w-sm rounded-full border border-white/10 bg-bg-secondary px-6 py-3.5 font-[family-name:var(--font-jetbrains)] text-[12px] text-text-primary placeholder:text-text-muted/40 focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/30 sm:w-auto sm:min-w-[320px]"
+                className="w-full max-w-sm rounded-full border border-white/10 bg-bg-secondary px-6 py-3.5 font-[family-name:var(--font-jetbrains)] text-[16px] text-text-primary placeholder:text-text-muted/40 focus:border-accent/50 focus:outline-none sm:w-auto sm:min-w-[320px]"
               />
-              <button className="w-full rounded-full bg-accent px-8 py-3.5 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.15em] text-bg-primary transition-opacity hover:opacity-90 sm:w-auto">
+              <AnimatedButton variant="primary" onClick={() => {}}>
                 SUBSCRIBE
-              </button>
+              </AnimatedButton>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          FOOTER
-      ════════════════════════════════════════════ */}
       <Footer />
     </>
   );

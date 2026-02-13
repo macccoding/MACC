@@ -6,6 +6,7 @@ import { motion, useSpring } from "framer-motion";
 export default function CustomCursor() {
   const [visible, setVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(true);
   const [onLight, setOnLight] = useState(false);
   const rafRef = useRef<number>(0);
@@ -101,13 +102,20 @@ export default function CustomCursor() {
       }
     };
 
+    const handleMouseDown = () => setIsClicking(true);
+    const handleMouseUp = () => setIsClicking(false);
+
     document.addEventListener("mouseover", handleMouseOver);
     document.addEventListener("mouseout", handleMouseOut);
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("mouseup", handleMouseUp);
       cancelAnimationFrame(rafRef.current);
       document.documentElement.style.cursor = "";
       const el = document.getElementById("custom-cursor-hide");
@@ -134,10 +142,10 @@ export default function CustomCursor() {
       >
         <motion.div
           animate={{
-            width: isHovering ? 16 : 8,
-            height: isHovering ? 16 : 8,
+            width: isClicking ? 6 : isHovering ? 16 : 8,
+            height: isClicking ? 6 : isHovering ? 16 : 8,
           }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.15 }}
           className={`rounded-full transition-colors duration-200 ${dotColor}`}
         />
       </motion.div>
@@ -154,11 +162,11 @@ export default function CustomCursor() {
       >
         <motion.div
           animate={{
-            width: isHovering ? 48 : 24,
-            height: isHovering ? 48 : 24,
-            opacity: isHovering ? 0.15 : 0.1,
+            width: isClicking ? 20 : isHovering ? 48 : 24,
+            height: isClicking ? 20 : isHovering ? 48 : 24,
+            opacity: isClicking ? 0.25 : isHovering ? 0.15 : 0.1,
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           className={`rounded-full border transition-colors duration-200 ${ringColor}`}
           style={{ mixBlendMode: "difference" }}
         />

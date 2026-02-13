@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ScrollReveal from "../../components/ScrollReveal";
-import MagneticButton from "../../components/MagneticButton";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import ScrollReveal from "@/app/components/ScrollReveal";
+import GlowBorder from "@/app/components/GlowBorder";
+import AnimatedButton from "@/app/components/AnimatedButton";
 
 const subjects = [
   "General Inquiry",
@@ -21,28 +21,32 @@ const subjects = [
 const contactLinks = [
   {
     category: "FOR BUSINESS INQUIRIES",
+    icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
     items: [
-      { label: "hello@mikechen.xyz", href: "mailto:hello@mikechen.xyz", type: "email" },
+      { label: "hello@mikechen.xyz", href: "mailto:hello@mikechen.xyz" },
     ],
   },
   {
     category: "FOR ISTRY / SUPERPLUS",
+    icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
     items: [
-      { label: "business@istry.com", href: "mailto:business@istry.com", type: "email" },
+      { label: "business@istry.com", href: "mailto:business@istry.com" },
     ],
   },
   {
     category: "WHATSAPP",
+    icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z",
     items: [
-      { label: "WhatsApp Business", href: "https://wa.me/18762607918", type: "link" },
+      { label: "WhatsApp Business", href: "https://wa.me/18762607918" },
     ],
   },
   {
     category: "SOCIALS",
+    icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
     items: [
-      { label: "Instagram", href: "https://instagram.com/mke.chn", type: "link" },
-      { label: "X", href: "https://x.com/itsmikeychen", type: "link" },
-      { label: "LinkedIn", href: "https://linkedin.com/in/michaelacchen", type: "link" },
+      { label: "Instagram", href: "https://instagram.com/mke.chn" },
+      { label: "X", href: "https://x.com/itsmikeychen" },
+      { label: "LinkedIn", href: "https://linkedin.com/in/michaelacchen" },
     ],
   },
 ];
@@ -54,9 +58,12 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
   };
 
   const handleChange = (
@@ -79,7 +86,7 @@ export default function ContactPage() {
           </span>
         </ScrollReveal>
         <ScrollReveal delay={0.15}>
-          <h1 className="text-center font-[family-name:var(--font-playfair)] text-[14vw] font-bold leading-[0.9] text-text-primary sm:text-[10vw] md:text-[8vw]">
+          <h1 className="text-center font-[family-name:var(--font-playfair)] font-bold leading-[0.9] text-text-primary" style={{ fontSize: "var(--text-hero)" }}>
             Contact
           </h1>
         </ScrollReveal>
@@ -103,14 +110,8 @@ export default function ContactPage() {
               </span>
 
               <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Name */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="mb-3 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
-                  >
-                    YOUR NAME
-                  </label>
+                {/* Name - Floating Label */}
+                <div className="relative">
                   <input
                     id="name"
                     name="name"
@@ -118,19 +119,19 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Michael Chen"
-                    className="w-full rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 text-text-primary placeholder:text-text-muted/40 transition-colors focus:border-accent focus:outline-none"
+                    placeholder=" "
+                    className="peer w-full rounded-lg border border-white/10 bg-bg-secondary px-5 pt-7 pb-3 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
                   />
+                  <label
+                    htmlFor="name"
+                    className="pointer-events-none absolute left-5 top-5 origin-left font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-all peer-focus:top-2 peer-focus:scale-90 peer-focus:text-accent peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-90"
+                  >
+                    YOUR NAME
+                  </label>
                 </div>
 
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-3 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
-                  >
-                    EMAIL ADDRESS
-                  </label>
+                {/* Email - Floating Label */}
+                <div className="relative">
                   <input
                     id="email"
                     name="email"
@@ -138,46 +139,58 @@ export default function ContactPage() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="you@example.com"
-                    className="w-full rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 text-text-primary placeholder:text-text-muted/40 transition-colors focus:border-accent focus:outline-none"
+                    placeholder=" "
+                    className="peer w-full rounded-lg border border-white/10 bg-bg-secondary px-5 pt-7 pb-3 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
                   />
+                  <label
+                    htmlFor="email"
+                    className="pointer-events-none absolute left-5 top-5 origin-left font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-all peer-focus:top-2 peer-focus:scale-90 peer-focus:text-accent peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-90"
+                  >
+                    EMAIL ADDRESS
+                  </label>
                 </div>
 
-                {/* Subject */}
-                <div>
+                {/* Subject - Custom Select */}
+                <div className="relative">
                   <label
                     htmlFor="subject"
                     className="mb-3 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
                   >
                     SUBJECT
                   </label>
-                  <select
-                    id="subject"
-                    name="subject"
-                    required
-                    value={formData.subject}
-                    onChange={handleChange}
-                    className="w-full appearance-none rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 text-text-primary transition-colors focus:border-accent focus:outline-none"
-                  >
-                    <option value="" disabled>
-                      Select a subject...
-                    </option>
-                    {subjects.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
+                  <div className="relative">
+                    <select
+                      id="subject"
+                      name="subject"
+                      required
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className="w-full appearance-none rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 pr-12 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        Select a subject...
                       </option>
-                    ))}
-                  </select>
+                      {subjects.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Custom chevron */}
+                    <svg
+                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-muted"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                    >
+                      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
                 </div>
 
-                {/* Message */}
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="mb-3 block font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted"
-                  >
-                    MESSAGE
-                  </label>
+                {/* Message - Floating Label */}
+                <div className="relative">
                   <textarea
                     id="message"
                     name="message"
@@ -185,21 +198,59 @@ export default function ContactPage() {
                     rows={6}
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Tell me what's on your mind..."
-                    className="w-full resize-none rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 text-text-primary placeholder:text-text-muted/40 transition-colors focus:border-accent focus:outline-none"
+                    placeholder=" "
+                    className="peer w-full resize-none rounded-lg border border-white/10 bg-bg-secondary px-5 pt-7 pb-3 text-[16px] text-text-primary transition-colors focus:border-accent focus:outline-none"
                   />
+                  <label
+                    htmlFor="message"
+                    className="pointer-events-none absolute left-5 top-5 origin-left font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-all peer-focus:top-2 peer-focus:scale-90 peer-focus:text-accent peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-90"
+                  >
+                    MESSAGE
+                  </label>
                 </div>
 
                 {/* Submit */}
-                <MagneticButton className="w-full" strength={0.15}>
-                  <motion.button
-                    type="submit"
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full rounded-lg bg-accent py-4 font-[family-name:var(--font-jetbrains)] text-[12px] font-bold uppercase tracking-[0.2em] text-black transition-opacity hover:opacity-90"
-                  >
-                    SEND MESSAGE
-                  </motion.button>
-                </MagneticButton>
+                <AnimatePresence mode="wait">
+                  {submitted ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="flex items-center justify-center gap-3 rounded-lg bg-green-500/10 border border-green-500/20 py-4"
+                    >
+                      <motion.svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <motion.path
+                          d="M5 13l4 4L19 7"
+                          stroke="#22c55e"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.5 }}
+                        />
+                      </motion.svg>
+                      <span className="font-[family-name:var(--font-jetbrains)] text-[12px] uppercase tracking-[0.2em] text-green-500">
+                        MESSAGE SENT
+                      </span>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="button" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                      <AnimatedButton type="submit" variant="primary" className="w-full">
+                        SEND MESSAGE
+                      </AnimatedButton>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </form>
             </div>
           </ScrollReveal>
@@ -219,20 +270,26 @@ export default function ContactPage() {
                     </span>
                     <div className="space-y-3">
                       {section.items.map((item) => (
-                        <a
-                          key={item.label}
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center justify-between rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 transition-all hover:border-accent/50"
-                        >
-                          <span className="font-[family-name:var(--font-playfair)] text-lg text-text-primary transition-colors group-hover:text-accent">
-                            {item.label}
-                          </span>
-                          <span className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40 transition-all group-hover:translate-x-2 group-hover:text-accent">
-                            &rarr;
-                          </span>
-                        </a>
+                        <GlowBorder key={item.label} hoverOnly borderRadius={12}>
+                          <a
+                            href={item.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-center justify-between rounded-lg border border-white/10 bg-bg-secondary px-5 py-4 transition-all hover:border-accent/50"
+                          >
+                            <div className="flex items-center gap-4">
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-text-muted/40 transition-colors group-hover:text-accent">
+                                <path d={section.icon} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                              <span className="font-[family-name:var(--font-playfair)] text-lg text-text-primary transition-colors group-hover:text-accent">
+                                {item.label}
+                              </span>
+                            </div>
+                            <span className="inline-block font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40 transition-all group-hover:translate-x-2 group-hover:text-accent">
+                              &rarr;
+                            </span>
+                          </a>
+                        </GlowBorder>
                       ))}
                     </div>
                   </div>

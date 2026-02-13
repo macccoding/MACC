@@ -1,10 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ScrollReveal from "../../components/ScrollReveal";
-import AnimatedCounter from "../../components/AnimatedCounter";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import ScrollReveal from "@/app/components/ScrollReveal";
+import AnimatedCounter from "@/app/components/AnimatedCounter";
+import TextReveal from "@/app/components/TextReveal";
+import GlowBorder from "@/app/components/GlowBorder";
+import StaggeredGrid from "@/app/components/StaggeredGrid";
+import ParallaxLayer from "@/app/components/ParallaxLayer";
+import PlaceholderImage from "@/app/components/PlaceholderImage";
 
 /* ─── STATS ─── */
 const stats = [
@@ -51,24 +56,36 @@ export default function AboutPage() {
           ABOUT
         </motion.span>
 
-        {/* Portrait placeholder */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="relative z-10 w-full max-w-md"
-        >
-          <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-bg-secondary">
-            <div className="flex h-full flex-col items-center justify-center gap-4">
-              <span className="font-[family-name:var(--font-playfair)] text-8xl font-bold text-white/5">
-                MC
-              </span>
-              <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted/50">
-                LIFESTYLE PORTRAIT COMING SOON
-              </span>
-            </div>
-          </div>
-        </motion.div>
+        {/* Portrait placeholder with parallax accent shapes */}
+        <ParallaxLayer speed={0.2}>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="relative z-10 w-full max-w-md"
+          >
+            {/* Floating accent shapes behind portrait */}
+            <motion.div
+              className="absolute -right-8 -top-8 h-24 w-24 rounded-full border border-accent/20"
+              animate={{ y: [-5, 5, -5], rotate: [0, 180, 360] }}
+              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+              aria-hidden="true"
+            />
+            <motion.div
+              className="absolute -bottom-6 -left-6 h-16 w-16 rounded-sm border border-accent/10"
+              animate={{ y: [5, -5, 5], rotate: [0, -90, 0] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              aria-hidden="true"
+            />
+
+            <PlaceholderImage
+              alt="Mike Chen lifestyle portrait"
+              label="MC"
+              accentColor="#E5B820"
+              className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-bg-secondary"
+            />
+          </motion.div>
+        </ParallaxLayer>
 
         {/* Flanking metadata */}
         <span className="absolute left-6 top-1/2 hidden -translate-y-1/2 -rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block">
@@ -77,6 +94,16 @@ export default function AboutPage() {
         <span className="absolute right-6 top-1/2 hidden -translate-y-1/2 rotate-90 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.3em] text-text-muted md:block">
           MANDEVILLE, JAMAICA
         </span>
+
+        {/* Mobile flanking text */}
+        <div className="absolute top-28 flex gap-4 text-center md:hidden">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            MICHAEL CHEN
+          </span>
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            MANDEVILLE, JA
+          </span>
+        </div>
 
         {/* Scroll Indicator */}
         <motion.div
@@ -101,18 +128,19 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 2: THE STORY
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-16 md:py-32 md:px-12">
+      <section className="bg-bg-primary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-3xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               01 &mdash; THE STORY
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
-              Two Cultures,
-              <br />
-              <span className="italic text-accent">One Builder.</span>
-            </h2>
           </ScrollReveal>
+          <TextReveal
+            text="Two Cultures, One Builder."
+            as="h2"
+            className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight"
+            style={{ fontSize: "var(--text-heading)" }}
+          />
 
           <div className="mt-10 md:mt-16 space-y-8">
             <ScrollReveal delay={0.1}>
@@ -156,21 +184,21 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 3: BY THE NUMBERS
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-secondary px-6 py-16 md:py-32 md:px-12">
+      <section className="bg-bg-secondary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               02 &mdash; BY THE NUMBERS
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight" style={{ fontSize: "var(--text-heading)" }}>
               The <span className="italic text-accent">Stats.</span>
             </h2>
           </ScrollReveal>
 
-          <div className="mt-12 md:mt-20 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
-            {stats.map((stat, i) => (
-              <ScrollReveal key={stat.label} delay={i * 0.1}>
-                <div className="glass-card flex flex-col gap-3 rounded-lg p-5">
+          <StaggeredGrid columns={5} className="mt-12 md:mt-20 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
+            {stats.map((stat) => (
+              <GlowBorder key={stat.label} hoverOnly borderRadius={12}>
+                <div className="glass-card flex flex-col gap-3 rounded-lg p-5 card-hover">
                   <AnimatedCounter
                     value={stat.value}
                     className="font-[family-name:var(--font-playfair)] text-4xl font-bold text-accent md:text-5xl"
@@ -179,29 +207,35 @@ export default function AboutPage() {
                     {stat.label}
                   </span>
                 </div>
-              </ScrollReveal>
+              </GlowBorder>
             ))}
-          </div>
+          </StaggeredGrid>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════
           SECTION 4: NOW
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-16 md:py-32 md:px-12">
+      <section className="bg-bg-primary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-3xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               03 &mdash; NOW
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight" style={{ fontSize: "var(--text-heading)" }}>
               What I&apos;m Doing
               <br />
               <span className="italic text-accent">Right Now.</span>
             </h2>
-            <p className="mt-4 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.15em] text-text-muted">
-              LAST UPDATED: FEB 2026
-            </p>
+            <div className="mt-4 flex items-center gap-3">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+              </span>
+              <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.15em] text-text-muted">
+                LAST UPDATED: FEB 2026
+              </span>
+            </div>
           </ScrollReveal>
 
           <div className="mt-10 md:mt-16 space-y-0 divide-y divide-white/5">
@@ -224,7 +258,16 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 5: LOCATION BLOCK
       ════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-bg-secondary px-6 py-16 md:py-32 md:px-12">
+      <section className="relative overflow-hidden bg-bg-secondary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
+        {/* Subtle coordinate grid background */}
+        <div className="pointer-events-none absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+            backgroundSize: "60px 60px"
+          }}
+          aria-hidden="true"
+        />
+
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-center text-center">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
@@ -232,16 +275,23 @@ export default function AboutPage() {
             </span>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h2 className="mt-8 font-[family-name:var(--font-playfair)] text-4xl md:text-6xl font-bold leading-tight text-text-primary md:text-8xl lg:text-9xl">
+            <h2 className="mt-8 font-[family-name:var(--font-playfair)] font-bold leading-tight text-text-primary" style={{ fontSize: "var(--text-display)" }}>
               MANDEVILLE,
               <br />
               <span className="italic text-accent">JAMAICA</span>
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
-            <p className="mt-6 font-[family-name:var(--font-jetbrains)] text-sm tracking-[0.1em] text-text-muted">
-              18.0416&deg; N, 77.5058&deg; W
-            </p>
+            <div className="mt-6 flex items-center gap-3">
+              {/* Pulsing pin */}
+              <span className="relative flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-50" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-accent" />
+              </span>
+              <p className="font-[family-name:var(--font-jetbrains)] text-sm tracking-[0.1em] text-text-muted">
+                18.0416&deg; N, 77.5058&deg; W
+              </p>
+            </div>
           </ScrollReveal>
         </div>
       </section>
@@ -249,21 +299,21 @@ export default function AboutPage() {
       {/* ════════════════════════════════════════════
           SECTION 6: TOOLS I USE
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-16 md:py-32 md:px-12">
+      <section className="bg-bg-primary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
               05 &mdash; TOOLKIT
             </span>
-            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl md:text-5xl font-bold leading-tight md:text-7xl">
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] font-bold leading-tight" style={{ fontSize: "var(--text-heading)" }}>
               Tools I <span className="italic text-accent">Use.</span>
             </h2>
           </ScrollReveal>
 
-          <div className="mt-12 md:mt-20 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-            {toolCategories.map((cat, i) => (
-              <ScrollReveal key={cat.category} delay={i * 0.1}>
-                <div className="glass-card flex flex-col gap-5 rounded-lg p-5">
+          <StaggeredGrid columns={4} className="mt-12 md:mt-20 grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+            {toolCategories.map((cat) => (
+              <GlowBorder key={cat.category} hoverOnly borderRadius={12}>
+                <div className="glass-card flex flex-col gap-5 rounded-lg p-5 card-hover">
                   <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-accent">
                     {cat.category}
                   </span>
@@ -280,9 +330,9 @@ export default function AboutPage() {
                     ))}
                   </div>
                 </div>
-              </ScrollReveal>
+              </GlowBorder>
             ))}
-          </div>
+          </StaggeredGrid>
         </div>
       </section>
 

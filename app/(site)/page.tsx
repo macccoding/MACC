@@ -4,13 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import ScrollReveal from "../components/ScrollReveal";
-import RotatingText from "../components/RotatingText";
-import HeroCursorTilt from "../components/HeroCursorTilt";
-import SplitReveal from "../components/SplitReveal";
-import GradientOrb from "../components/GradientOrb";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import ScrollReveal from "@/app/components/ScrollReveal";
+import RotatingText from "@/app/components/RotatingText";
+import HeroCursorTilt from "@/app/components/HeroCursorTilt";
+import SplitReveal from "@/app/components/SplitReveal";
+import GradientOrb from "@/app/components/GradientOrb";
+import TextScramble from "@/app/components/TextScramble";
+import BlobDivider from "@/app/components/BlobDivider";
+import GlowBorder from "@/app/components/GlowBorder";
+import ParallaxLayer from "@/app/components/ParallaxLayer";
+import AnimatedButton from "@/app/components/AnimatedButton";
+import StaggeredGrid from "@/app/components/StaggeredGrid";
+import { ventures as ventureData } from "@/lib/data/ventures";
 
 /* ─── DISCIPLINES ─── */
 const disciplines = [
@@ -22,45 +29,15 @@ const disciplines = [
   { num: "06", label: "Fitness" },
 ];
 
-/* ─── VENTURES ─── */
-const ventures = [
-  {
-    num: "01",
-    name: "ISTRY",
-    meta: "FOUNDER \u00b7 BESPOKE F&B",
-    tags: ["FOOD & BEVERAGE", "WHITELABELING", "EVENTS", "CATERING"],
-    description:
-      "Bespoke food & beverage company specializing in whitelabel products, event catering, and culinary experiences. Building Jamaica\u2019s next great food brand.",
-    color: "#E5B820",
-  },
-  {
-    num: "02",
-    name: "SUPERPLUS",
-    meta: "LEGACY \u00b7 COMMUNITY RETAIL",
-    tags: ["RETAIL", "COMMUNITY", "GROCERY", "FAMILY"],
-    description:
-      "A family supermarket legacy built by my grandmother, Hyacinth Gloria Chen. I\u2019m at the heart of operations day-to-day \u2014 keeping the family business alive and evolving.",
-    color: "#C41E3A",
-  },
-  {
-    num: "03",
-    name: "KEMI",
-    meta: "FOUNDER \u00b7 ACTIVELY BUILDING",
-    tags: ["ARTIFICIAL INTELLIGENCE", "PRODUCTIVITY", "PRODUCT"],
-    description:
-      "An AI product I\u2019m actively building. Code, design, and ship \u2014 from Mandeville to the world.",
-    color: "#E5B820",
-  },
-  {
-    num: "04",
-    name: "CARICOM FREIGHT",
-    meta: "FAMILY \u00b7 LOGISTICS",
-    tags: ["FREIGHT", "LOGISTICS", "SHIPPING"],
-    description:
-      "Family freight and logistics business. Caribbean shipping infrastructure that keeps goods moving across the islands.",
-    color: "#C41E3A",
-  },
-];
+/* ─── VENTURES (home preview) ─── */
+const ventures = ventureData.slice(0, 4).map((v) => ({
+  num: v.num,
+  name: v.name,
+  meta: v.meta,
+  tags: v.tags,
+  description: Array.isArray(v.description) ? v.description[0] : v.description,
+  color: v.accent,
+}));
 
 /* ─── JOURNAL PREVIEW ─── */
 const journalPosts = [
@@ -93,7 +70,7 @@ const galleryItems = Array.from({ length: 10 }, (_, i) => ({
   category: ["FOOD", "TRAVEL", "GADGETS", "STREET", "PORTRAITS", "FOOD", "TRAVEL", "DRONE", "LIFESTYLE", "MAKING"][i],
 }));
 
-/* ─── VENTURE CARD (Sub-component for per-item hooks) ─── */
+/* ─── VENTURE CARD ─── */
 function VentureCard({
   venture,
   index,
@@ -110,15 +87,7 @@ function VentureCard({
 
   return (
     <div ref={cardRef} id={`venture-${venture.num}`} className="scroll-mt-20">
-      {index > 0 && (
-        <div className="relative my-10 overflow-hidden md:my-16">
-          <div className="border-t border-dashed border-white/10" />
-          <div
-            className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent"
-            style={{ animation: "goldLineSweep 3s ease-in-out infinite" }}
-          />
-        </div>
-      )}
+      {index > 0 && <BlobDivider color={venture.color} className="my-8 md:my-12" />}
       <ScrollReveal delay={0.1}>
         <div className="grid gap-8 md:grid-cols-2 md:gap-16">
           {/* Left: Info */}
@@ -139,47 +108,50 @@ function VentureCard({
               {venture.description}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              {venture.tags.map((tag) => (
-                <span
+              {venture.tags.map((tag, i) => (
+                <motion.span
                   key={tag}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.05 }}
+                  viewport={{ once: true }}
                   className="rounded-full border border-white/10 px-3 py-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-wider text-text-muted"
                 >
                   {tag}
-                </span>
+                </motion.span>
               ))}
             </div>
-            <Link
-              href="/ventures"
-              className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-accent transition-opacity hover:opacity-70"
-            >
-              VIEW VENTURE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-            </Link>
+            <AnimatedButton href="/ventures" variant="outline" className="mt-8 self-start">
+              VIEW VENTURE &rarr;
+            </AnimatedButton>
           </div>
 
           {/* Right: Image Placeholder with parallax */}
           <div className={`${index % 2 === 1 ? "md:order-1" : ""}`}>
-            <HeroCursorTilt>
-              <motion.div
-                style={{ y: imageY }}
-                whileHover={{ scale: 1.03 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bg-primary backdrop-blur-sm border border-white/[0.06] transition-shadow duration-300 hover:shadow-[0_20px_80px_rgba(229,184,32,0.08)]"
-              >
-                <div
-                  className="flex h-full items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${venture.color}08 0%, transparent 50%, ${venture.color}05 100%)`,
-                  }}
+            <GlowBorder glowColor={`${venture.color}66`} hoverOnly borderRadius={12}>
+              <HeroCursorTilt>
+                <motion.div
+                  style={{ y: imageY }}
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bg-primary backdrop-blur-sm border border-white/[0.06]"
                 >
-                  <span
-                    className="font-[family-name:var(--font-playfair)] text-6xl font-bold opacity-10"
-                    style={{ color: venture.color }}
+                  <div
+                    className="flex h-full items-center justify-center"
+                    style={{
+                      background: `linear-gradient(135deg, ${venture.color}08 0%, transparent 50%, ${venture.color}05 100%)`,
+                    }}
                   >
-                    {venture.num}
-                  </span>
-                </div>
-              </motion.div>
-            </HeroCursorTilt>
+                    <span
+                      className="font-[family-name:var(--font-playfair)] text-6xl font-bold opacity-10"
+                      style={{ color: venture.color }}
+                    >
+                      {venture.num}
+                    </span>
+                  </div>
+                </motion.div>
+              </HeroCursorTilt>
+            </GlowBorder>
           </div>
         </div>
       </ScrollReveal>
@@ -344,6 +316,21 @@ export default function Home() {
           MICHAEL CHEN 2026
         </motion.span>
 
+        {/* Mobile flanking text */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="absolute top-24 flex gap-6 text-center md:hidden"
+        >
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            VENTURES &amp; VISIONS
+          </span>
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            2026
+          </span>
+        </motion.div>
+
         {/* Hero Logo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -369,15 +356,19 @@ export default function Home() {
           </HeroCursorTilt>
         </motion.div>
 
-        {/* Tagline */}
-        <motion.p
+        {/* Tagline with TextScramble */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.8 }}
-          className="-mt-4 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted md:-mt-6"
+          className="-mt-4 md:-mt-6"
         >
-          Building things. Tasting everything. Designing the rest.
-        </motion.p>
+          <TextScramble
+            text="Building things. Tasting everything. Designing the rest."
+            className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted"
+            delay={1200}
+          />
+        </motion.div>
 
         {/* Scroll Indicator */}
         <motion.div
@@ -399,8 +390,8 @@ export default function Home() {
         </motion.div>
       </motion.section>
 
-      {/* ── Gradient Divider: Hero → Name Reveal ── */}
-      <div className="h-24 bg-gradient-to-b from-bg-primary to-accent md:h-32" />
+      {/* ── Blob Divider: Hero → Name Reveal ── */}
+      <BlobDivider color="#E5B820" />
 
       {/* ════════════════════════════════════════════
           SECTION 2: NAME REVEAL
@@ -438,11 +429,15 @@ export default function Home() {
           <div className="aspect-video w-full overflow-hidden rounded-lg bg-bg-primary/20">
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-bg-primary/30">
+                <motion.div
+                  className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-bg-primary/30"
+                  animate={{ boxShadow: ["0 0 0 0px rgba(10,10,10,0)", "0 0 0 12px rgba(10,10,10,0)"] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="ml-1">
                     <path d="M8 5v14l11-7L8 5z" fill="#0A0A0A" fillOpacity="0.5" />
                   </svg>
-                </div>
+                </motion.div>
                 <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
                   SIZZLE REEL COMING SOON
                 </span>
@@ -452,73 +447,71 @@ export default function Home() {
         </ScrollReveal>
       </section>
 
-      {/* ── Gradient Divider: Name Reveal → About ── */}
-      <div className="h-24 bg-gradient-to-b from-accent to-bg-primary md:h-32" />
+      {/* ── Blob Divider: Name Reveal → About ── */}
+      <BlobDivider color="#E5B820" flip />
 
       {/* ════════════════════════════════════════════
           SECTION 3: ABOUT CARD
       ════════════════════════════════════════════ */}
-      <section className="relative flex items-center justify-center bg-bg-primary px-6 py-20 md:py-32">
-        <motion.div
-          initial={{ scale: 0.92, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          viewport={{ once: true, margin: "-50px" }}
-          className="mx-auto w-full max-w-3xl"
-        >
-          <div className="rounded-2xl bg-accent px-8 py-12 text-bg-primary shadow-[0_0_80px_rgba(229,184,32,0.12)] transition-shadow duration-500 hover:shadow-[0_0_120px_rgba(229,184,32,0.25)] sm:px-12 md:px-20 md:py-16 lg:px-24">
-            {/* Name + Rotating Role */}
-            <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
-              Mike Chen
-            </p>
-            <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
-              is a
-            </p>
-            <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
-              <RotatingText
-                words={[
-                  "entrepreneur",
-                  "builder",
-                  "coder",
-                  "designer",
-                  "foodie",
-                ]}
-                interval={2200}
-              />
-            </div>
-
-            {/* Bio */}
-            <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
-              I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
-              businesses, brands, code, and whatever else I can get my hands on.
-              Founder of Istry. Keeping SuperPlus alive as a family legacy.
-              Actively building Kemi. I design, I ship, and I eat everything.
-              Based in Mandeville.
-            </p>
-
-            {/* Location */}
-            <div className="mt-10 border-t border-bg-primary/20 pt-6">
-              <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
-                CURRENTLY BASED IN
-              </span>
-              <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
-                Mandeville, Jamaica
-              </p>
-              <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
-                18.0416&deg; N, 77.5058&deg; W
-              </p>
-            </div>
-
-            {/* Read More */}
-            <Link
-              href="/about"
-              className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
+      <section className="relative flex items-center justify-center bg-bg-primary px-6" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
+        <ParallaxLayer speed={0.15}>
+          <GlowBorder glowColor="rgba(229,184,32,0.4)" hoverOnly borderRadius={16}>
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              whileHover={{ scale: 1.01 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              viewport={{ once: true, margin: "-50px" }}
+              className="mx-auto w-full max-w-3xl"
             >
-              READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-            </Link>
-          </div>
-        </motion.div>
+              <div className="rounded-2xl bg-accent px-8 py-12 text-bg-primary sm:px-12 md:px-20 md:py-16 lg:px-24">
+                {/* Name + Rotating Role */}
+                <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-4xl">
+                  Mike Chen
+                </p>
+                <p className="mt-2 font-[family-name:var(--font-playfair)] text-lg text-bg-primary/60">
+                  is a
+                </p>
+                <div className="mt-1 h-10 font-[family-name:var(--font-playfair)] text-2xl font-bold italic md:text-3xl">
+                  <RotatingText
+                    words={["entrepreneur", "builder", "coder", "designer", "foodie"]}
+                    interval={2200}
+                  />
+                </div>
+
+                {/* Bio */}
+                <p className="mt-8 max-w-lg font-[family-name:var(--font-jetbrains)] text-[11px] uppercase leading-relaxed tracking-wide text-bg-primary/70">
+                  I&apos;m a Jamaican-Chinese entrepreneur who builds things &mdash;
+                  businesses, brands, code, and whatever else I can get my hands on.
+                  Founder of Istry. Keeping SuperPlus alive as a family legacy.
+                  Actively building Kemi. I design, I ship, and I eat everything.
+                  Based in Mandeville.
+                </p>
+
+                {/* Location */}
+                <div className="mt-10 border-t border-bg-primary/20 pt-6">
+                  <span className="font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-bg-primary/40">
+                    CURRENTLY BASED IN
+                  </span>
+                  <p className="mt-2 font-[family-name:var(--font-playfair)] text-xl font-bold">
+                    Mandeville, Jamaica
+                  </p>
+                  <p className="mt-1 font-[family-name:var(--font-jetbrains)] text-xs text-bg-primary/50">
+                    18.0416&deg; N, 77.5058&deg; W
+                  </p>
+                </div>
+
+                {/* Read More */}
+                <Link
+                  href="/about"
+                  className="group mt-8 inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary/70 transition-colors hover:text-bg-primary"
+                >
+                  READ MORE <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
+                </Link>
+              </div>
+            </motion.div>
+          </GlowBorder>
+        </ParallaxLayer>
       </section>
 
       {/* ── Section Divider ── */}
@@ -528,7 +521,7 @@ export default function Home() {
           SECTION 4: FEATURED VENTURES
       ════════════════════════════════════════════ */}
 
-      {/* Sticky Ventures Nav — only visible when ventures section is in view */}
+      {/* Sticky Ventures Nav */}
       <div
         className={`sticky top-0 z-40 border-b border-white/5 bg-bg-secondary/80 backdrop-blur-lg transition-all duration-300 ${
           venturesVisible
@@ -541,24 +534,24 @@ export default function Home() {
             <a
               key={v.num}
               href={`#venture-${v.num}`}
-              className={`shrink-0 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-colors hover:text-accent ${
+              className={`shrink-0 py-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-colors hover:text-accent ${
                 activeVenture === v.num ? "text-accent" : "text-text-muted"
               }`}
             >
               {v.name}
             </a>
           ))}
-          <span className="hidden text-white/10 md:inline">·</span>
+          <span className="hidden text-white/10 md:inline">&middot;</span>
           <Link
             href="/ventures"
-            className="group shrink-0 inline-flex items-center gap-1 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-accent"
+            className="group shrink-0 inline-flex items-center gap-1 py-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-accent"
           >
             SEE ALL <span className="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
           </Link>
         </div>
       </div>
 
-      <section ref={venturesSectionRef} className="relative bg-bg-secondary px-6 py-16 md:px-12 md:py-32">
+      <section ref={venturesSectionRef} className="relative bg-bg-secondary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         {/* Teal atmospheric orb */}
         <GradientOrb
           color="0,180,170"
@@ -578,12 +571,9 @@ export default function Home() {
                 <br />
                 <span className="italic text-accent"><SplitReveal text="Ventures" delay={0.15} /></span>
               </h2>
-              <Link
-                href="/ventures"
-                className="group inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
-              >
-                SEE ALL VENTURES <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-              </Link>
+              <AnimatedButton href="/ventures" variant="outline">
+                SEE ALL VENTURES &rarr;
+              </AnimatedButton>
             </div>
           </ScrollReveal>
 
@@ -602,19 +592,16 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           SECTION 5: LATEST FROM THE JOURNAL
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-primary px-6 py-16 md:px-12 md:py-32">
+      <section className="bg-bg-primary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <div className="mb-10 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
               <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-6xl">
                 <SplitReveal text="Latest" /> <span className="italic text-accent"><SplitReveal text="Posts" delay={0.1} /></span>
               </h2>
-              <Link
-                href="/journal"
-                className="group inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
-              >
-                VIEW ALL <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-              </Link>
+              <AnimatedButton href="/journal" variant="outline">
+                VIEW ALL &rarr;
+              </AnimatedButton>
             </div>
           </ScrollReveal>
 
@@ -626,9 +613,11 @@ export default function Home() {
                   className="group block border-l-2 border-transparent py-8 pl-4 transition-all hover:border-accent hover:bg-gradient-to-r hover:from-white/[0.02] hover:to-transparent"
                 >
                   <div className="flex items-start gap-6">
-                    <span className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40">
-                      {post.num}
-                    </span>
+                    <TextScramble
+                      text={post.num}
+                      className="font-[family-name:var(--font-jetbrains)] text-sm text-text-muted/40"
+                      delay={i * 200}
+                    />
                     <div className="flex-1">
                       <h3 className="font-[family-name:var(--font-playfair)] text-xl font-semibold transition-colors group-hover:text-accent md:text-2xl">
                         {post.title}
@@ -663,57 +652,85 @@ export default function Home() {
       {/* ════════════════════════════════════════════
           SECTION 6: ARCHIVE / GALLERY PREVIEW
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-secondary px-6 py-16 md:px-12 md:py-32">
+      <section className="bg-bg-secondary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
             <div className="mb-10 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
               <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold md:text-6xl">
                 <SplitReveal text="Archive" />
               </h2>
-              <Link
-                href="/gallery"
-                className="group inline-flex items-center gap-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
-              >
-                SEE ALL <span className="inline-block transition-transform group-hover:translate-x-2">&rarr;</span>
-              </Link>
+              <AnimatedButton href="/gallery" variant="outline">
+                SEE ALL &rarr;
+              </AnimatedButton>
             </div>
           </ScrollReveal>
 
-          {/* Drag Scroll */}
-          <ArchiveDragScroll>
-            {galleryItems.map((item, i) => (
-              <motion.div
-                key={item.num}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                viewport={{ once: true }}
-                className="shrink-0"
-              >
-                <Link href="/gallery" className="group relative block">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className="aspect-square min-w-[200px] md:min-w-[240px] overflow-hidden rounded-lg bg-bg-primary transition-all duration-300 group-hover:ring-2 group-hover:ring-accent/50 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.1)]"
-                  >
-                    <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
-                      <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
-                        {item.num}
-                      </span>
-                      <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
-                        {item.category}
-                      </span>
+          {/* Mobile: scroll-snap horizontal */}
+          <div className="md:hidden">
+            <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {galleryItems.map((item, i) => (
+                <motion.div
+                  key={item.num}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  viewport={{ once: true }}
+                  className="shrink-0 snap-center"
+                >
+                  <Link href="/gallery" className="group relative block">
+                    <div className="aspect-square min-w-[200px] overflow-hidden rounded-lg bg-bg-primary transition-all duration-300 group-hover:ring-2 group-hover:ring-accent/50">
+                      <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
+                        <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
+                          {item.num}
+                        </span>
+                        <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
+                          {item.category}
+                        </span>
+                      </div>
                     </div>
-                  </motion.div>
-                </Link>
-              </motion.div>
-            ))}
-          </ArchiveDragScroll>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: Drag scroll */}
+          <div className="hidden md:block">
+            <ArchiveDragScroll>
+              {galleryItems.map((item, i) => (
+                <motion.div
+                  key={item.num}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  viewport={{ once: true }}
+                  className="shrink-0"
+                >
+                  <Link href="/gallery" className="group relative block">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className="aspect-square min-w-[240px] overflow-hidden rounded-lg bg-bg-primary transition-all duration-300 group-hover:ring-2 group-hover:ring-accent/50 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.1)]"
+                    >
+                      <div className="flex h-full flex-col items-center justify-center gap-2 p-4">
+                        <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-white/5 transition-colors group-hover:text-accent/20">
+                          {item.num}
+                        </span>
+                        <span className="font-[family-name:var(--font-jetbrains)] text-[8px] uppercase tracking-[0.15em] text-text-muted/40 transition-colors group-hover:text-text-muted">
+                          {item.category}
+                        </span>
+                      </div>
+                    </motion.div>
+                  </Link>
+                </motion.div>
+              ))}
+            </ArchiveDragScroll>
+          </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════
-          SECTION 7: FOOTER
+          FOOTER
       ════════════════════════════════════════════ */}
       <Footer />
     </>

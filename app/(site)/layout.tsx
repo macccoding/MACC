@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter, JetBrains_Mono } from "next/font/google";
 import "../globals.css";
-import CustomCursor from "../components/CustomCursor";
-import PageTransition from "../components/PageTransition";
-import ScrollProgress from "../components/ScrollProgress";
+import ClientProviders from "../components/ClientProviders";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -57,11 +55,9 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${inter.variable} ${jetbrains.variable} antialiased`}
       >
-        <ScrollProgress />
-        <CustomCursor />
-        <PageTransition>
+        <ClientProviders>
           {children}
-        </PageTransition>
+        </ClientProviders>
       </body>
     </html>
   );

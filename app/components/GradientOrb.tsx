@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface GradientOrbProps {
   color?: string;
@@ -21,6 +21,8 @@ export default function GradientOrb({
   duration = 20,
   mobileHidden = true,
 }: GradientOrbProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <motion.div
       className={`pointer-events-none absolute ${mobileHidden ? "hidden md:block" : ""}`}
@@ -33,11 +35,16 @@ export default function GradientOrb({
         right: position.right,
         filter: `blur(${blur}px)`,
         background: `radial-gradient(circle, rgba(${color},${opacity}) 0%, transparent 70%)`,
+        willChange: prefersReducedMotion ? "auto" : "transform",
       }}
-      animate={{
-        x: [0, 30, -20, 0],
-        y: [0, -25, 15, 0],
-      }}
+      animate={
+        prefersReducedMotion
+          ? {}
+          : {
+              x: [0, 30, -20, 0],
+              y: [0, -25, 15, 0],
+            }
+      }
       transition={{
         duration,
         repeat: Infinity,

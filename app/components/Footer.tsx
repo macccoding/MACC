@@ -4,14 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import GradientOrb from "./GradientOrb";
-
-const socialLinks = [
-  { label: "EMAIL", href: "mailto:hello@mikechen.xyz" },
-  { label: "INSTAGRAM", href: "https://instagram.com/mke.chn" },
-  { label: "X", href: "https://x.com/itsmikeychen" },
-  { label: "LINKEDIN", href: "https://linkedin.com/in/michaelacchen" },
-  { label: "WHATSAPP", href: "https://wa.me/18762607918" },
-];
+import { socialLinks } from "@/lib/data/social";
 
 export default function Footer() {
   const watermarkRef = useRef<HTMLDivElement>(null);
@@ -33,7 +26,7 @@ export default function Footer() {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
+            className="relative py-3 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent link-underline"
           >
             {link.label}
           </a>
@@ -75,7 +68,7 @@ export default function Footer() {
         </span>
         <Link
           href="/links"
-          className="relative font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent after:absolute after:bottom-[-2px] after:left-0 after:h-[1px] after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
+          className="relative py-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent link-underline"
         >
           LINKS
         </Link>

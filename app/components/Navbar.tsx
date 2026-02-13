@@ -59,13 +59,20 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-all after:absolute after:bottom-[-4px] after:left-0 after:h-[1px] after:bg-accent after:transition-all after:duration-300 hover:-translate-y-0.5 ${
+                className={`relative py-2 px-1 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] transition-all hover:-translate-y-0.5 ${
                   isActive(link.href)
-                    ? "text-accent after:w-full"
-                    : "text-text-muted hover:text-accent after:w-0 hover:after:w-full"
+                    ? "text-accent"
+                    : "text-text-muted hover:text-accent"
                 }`}
               >
                 {link.label}
+                {isActive(link.href) && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-[1px] bg-accent"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
               </Link>
             ))}
           </div>
@@ -73,7 +80,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="relative z-50 flex flex-col gap-1.5 md:hidden"
+            className="relative z-50 flex flex-col gap-1.5 p-2 md:hidden"
             aria-label="Toggle menu"
           >
             <motion.span
@@ -102,7 +109,7 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-bg-primary"
           >
-            <div className="flex flex-col items-center gap-8">
+            <div className="flex flex-col items-center gap-2">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.href}
@@ -113,7 +120,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className={`font-[family-name:var(--font-playfair)] text-3xl transition-colors hover:text-accent ${
+                    className={`block py-4 font-[family-name:var(--font-playfair)] text-3xl transition-colors hover:text-accent ${
                       isActive(link.href) ? "text-accent" : "text-text-primary"
                     }`}
                   >

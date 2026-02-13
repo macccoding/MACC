@@ -2,139 +2,11 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ScrollReveal from "../../components/ScrollReveal";
-
-/* ─── CATEGORIES ─── */
-const CATEGORIES = [
-  "ALL",
-  "FOOD & DRINK",
-  "TRAVEL",
-  "GADGETS & MAKING",
-  "DRONE / AERIAL",
-  "STREET / LIFESTYLE",
-  "PORTRAITS",
-] as const;
-
-type Category = (typeof CATEGORIES)[number];
-
-/* ─── GALLERY DATA ─── */
-interface GalleryItem {
-  num: string;
-  category: Exclude<Category, "ALL">;
-  aspect: string;
-  bg: string;
-  caption: string;
-}
-
-const galleryItems: GalleryItem[] = [
-  {
-    num: "01",
-    category: "FOOD & DRINK",
-    aspect: "aspect-[3/4]",
-    bg: "bg-[#14110F]",
-    caption: "Istry plating session. Where heritage meets the plate.",
-  },
-  {
-    num: "02",
-    category: "DRONE / AERIAL",
-    aspect: "aspect-square",
-    bg: "bg-[#1A1510]",
-    caption: "Kingston from above. DJI over the harbour at golden hour.",
-  },
-  {
-    num: "03",
-    category: "TRAVEL",
-    aspect: "aspect-[4/5]",
-    bg: "bg-[#0F1419]",
-    caption: "First light over the Blue Mountains. 5,200 ft and rising.",
-  },
-  {
-    num: "04",
-    category: "GADGETS & MAKING",
-    aspect: "aspect-[3/4]",
-    bg: "bg-[#121210]",
-    caption: "BambuLab midnight print. Watching layers build at 2 AM.",
-  },
-  {
-    num: "05",
-    category: "STREET / LIFESTYLE",
-    aspect: "aspect-[4/3]",
-    bg: "bg-[#151317]",
-    caption: "Downtown Kingston. The city never stops moving.",
-  },
-  {
-    num: "06",
-    category: "PORTRAITS",
-    aspect: "aspect-[3/4]",
-    bg: "bg-[#17140F]",
-    caption: "Portrait series. Real faces, real stories.",
-  },
-  {
-    num: "07",
-    category: "GADGETS & MAKING",
-    aspect: "aspect-square",
-    bg: "bg-[#110F14]",
-    caption: "Desk setup. Where code, design, and caffeine converge.",
-  },
-  {
-    num: "08",
-    category: "FOOD & DRINK",
-    aspect: "aspect-[4/5]",
-    bg: "bg-[#191410]",
-    caption: "Sunday kitchen. Scotch bonnet and five spice on the same stove.",
-  },
-  {
-    num: "09",
-    category: "TRAVEL",
-    aspect: "aspect-[3/4]",
-    bg: "bg-[#0F1517]",
-    caption: "Somewhere between here and there. The journey is the point.",
-  },
-  {
-    num: "10",
-    category: "STREET / LIFESTYLE",
-    aspect: "aspect-square",
-    bg: "bg-[#141219]",
-    caption: "Street corner conversations. The pulse of the city.",
-  },
-  {
-    num: "11",
-    category: "DRONE / AERIAL",
-    aspect: "aspect-[4/3]",
-    bg: "bg-[#14150F]",
-    caption: "Coastline run. Jamaica from 400 feet never gets old.",
-  },
-  {
-    num: "12",
-    category: "PORTRAITS",
-    aspect: "aspect-[4/5]",
-    bg: "bg-[#15110F]",
-    caption: "Candid moment. Unscripted, unfiltered.",
-  },
-  {
-    num: "13",
-    category: "FOOD & DRINK",
-    aspect: "aspect-[3/4]",
-    bg: "bg-[#0F1114]",
-    caption: "SuperPlus produce. Community starts at the table.",
-  },
-  {
-    num: "14",
-    category: "GADGETS & MAKING",
-    aspect: "aspect-[3/4]",
-    bg: "bg-[#1A1610]",
-    caption: "3D printed prototype. Think it, model it, hold it.",
-  },
-  {
-    num: "15",
-    category: "TRAVEL",
-    aspect: "aspect-square",
-    bg: "bg-[#101419]",
-    caption: "Golden hour. Chasing light across the island.",
-  },
-];
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
+import ScrollReveal from "@/app/components/ScrollReveal";
+import AnimatedButton from "@/app/components/AnimatedButton";
+import { CATEGORIES, galleryItems, type Category, type GalleryItem } from "@/lib/data/gallery";
 
 /* ─── LIGHTBOX COMPONENT ─── */
 function Lightbox({
@@ -142,11 +14,15 @@ function Lightbox({
   onClose,
   onPrev,
   onNext,
+  currentIndex,
+  totalCount,
 }: {
   item: GalleryItem;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
+  currentIndex: number;
+  totalCount: number;
 }) {
   /* Keyboard navigation */
   useEffect(() => {
@@ -185,6 +61,11 @@ function Lightbox({
         &times;
       </button>
 
+      {/* Counter */}
+      <div className="absolute top-6 left-1/2 -translate-x-1/2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted">
+        {currentIndex + 1} / {totalCount}
+      </div>
+
       {/* Prev Button */}
       <button
         onClick={(e) => {
@@ -209,13 +90,20 @@ function Lightbox({
         &rarr;
       </button>
 
-      {/* Content */}
+      {/* Content — swipeable on mobile */}
       <motion.div
         key={item.num}
         initial={{ opacity: 0, scale: 0.92 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.92 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.2}
+        onDragEnd={(_, info) => {
+          if (info.offset.x > 100) onPrev();
+          else if (info.offset.x < -100) onNext();
+        }}
         className="mx-auto flex max-h-[85vh] w-full max-w-4xl flex-col items-center px-4 sm:px-8 md:px-16 lg:px-24"
         onClick={(e) => e.stopPropagation()}
       >
@@ -302,6 +190,16 @@ export default function GalleryPage() {
           {filteredItems.length} FRAMES
         </span>
 
+        {/* Mobile flanking */}
+        <div className="absolute top-28 flex gap-4 text-center md:hidden">
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            VISUAL ARCHIVE
+          </span>
+          <span className="font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.2em] text-text-muted/60">
+            {filteredItems.length} FRAMES
+          </span>
+        </div>
+
         <ScrollReveal>
           <span className="mb-6 block text-center font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-accent">
             THE ARCHIVE
@@ -309,7 +207,7 @@ export default function GalleryPage() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
-          <h1 className="text-center font-[family-name:var(--font-playfair)] text-[16vw] font-bold leading-[0.85] text-text-primary sm:text-[12vw] md:text-[10vw]">
+          <h1 className="text-center font-[family-name:var(--font-playfair)] font-bold leading-[0.85] text-text-primary" style={{ fontSize: "var(--text-hero)" }}>
             Gallery
           </h1>
         </ScrollReveal>
@@ -330,11 +228,7 @@ export default function GalleryPage() {
         >
           <motion.span
             animate={{ y: [0, 8, 0] }}
-            transition={{
-              repeat: Infinity,
-              duration: 1.5,
-              ease: "easeInOut",
-            }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
             className="text-text-muted"
           >
             &darr;
@@ -348,17 +242,25 @@ export default function GalleryPage() {
       <section className="sticky top-0 z-40 border-b border-white/5 bg-bg-primary/80 px-6 py-6 backdrop-blur-lg md:px-12">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-2 md:gap-3">
           {CATEGORIES.map((cat) => (
-            <button
+            <motion.button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`rounded-full border px-4 py-2 font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-all ${
+              whileTap={{ scale: 0.95 }}
+              className={`relative rounded-full border px-5 py-3 min-h-[44px] font-[family-name:var(--font-jetbrains)] text-[10px] uppercase tracking-[0.15em] transition-all ${
                 activeCategory === cat
                   ? "border-accent bg-accent text-bg-primary"
                   : "border-white/10 text-text-muted hover:border-white/30 hover:text-text-primary"
               }`}
             >
               {cat}
-            </button>
+              {activeCategory === cat && (
+                <motion.div
+                  layoutId="gallery-filter"
+                  className="absolute inset-0 rounded-full bg-accent -z-10"
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </motion.button>
           ))}
         </div>
       </section>
@@ -381,7 +283,7 @@ export default function GalleryPage() {
           </ScrollReveal>
 
           {/* CSS Columns Masonry */}
-          <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
+          <motion.div layout className="columns-1 gap-5 sm:columns-2 lg:columns-3">
             <AnimatePresence mode="popLayout">
               {filteredItems.map((item, index) => (
                 <motion.div
@@ -400,7 +302,7 @@ export default function GalleryPage() {
                   >
                     {/* Placeholder Image Area */}
                     <div
-                      className={`${item.aspect} ${item.bg} relative flex w-full items-center justify-center overflow-hidden border border-white/[0.04] transition-all duration-300 group-hover:border-accent/30 group-hover:scale-[1.02] group-hover:ring-1 group-hover:ring-accent/20 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.08)]`}
+                      className={`${item.aspect} ${item.bg} relative flex w-full items-center justify-center overflow-hidden border border-white/[0.04] transition-all duration-300 group-hover:border-accent/30 group-hover:ring-1 group-hover:ring-accent/20 group-hover:shadow-[0_10px_40px_rgba(229,184,32,0.08)]`}
                     >
                       {/* Large Ghost Number */}
                       <span className="font-[family-name:var(--font-playfair)] text-[8rem] font-bold leading-none text-white/[0.03] transition-all group-hover:text-accent/[0.08]">
@@ -435,7 +337,7 @@ export default function GalleryPage() {
                 </motion.div>
               ))}
             </AnimatePresence>
-          </div>
+          </motion.div>
 
           {/* Empty State */}
           {filteredItems.length === 0 && (
@@ -456,7 +358,7 @@ export default function GalleryPage() {
       {/* ════════════════════════════════════════════
           BOTTOM CTA
       ════════════════════════════════════════════ */}
-      <section className="bg-bg-secondary px-6 py-16 md:py-32 md:px-12">
+      <section className="bg-bg-secondary px-6 md:px-12" style={{ paddingTop: "var(--space-section)", paddingBottom: "var(--space-section)" }}>
         <div className="mx-auto max-w-7xl text-center">
           <ScrollReveal>
             <span className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.3em] text-text-muted">
@@ -470,19 +372,13 @@ export default function GalleryPage() {
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={0.3}>
-            <a
-              href="/contact"
-              className="mt-10 inline-block rounded-full border border-accent bg-accent px-10 py-4 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-bg-primary transition-all hover:bg-transparent hover:text-accent"
-            >
+            <AnimatedButton href="/contact" variant="primary" className="mt-10">
               GET IN TOUCH
-            </a>
+            </AnimatedButton>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          FOOTER
-      ════════════════════════════════════════════ */}
       <Footer />
 
       {/* ════════════════════════════════════════════
@@ -495,6 +391,8 @@ export default function GalleryPage() {
             onClose={closeLightbox}
             onPrev={goToPrev}
             onNext={goToNext}
+            currentIndex={lightboxIndex}
+            totalCount={filteredItems.length}
           />
         )}
       </AnimatePresence>

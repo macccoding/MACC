@@ -3,9 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import ScrollReveal from "../../components/ScrollReveal";
+import GlowBorder from "@/app/components/GlowBorder";
+import StaggeredGrid from "@/app/components/StaggeredGrid";
 
 const links = [
   { label: "ISTRY", href: "#", description: "Bespoke F&B" },
@@ -14,27 +13,8 @@ const links = [
   { label: "X / TWITTER", href: "https://x.com/itsmikeychen", description: "@itsmikeychen" },
   { label: "LINKEDIN", href: "https://linkedin.com/in/michaelacchen", description: "Connect" },
   { label: "BOOK A CALL", href: "#", description: "Let's talk" },
-  { label: "WHATSAPP", href: "#", description: "Message me" },
+  { label: "WHATSAPP", href: "https://wa.me/18762607918", description: "Message me" },
 ];
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.3,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" as const },
-  },
-};
 
 export default function LinksPage() {
   return (
@@ -57,8 +37,19 @@ export default function LinksPage() {
       {/* ════════════════════════════════════════════
           MAIN CONTENT
       ════════════════════════════════════════════ */}
-      <main className="flex flex-1 flex-col items-center px-6 pb-16 pt-10">
-        <div className="w-full max-w-md">
+      <main className="relative flex flex-1 flex-col items-center px-6 pb-16 pt-10">
+        {/* Subtle rotating background gradient */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 opacity-[0.03]"
+          style={{
+            background: "conic-gradient(from 0deg at 50% 50%, #E5B820, transparent, #E5B820, transparent)",
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          aria-hidden="true"
+        />
+
+        <div className="relative z-10 w-full max-w-md">
           {/* ── PROFILE SECTION ── */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -84,32 +75,30 @@ export default function LinksPage() {
           </motion.div>
 
           {/* ── STACKED LINK BUTTONS ── */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="space-y-3"
-          >
+          <StaggeredGrid columns={1} className="space-y-3">
             {links.map((link) => (
-              <motion.div key={link.label} variants={itemVariants}>
+              <GlowBorder key={link.label} hoverOnly borderRadius={12}>
                 {link.href.startsWith("/") ? (
-                  <Link
-                    href={link.href}
-                    className="group flex w-full flex-col items-center rounded-xl border border-white/10 bg-bg-secondary px-6 py-4 text-center transition-all hover:scale-[1.02] hover:border-accent/50"
-                  >
-                    <span className="font-[family-name:var(--font-jetbrains)] text-[12px] uppercase tracking-[0.2em] text-text-primary transition-colors group-hover:text-accent">
-                      {link.label}
-                    </span>
-                    <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.15em] text-text-muted/50">
-                      {link.description}
-                    </span>
+                  <Link href={link.href}>
+                    <motion.div
+                      whileTap={{ scale: 0.98 }}
+                      className="group flex w-full min-h-[48px] flex-col items-center justify-center rounded-xl border border-white/10 bg-bg-secondary px-6 py-4 text-center transition-all hover:border-accent/50"
+                    >
+                      <span className="font-[family-name:var(--font-jetbrains)] text-[12px] uppercase tracking-[0.2em] text-text-primary transition-colors group-hover:text-accent">
+                        {link.label}
+                      </span>
+                      <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.15em] text-text-muted/50">
+                        {link.description}
+                      </span>
+                    </motion.div>
                   </Link>
                 ) : (
-                  <a
+                  <motion.a
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex w-full flex-col items-center rounded-xl border border-white/10 bg-bg-secondary px-6 py-4 text-center transition-all hover:scale-[1.02] hover:border-accent/50"
+                    whileTap={{ scale: 0.98 }}
+                    className="group flex w-full min-h-[48px] flex-col items-center justify-center rounded-xl border border-white/10 bg-bg-secondary px-6 py-4 text-center transition-all hover:border-accent/50"
                   >
                     <span className="font-[family-name:var(--font-jetbrains)] text-[12px] uppercase tracking-[0.2em] text-text-primary transition-colors group-hover:text-accent">
                       {link.label}
@@ -117,11 +106,11 @@ export default function LinksPage() {
                     <span className="mt-1 font-[family-name:var(--font-jetbrains)] text-[9px] uppercase tracking-[0.15em] text-text-muted/50">
                       {link.description}
                     </span>
-                  </a>
+                  </motion.a>
                 )}
-              </motion.div>
+              </GlowBorder>
             ))}
-          </motion.div>
+          </StaggeredGrid>
         </div>
       </main>
 
@@ -131,7 +120,7 @@ export default function LinksPage() {
       <footer className="flex flex-col items-center gap-2 px-6 pb-10 pt-6">
         <Link
           href="/"
-          className="font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
+          className="py-2 font-[family-name:var(--font-jetbrains)] text-[11px] uppercase tracking-[0.2em] text-text-muted transition-colors hover:text-accent"
         >
           mikechen.xyz
         </Link>
