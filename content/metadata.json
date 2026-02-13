@@ -1,6 +1,6 @@
 {
-  "commit": "7741337ce17747c82ab56139be6433f9d92c46bd",
-  "generated": "2026-02-13T04:58:32.968Z",
+  "commit": "32e7b76ef35cd297fe3a6236866c9f9e74f08b96",
+  "generated": "2026-02-13T06:34:28.349Z",
   "metadata": [
     {
       "__outstatic": {
@@ -22,6 +22,27 @@
       "slug": "02-the-tech-stack-behind-my-businesses",
       "status": "published",
       "title": "The Tech Stack Behind My Businesses"
+    },
+    {
+      "__outstatic": {
+        "commit": "32e7b76ef35cd297fe3a6236866c9f9e74f08b96",
+        "hash": "3244174704",
+        "path": "content/journal/01-why-im-building-a-personal-site.md"
+      },
+      "author": {
+        "name": "MACC",
+        "picture": ""
+      },
+      "category": "BUILDING",
+      "collection": "journal",
+      "date": "2026-02-12",
+      "excerpt": "One algorithm update away from disappearing, so I decided to build my own corner of the internet.",
+      "featured": true,
+      "publishedAt": "2026-02-13T06:03:59.081Z",
+      "readTime": "5 min read",
+      "slug": "01-why-im-building-a-personal-site",
+      "status": "published",
+      "title": "Why I'm Building a Personal Site in 2026"
     }
   ]
 }
