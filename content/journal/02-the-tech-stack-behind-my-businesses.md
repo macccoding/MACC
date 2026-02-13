@@ -3,7 +3,7 @@ title: "The Tech Stack Behind My Businesses"
 date: "2026-02-10"
 category: "TECH"
 readTime: "8 min read"
-excerpt: "People always ask me what I do. The real answer is that I bounce between running a food company, operating a supermarket, building an AI product, and making things — all in the same day. Here's every tool I use and why."
+excerpt: "This entire system exists because my brain has 47 tabs open at all times."
 slug: "02-the-tech-stack-behind-my-businesses"
 featured: false
 publishedAt: "2026-02-13T04:10:53.141Z"

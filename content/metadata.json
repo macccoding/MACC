@@ -1,11 +1,11 @@
 {
-  "commit": "",
-  "generated": "2026-02-13T04:50:04.775Z",
+  "commit": "7741337ce17747c82ab56139be6433f9d92c46bd",
+  "generated": "2026-02-13T04:58:32.968Z",
   "metadata": [
     {
       "__outstatic": {
-        "commit": "",
-        "hash": "2167425138",
+        "commit": "7741337ce17747c82ab56139be6433f9d92c46bd",
+        "hash": "1325544485",
         "path": "content/journal/02-the-tech-stack-behind-my-businesses.md"
       },
       "author": {
@@ -15,7 +15,7 @@
       "category": "TECH",
       "collection": "journal",
       "date": "2026-02-10",
-      "excerpt": "People always ask me what I do. The real answer is that I bounce between running a food company, operating a supermarket, building an AI product, and making things — all in the same day. Here's every tool I use and why.",
+      "excerpt": "This entire system exists because my brain has 47 tabs open at all times.",
       "featured": false,
       "publishedAt": "2026-02-13T04:10:53.141Z",
       "readTime": "8 min read",
