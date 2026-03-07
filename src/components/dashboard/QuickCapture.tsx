@@ -29,11 +29,18 @@ export function QuickCapture() {
   }, [open]);
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       if (!value.trim()) return;
-      // TODO: POST to /api/captures
-      console.log("Captured:", value);
+      try {
+        await fetch("/api/captures", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: value.trim() }),
+        });
+      } catch (err) {
+        console.error("Capture failed:", err);
+      }
       setValue("");
       setOpen(false);
     },
