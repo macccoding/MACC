@@ -1,6 +1,7 @@
 import { GLCanvas } from "@/components/gl/GLCanvas";
 import { InkSeal } from "@/components/ink/InkSeal";
 import { MenuButton } from "@/components/ui/MenuButton";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 export default function PublicLayout({
   children,
@@ -9,6 +10,7 @@ export default function PublicLayout({
 }) {
   return (
     <GLCanvas>
+      <ScrollProgress />
       <MenuButton />
       <InkSeal />
       {children}

@@ -293,6 +293,7 @@ export default function Home() {
       <section
         className="relative z-10 text-parchment"
         style={{ backgroundColor: "var(--ink-deep)" }}
+        data-theme="dark"
       >
         <AtmosphericParticles mode="dark" count={35} className="z-0" />
         <div className="py-12" />
@@ -501,14 +502,17 @@ export default function Home() {
           FOOTER
           ================================================================ */}
       <footer className="relative z-10 pb-12 pt-8">
-        <WavePattern className="absolute inset-x-0 top-0" opacity={0.03} rows={2} />
+        <WavePattern className="absolute inset-x-0 top-0" opacity={0.08} rows={3} />
 
         {/* Footer enso seal */}
-        <div className="flex justify-center px-6 mb-12">
+        <div className="flex justify-center px-6 mb-12 relative">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-48 h-48 rounded-full bg-vermillion/[0.04] blur-3xl" />
+          </div>
           <StoryImage
             src="/images/footer-enso.png"
             alt="Enso circle with vermillion seal"
-            className="max-w-[200px] md:max-w-[260px]"
+            className="max-w-[200px] md:max-w-[260px] relative z-10"
           />
         </div>
 
@@ -545,7 +549,7 @@ export default function Home() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono uppercase tracking-wider hover:text-vermillion transition-colors duration-500"
+                className="font-mono uppercase tracking-wider hover:text-vermillion transition-colors duration-500 brush-underline"
                 style={{ fontSize: "var(--text-micro)" }}
               >
                 {link.label}{" "}
