@@ -11,46 +11,22 @@ import { InkSpillTransition } from "@/components/gl/InkSpillTransition";
 import { AtmosphericParticles } from "@/components/gl/AtmosphericParticles";
 
 /* ============================================================
-   FLOATING OBJECTS — scattered interests that drift into view
+   FLOATING OBJECTS — scattered interests in a 3-column grid
+   Left column: camera, code, passport
+   Center: text
+   Right column: storefront, coffee, 3dprint
    ============================================================ */
 
-const FLOATING_OBJECTS = [
-  {
-    src: "/images/obj-camera.png",
-    alt: "Photography — Sony A7IV",
-    style: "top-[2%] left-[3%] w-28 md:w-40 -rotate-12",
-    delay: 0,
-  },
-  {
-    src: "/images/obj-storefront.png",
-    alt: "SuperPlus — Santa Cruz, Jamaica",
-    style: "top-[8%] right-[2%] w-36 md:w-52 rotate-3",
-    delay: 0.1,
-  },
-  {
-    src: "/images/obj-code.png",
-    alt: "Code — building digital things",
-    style: "top-[38%] left-[1%] w-24 md:w-32 -rotate-6",
-    delay: 0.15,
-  },
-  {
-    src: "/images/obj-coffee.png",
-    alt: "Coffee — daily ritual",
-    style: "top-[42%] right-[3%] w-24 md:w-32 rotate-6",
-    delay: 0.2,
-  },
-  {
-    src: "/images/obj-passport.png",
-    alt: "Travel — 37+ countries",
-    style: "top-[72%] left-[5%] w-28 md:w-36 -rotate-3",
-    delay: 0.25,
-  },
-  {
-    src: "/images/obj-3dprint.png",
-    alt: "3D Printing — BambuLab maker",
-    style: "top-[76%] right-[6%] w-24 md:w-32 rotate-8",
-    delay: 0.3,
-  },
+const LEFT_OBJECTS = [
+  { src: "/images/obj-camera.png", alt: "Photography — Sony A7IV", rotate: "-rotate-12", delay: 0 },
+  { src: "/images/obj-code.png", alt: "Code — building digital things", rotate: "-rotate-6", delay: 0.15 },
+  { src: "/images/obj-passport.png", alt: "Travel — 37+ countries", rotate: "-rotate-3", delay: 0.25 },
+];
+
+const RIGHT_OBJECTS = [
+  { src: "/images/obj-storefront.png", alt: "SuperPlus — Santa Cruz, Jamaica", rotate: "rotate-3", delay: 0.1 },
+  { src: "/images/obj-coffee.png", alt: "Coffee — daily ritual", rotate: "rotate-6", delay: 0.2 },
+  { src: "/images/obj-3dprint.png", alt: "3D Printing — BambuLab maker", rotate: "rotate-[8deg]", delay: 0.3 },
 ];
 
 /* ============================================================
@@ -158,6 +134,7 @@ export default function Home() {
             alt="Tropical hillside of Mandeville, Jamaica through morning mist"
             className="max-w-4xl mx-auto"
             parallax={0.4}
+            inkBleed={10}
           />
           <InkSplatter
             className="absolute -bottom-8 right-1/4 w-24 opacity-30"
@@ -173,32 +150,35 @@ export default function Home() {
           align="center"
         />
 
-        {/* Floating objects — scattered interests */}
-        <div className="relative min-h-[80vh] md:min-h-[100vh]">
-          {FLOATING_OBJECTS.map((obj) => (
-            <motion.div
-              key={obj.src}
-              className={`absolute ${obj.style}`}
-              initial={{ opacity: 0, y: 40, scale: 0.85 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                duration: 1,
-                delay: obj.delay,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <img
-                src={obj.src}
-                alt={obj.alt}
-                loading="lazy"
-                className="w-full h-auto mix-blend-multiply"
-              />
-            </motion.div>
-          ))}
+        {/* Floating objects — 3-column grid layout */}
+        <div className="grid grid-cols-[1fr_2fr_1fr] md:grid-cols-3 gap-4 md:gap-8 px-4 md:px-12 py-12 md:py-20 items-center">
+          {/* Left column: camera, code, passport */}
+          <div className="flex flex-col gap-6 md:gap-10 items-center">
+            {LEFT_OBJECTS.map((obj, i) => (
+              <motion.div
+                key={obj.src}
+                className={`w-24 md:w-36 ${obj.rotate} ${i === 1 ? "ml-4" : i === 2 ? "-ml-2" : ""}`}
+                initial={{ opacity: 0, y: 40, scale: 0.85 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{
+                  duration: 1,
+                  delay: obj.delay,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <img
+                  src={obj.src}
+                  alt={obj.alt}
+                  loading="lazy"
+                  className="w-full h-auto mix-blend-multiply"
+                />
+              </motion.div>
+            ))}
+          </div>
 
-          {/* Center text among objects */}
-          <div className="absolute inset-0 flex items-center justify-center px-8">
+          {/* Center text */}
+          <div className="flex items-center justify-center px-4">
             <motion.p
               className="text-center font-light max-w-lg"
               style={{
@@ -216,6 +196,31 @@ export default function Home() {
                 Everything moves me.
               </span>
             </motion.p>
+          </div>
+
+          {/* Right column: storefront, coffee, 3dprint */}
+          <div className="flex flex-col gap-6 md:gap-10 items-center">
+            {RIGHT_OBJECTS.map((obj, i) => (
+              <motion.div
+                key={obj.src}
+                className={`w-24 md:w-36 ${obj.rotate} ${i === 0 ? "w-32 md:w-44" : ""} ${i === 1 ? "-mr-4" : i === 2 ? "mr-2" : ""}`}
+                initial={{ opacity: 0, y: 40, scale: 0.85 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{
+                  duration: 1,
+                  delay: obj.delay,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <img
+                  src={obj.src}
+                  alt={obj.alt}
+                  loading="lazy"
+                  className="w-full h-auto mix-blend-multiply"
+                />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -248,6 +253,7 @@ export default function Home() {
             alt="A path splitting into many diverging trails"
             className="max-w-lg md:max-w-xl"
             parallax={0.3}
+            inkBleed={20}
           />
         </div>
 
@@ -265,6 +271,7 @@ export default function Home() {
             alt="A figure hunched under an enormous bundle, still walking forward"
             className="max-w-5xl mx-auto"
             parallax={0.5}
+            inkBleed={30}
           />
         </div>
 
@@ -349,6 +356,7 @@ export default function Home() {
             alt="A vermillion enso with divine golden energy spilling from the gap"
             className="max-w-3xl md:max-w-4xl"
             parallax={0.2}
+            inkBleed={40}
           />
         </div>
 
@@ -372,6 +380,7 @@ export default function Home() {
             alt="A vermillion river winding through ink-wash mountains — the path seen from above forms a beautiful pattern"
             className="w-full"
             parallax={0.6}
+            inkBleed={50}
           />
         </div>
 
@@ -402,6 +411,7 @@ export default function Home() {
             alt="A celestial brush painting reality into existence — color blooms where it touches"
             className="max-w-5xl mx-auto"
             parallax={0.4}
+            inkBleed={60}
           />
         </div>
 
@@ -434,6 +444,7 @@ export default function Home() {
             alt="An Ookami-inspired white wolf running at full speed, flowers blooming in its wake"
             className="w-full"
             parallax={0.5}
+            inkBleed={70}
           />
         </div>
 
