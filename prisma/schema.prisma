@@ -1,0 +1,290 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [vector]
+}
+
+// ─── Kioku Knowledge Graph ──────────────────────────────────────
+
+model Node {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  tags      String[] @default([])
+  status    String   @default("active")
+  fields    Json     @default("{}")
+  notes     String   @default("")
+  embedding Unsupported("vector(512)")?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sourceLinks Link[]       @relation("SourceNode")
+  targetLinks Link[]       @relation("TargetNode")
+  recalls     NodeRecall[]
+
+  @@map("nodes")
+}
+
+model Link {
+  id           String   @id @default(cuid())
+  sourceNodeId String
+  targetNodeId String
+  relation     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sourceNode Node @relation("SourceNode", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNode Node @relation("TargetNode", fields: [targetNodeId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceNodeId, targetNodeId, relation])
+  @@map("links")
+}
+
+model Message {
+  id           String   @id @default(cuid())
+  role         String
+  content      String
+  followUp     String?
+  createdNodes String[] @default([])
+  updatedNodes String[] @default([])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("messages")
+}
+
+model NodeRecall {
+  id           String   @id @default(cuid())
+  nodeId       String
+  lastSurfaced DateTime @default(now())
+  surfaceCount Int      @default(1)
+
+  node Node @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+
+  @@unique([nodeId])
+  @@map("node_recalls")
+}
+
+model Journal {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("journals")
+}
+
+// ─── Dashboard Modules ──────────────────────────────────────────
+
+model Goal {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @default("")
+  deadline    DateTime?
+  status      String    @default("active")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("goals")
+}
+
+model Habit {
+  id               String   @id @default(cuid())
+  title            String
+  frequency        String   @default("daily")
+  streakProtection Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  logs HabitLog[]
+
+  @@map("habits")
+}
+
+model HabitLog {
+  id        String   @id @default(cuid())
+  habitId   String
+  date      DateTime @db.Date
+  completed Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  habit Habit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+  @@map("habit_logs")
+}
+
+model Investment {
+  id           String   @id @default(cuid())
+  symbol       String
+  thesis       String   @default("")
+  entryPrice   Float?
+  currentPrice Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  notes InvestmentNote[]
+
+  @@map("investments")
+}
+
+model InvestmentNote {
+  id           String   @id @default(cuid())
+  investmentId String
+  content      String
+  createdAt    DateTime @default(now())
+
+  investment Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+
+  @@map("investment_notes")
+}
+
+model TravelItem {
+  id        String   @id @default(cuid())
+  title     String
+  category  String   @default("trip")
+  status    String   @default("planning")
+  budget    Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("travel_items")
+}
+
+model CreativeProject {
+  id          String   @id @default(cuid())
+  title       String
+  status      String   @default("in_progress")
+  description String   @default("")
+  images      String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("creative_projects")
+}
+
+model ReadingItem {
+  id        String   @id @default(cuid())
+  title     String
+  type      String   @default("book")
+  status    String   @default("to_read")
+  rating    Int?
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reading_items")
+}
+
+model Contact {
+  id              String    @id @default(cuid())
+  name            String
+  context         String    @default("")
+  lastInteraction DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  interactions ContactInteraction[]
+
+  @@map("contacts")
+}
+
+model ContactInteraction {
+  id        String   @id @default(cuid())
+  contactId String
+  date      DateTime @default(now())
+  notes     String
+  createdAt DateTime @default(now())
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@map("contact_interactions")
+}
+
+model LearningTrack {
+  id        String   @id @default(cuid())
+  title     String
+  type      String   @default("course")
+  progress  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  logs LearningLog[]
+
+  @@map("learning_tracks")
+}
+
+model LearningLog {
+  id       String   @id @default(cuid())
+  trackId  String
+  date     DateTime @default(now())
+  notes    String   @default("")
+  duration Int?
+  createdAt DateTime @default(now())
+
+  track LearningTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@map("learning_logs")
+}
+
+model Capture {
+  id        String   @id @default(cuid())
+  content   String
+  category  String?
+  processed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("captures")
+}
+
+model EmailCache {
+  id        String   @id @default(cuid())
+  gmailId   String   @unique
+  subject   String
+  sender    String
+  category  String?
+  summary   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_cache")
+}
+
+model HealthSnapshot {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  steps     Int?
+  calories  Int?
+  heartRate Int?
+  sleep     Float?
+  data      Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@map("health_snapshots")
+}
+
+model FinancialSnapshot {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  data      Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@map("financial_snapshots")
+}
+
+model KemiConversation {
+  id        String   @id @default(cuid())
+  messages  Json     @default("[]")
+  context   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("kemi_conversations")
+}
