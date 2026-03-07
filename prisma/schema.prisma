@@ -288,3 +288,18 @@ model KemiConversation {
 
   @@map("kemi_conversations")
 }
+
+// ─── WebAuthn Passkeys ──────────────────────────────────────────
+
+model Passkey {
+  id              String   @id @default(cuid())
+  credentialId    String   @unique
+  publicKey       Bytes
+  counter         BigInt   @default(0)
+  deviceName      String   @default("Unknown device")
+  transports      String[] @default([])
+  createdAt       DateTime @default(now())
+  lastUsedAt      DateTime @default(now())
+
+  @@map("passkeys")
+}
