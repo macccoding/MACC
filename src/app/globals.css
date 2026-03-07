@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+/* ========================================
+   SUMI-E DESIGN SYSTEM — mikechen.xyz
+   Warm ink tones, vermillion accent, washi texture
+   ======================================== */
+
+:root {
+  /* Ink Palette */
+  --ink-black: #1A1814;
+  --ink-deep: #12100D;
+  --ink-dark: #2A2520;
+  --ink-mid: #3D3630;
+  --ink-wash: rgba(26, 24, 20, 0.6);
+  --ink-wash-light: rgba(26, 24, 20, 0.3);
+
+  /* Parchment */
+  --parchment: #F5EDE0;
+  --parchment-warm: #EDE3D4;
+  --parchment-muted: #B8A99A;
+  --parchment-dim: #8A7E72;
+
+  /* Vermillion (朱) */
+  --vermillion: #D03A2C;
+  --vermillion-glow: #E8503F;
+  --vermillion-dark: #A12E23;
+  --vermillion-wash: rgba(208, 58, 44, 0.12);
+
+  /* Gold Seal (金) */
+  --gold-seal: #C9A84C;
+  --gold-seal-glow: #DFC068;
+  --gold-seal-dim: #9A8240;
+
+  /* Sumi Gray */
+  --sumi-gray: #6B635A;
+  --sumi-gray-light: #8A8278;
+  --sumi-gray-dark: #4A4540;
+
+  /* Fluid Typography */
+  --text-hero: clamp(3.5rem, 14vw, 12rem);
+  --text-display: clamp(2.5rem, 8vw, 7rem);
+  --text-heading: clamp(1.75rem, 4.5vw, 3.5rem);
+  --text-subheading: clamp(1.15rem, 2.5vw, 1.75rem);
+  --text-body: clamp(0.95rem, 1.1vw, 1.15rem);
+  --text-small: clamp(0.75rem, 0.9vw, 0.85rem);
+  --text-micro: clamp(0.65rem, 0.75vw, 0.75rem);
+
+  /* Spacing */
+  --space-section: clamp(5rem, 12vw, 12rem);
+  --space-element: clamp(2rem, 5vw, 5rem);
+  --space-card: clamp(1.25rem, 2.5vw, 2rem);
+
+  /* Easing */
+  --ease-ink: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-brush: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-slow: 900ms;
+  --duration-medium: 450ms;
+  --duration-fast: 200ms;
+}
+
+@theme inline {
+  /* Colors */
+  --color-ink-black: var(--ink-black);
+  --color-ink-deep: var(--ink-deep);
+  --color-ink-dark: var(--ink-dark);
+  --color-ink-mid: var(--ink-mid);
+  --color-parchment: var(--parchment);
+  --color-parchment-warm: var(--parchment-warm);
+  --color-parchment-muted: var(--parchment-muted);
+  --color-parchment-dim: var(--parchment-dim);
+  --color-vermillion: var(--vermillion);
+  --color-vermillion-glow: var(--vermillion-glow);
+  --color-vermillion-dark: var(--vermillion-dark);
+  --color-gold-seal: var(--gold-seal);
+  --color-gold-seal-glow: var(--gold-seal-glow);
+  --color-sumi-gray: var(--sumi-gray);
+  --color-sumi-gray-light: var(--sumi-gray-light);
+  --color-sumi-gray-dark: var(--sumi-gray-dark);
+
+  /* Fonts */
+  --font-serif: var(--font-noto-serif);
+  --font-mono: var(--font-ibm-plex-mono);
+  --font-display: var(--font-noto-serif); /* Will be replaced with custom brush font */
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--ink-black);
+  color: var(--parchment);
+  font-family: var(--font-serif), Georgia, serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--vermillion);
+  color: var(--parchment);
+}
+
+/* ========================================
+   WASHI PAPER GRAIN OVERLAY
+   Subtle warm texture across the entire page
+   ======================================== */
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 512px 512px;
+  mix-blend-mode: soft-light;
+}
+
+/* ========================================
+   CUSTOM CURSOR (desktop only)
+   ======================================== */
+
+@media (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sumi-gray-dark);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vermillion-dark);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.ink-wash-overlay {
+  background: var(--ink-wash);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.vermillion-glow {
+  box-shadow:
+    0 0 20px rgba(208, 58, 44, 0.2),
+    0 0 40px rgba(208, 58, 44, 0.1);
+}
+
+.gold-glow {
+  box-shadow:
+    0 0 20px rgba(201, 168, 76, 0.2),
+    0 0 40px rgba(201, 168, 76, 0.1);
+}
+
+/* Mono label style — used for UI labels */
+.mono-label {
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+  font-size: var(--text-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--parchment-muted);
+}
