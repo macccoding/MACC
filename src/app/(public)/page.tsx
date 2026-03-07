@@ -8,6 +8,7 @@ import { CloudPattern } from "@/components/ink/CloudPattern";
 import { InkSplatter } from "@/components/ink/InkSplatter";
 import { WavePattern } from "@/components/ink/WavePattern";
 import { InkSpillTransition } from "@/components/gl/InkSpillTransition";
+import { AtmosphericParticles } from "@/components/gl/AtmosphericParticles";
 
 /* ============================================================
    FLOATING OBJECTS — scattered interests that drift into view
@@ -142,6 +143,7 @@ export default function Home() {
           "Where I started. Small island. Big appetite."
           ================================================================ */}
       <section className="relative z-10">
+        <AtmosphericParticles mode="parchment" count={40} className="z-0" />
         <div className="py-12" />
 
         <ScrollTextReveal
@@ -282,6 +284,7 @@ export default function Home() {
         className="relative z-10 text-parchment"
         style={{ backgroundColor: "var(--ink-deep)" }}
       >
+        <AtmosphericParticles mode="dark" count={35} className="z-0" />
         <div className="py-12" />
 
         {/* Submerged figure */}
@@ -338,6 +341,7 @@ export default function Home() {
           "When you stop trying to go straight."
           ================================================================ */}
       <section className="relative z-10">
+        <AtmosphericParticles mode="parchment" count={30} className="z-0" />
         {/* Enso moment — the turn */}
         <div className="relative px-6 md:px-12 lg:px-20 flex justify-center -mt-16">
           <StoryImage
