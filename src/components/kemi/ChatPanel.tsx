@@ -41,30 +41,61 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
     }
   }, [messages]);
 
-  const handleSend = useCallback(async (content: string) => {
-    const userMsg: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content,
-      timestamp: getTime(),
-    };
-    setMessages((prev) => [...prev, userMsg]);
-    setLoading(true);
+  const handleSend = useCallback(
+    async (content: string) => {
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        role: "user",
+        content,
+        timestamp: getTime(),
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      setLoading(true);
 
-    // TODO: Call /api/kemi — placeholder echo for now
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          role: "kemi",
-          content: `I heard you. Kemi agent integration coming soon — for now I'm just a pretty face.`,
-          timestamp: getTime(),
-        },
-      ]);
-      setLoading(false);
-    }, 700);
-  }, []);
+      try {
+        // Build API history — exclude welcome message, map "kemi" → "assistant"
+        const apiHistory = messages
+          .filter((m) => m.id !== "1")
+          .map((m) => ({
+            role: m.role === "kemi" ? ("assistant" as const) : ("user" as const),
+            content: m.content,
+          }));
+
+        const res = await fetch("/api/kemi", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: content, history: apiHistory }),
+        });
+
+        if (!res.ok) throw new Error(`API ${res.status}`);
+
+        const data = await res.json();
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            role: "kemi",
+            content: data.content,
+            timestamp: getTime(),
+          },
+        ]);
+      } catch {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            role: "kemi",
+            content: "Connection failed. Try again.",
+            timestamp: getTime(),
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [messages]
+  );
 
   return (
     <AnimatePresence>
