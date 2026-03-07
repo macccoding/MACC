@@ -9,6 +9,7 @@ import { InkSplatter } from "@/components/ink/InkSplatter";
 import { WavePattern } from "@/components/ink/WavePattern";
 import { InkSpillTransition } from "@/components/gl/InkSpillTransition";
 import { AtmosphericParticles } from "@/components/gl/AtmosphericParticles";
+import { BrushDivider } from "@/components/ink/BrushDivider";
 
 /* ============================================================
    FLOATING OBJECTS — scattered interests in a 3-column grid
@@ -124,7 +125,7 @@ export default function Home() {
 
         <ScrollTextReveal
           text="From a balcony above a supermarket in Santa Cruz, watching the town wake up every morning — I learned that life is built from the edges, not the center."
-          scrollSpan={2.2}
+          scrollSpan={1.6}
         />
 
         {/* Mandeville scene */}
@@ -145,7 +146,7 @@ export default function Home() {
 
         <ScrollTextReveal
           text="I wanted to build things. To create something from nothing. To see the world and bring pieces of it back with me."
-          scrollSpan={2}
+          scrollSpan={1.5}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -225,6 +226,8 @@ export default function Home() {
         </div>
       </section>
 
+      <BrushDivider variant={1} className="px-6 md:px-20" />
+
       {/* ================================================================
           ACT 2 — THE WINDING
           "The path twists. Many directions at once."
@@ -243,7 +246,7 @@ export default function Home() {
 
         <ScrollTextReveal
           text="When you chase everything that moves you, people want a straight answer for a winding path. They ask what you actually do."
-          scrollSpan={2}
+          scrollSpan={1.5}
         />
 
         {/* Forking paths */}
@@ -259,7 +262,7 @@ export default function Home() {
 
         <ScrollTextReveal
           text="Pick a lane. Focus. Specialize. The pressure piles on. Slow at first. Then all at once."
-          scrollSpan={1.8}
+          scrollSpan={1.4}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -307,12 +310,12 @@ export default function Home() {
 
         <ScrollTextReveal
           text="You're doing everything you're supposed to do. Building. Studying. Learning the languages. Showing up. But results never arrive fast enough to quiet the voice that says maybe you're spread too thin."
-          scrollSpan={2.5}
+          scrollSpan={1.8}
         />
 
         <ScrollTextReveal
           text="Some nights you sink into the question — what if none of this connects? What if the winding path is just wandering?"
-          scrollSpan={1.8}
+          scrollSpan={1.4}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -331,7 +334,7 @@ export default function Home() {
 
         <ScrollTextReveal
           text="But honestly, that tiny ember in your chest — the one that won't let you stop building, won't let you stop moving — that's the only compass you've ever needed."
-          scrollSpan={2.2}
+          scrollSpan={1.6}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -364,14 +367,14 @@ export default function Home() {
 
         <ScrollTextReveal
           text="Then something shifts. Not dramatically. Not all at once. You learn to breathe again."
-          scrollSpan={1.8}
+          scrollSpan={1.4}
           fontSize="var(--text-heading)"
           align="center"
         />
 
         <ScrollTextReveal
           text="You stop caring about the straight path and start trusting the winding one. You start finding beauty in the uncertainty."
-          scrollSpan={2}
+          scrollSpan={1.5}
         />
 
         {/* Winding river — the reveal. Full-width cinematic moment. */}
@@ -388,16 +391,18 @@ export default function Home() {
 
         <ScrollTextReveal
           text="You realize that the river — seen from above — was always drawing something beautiful. What felt chaotic at ground level is elegant from a distance."
-          scrollSpan={2.2}
+          scrollSpan={1.6}
         />
 
         <ScrollTextReveal
           text="Growth isn't a sprint. It's the quiet endurance between failures."
-          scrollSpan={1.5}
+          scrollSpan={1.2}
           fontSize="var(--text-heading)"
           align="center"
         />
       </section>
+
+      <BrushDivider variant={2} className="px-6 md:px-20" />
 
       {/* ================================================================
           ACT 5 — EXPERIENCE. BUILD. MOVE.
@@ -419,7 +424,7 @@ export default function Home() {
 
         <ScrollTextReveal
           text="And so, you keep going. You stop waiting for clarity and start walking anyway. You learn that direction comes slowly, like light in the morning — you don't notice it until it's already there."
-          scrollSpan={2.2}
+          scrollSpan={1.6}
         />
 
         {/* Spiral Seasons — centered */}
@@ -435,7 +440,7 @@ export default function Home() {
 
         <ScrollTextReveal
           text="You stop trying to fix everything and instead let time do what it does best. Soften. Reveal. Align."
-          scrollSpan={1.8}
+          scrollSpan={1.4}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -465,27 +470,29 @@ export default function Home() {
         <div className="py-16" />
       </section>
 
+      <BrushDivider variant={3} className="px-6 md:px-20" />
+
       {/* ================================================================
           CLOSING — the whisper
           ================================================================ */}
       <section className="relative z-10">
         <ScrollTextReveal
           text="Maybe direction isn't found."
-          scrollSpan={1.3}
+          scrollSpan={1.0}
           fontSize="var(--text-heading)"
           align="center"
         />
 
         <ScrollTextReveal
           text="Maybe it forms under your feet as you keep walking."
-          scrollSpan={1.5}
+          scrollSpan={1.2}
           fontSize="var(--text-heading)"
           align="center"
         />
 
         <ScrollTextReveal
           text="From Mandeville to wherever this takes me."
-          scrollSpan={1.2}
+          scrollSpan={1.0}
           align="center"
         />
       </section>

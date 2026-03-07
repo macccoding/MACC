@@ -73,12 +73,12 @@ function Word({
   // Each word has a reveal window within the scroll progress
   const start = index / total;
   const end = Math.min(start + 1.5 / total, 1);
-  const opacity = useTransform(scrollProgress, [start, end], [0.08, 1]);
+  const opacity = useTransform(scrollProgress, [start, end], [0.15, 1]);
   const y = useTransform(scrollProgress, [start, end], [4, 0]);
 
   return (
     <motion.span
-      className="inline-block mr-[0.3em] will-change-[opacity,transform]"
+      className="inline-block mr-[0.3em]"
       style={{ opacity, y }}
     >
       {word}
