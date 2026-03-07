@@ -194,3 +194,35 @@ body::after {
   text-transform: uppercase;
   color: var(--sumi-gray);
 }
+
+/* ========================================
+   IMAGE ANIMATIONS — subtle life in still images
+   ======================================== */
+
+@keyframes koi-sway {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(3px) rotate(0.3deg); }
+  75% { transform: translateX(-3px) rotate(-0.3deg); }
+}
+
+@keyframes spiral-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes enso-glow {
+  0%, 100% { filter: drop-shadow(0 0 0px rgba(201, 168, 76, 0)); }
+  50% { filter: drop-shadow(0 0 20px rgba(201, 168, 76, 0.15)); }
+}
+
+.animate-koi-sway {
+  animation: koi-sway 6s ease-in-out infinite;
+}
+
+.animate-spiral-rotate {
+  animation: spiral-rotate 60s linear infinite;
+}
+
+.animate-enso-glow {
+  animation: enso-glow 4s ease-in-out infinite;
+}

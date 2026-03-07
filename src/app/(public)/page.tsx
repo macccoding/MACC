@@ -325,6 +325,7 @@ export default function Home() {
             className="max-w-3xl"
             blend={false}
             parallax={0.4}
+            animationClass="animate-koi-sway"
           />
         </div>
 
@@ -357,6 +358,7 @@ export default function Home() {
             className="max-w-3xl md:max-w-4xl"
             parallax={0.2}
             inkBleed={40}
+            animationClass="animate-enso-glow"
           />
         </div>
 
@@ -427,6 +429,7 @@ export default function Home() {
             alt="A spiral of seasons — winter, spring, summer, autumn — time compounding into growth"
             className="max-w-md md:max-w-lg"
             parallax={0.3}
+            animationClass="animate-spiral-rotate"
           />
         </div>
 
