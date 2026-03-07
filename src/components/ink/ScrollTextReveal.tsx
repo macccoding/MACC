@@ -72,8 +72,8 @@ function Word({
 }) {
   // Each word has a reveal window within the scroll progress
   const start = index / total;
-  const end = Math.min(start + 2.5 / total, 1);
-  const opacity = useTransform(scrollProgress, [start, end], [0.15, 1]);
+  const end = Math.min(start + 4 / total, 1);
+  const opacity = useTransform(scrollProgress, [start, end], [0.12, 1]);
   const y = useTransform(scrollProgress, [start, end], [3, 0]);
 
   return (
