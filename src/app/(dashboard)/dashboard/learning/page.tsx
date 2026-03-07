@@ -35,9 +35,9 @@ const TYPE_COLORS: Record<TrackType, { bg: string; border: string; text: string 
     text: "text-gold-seal",
   },
   language: {
-    bg: "bg-parchment-muted/15",
-    border: "border-parchment-muted/30",
-    text: "text-parchment-muted",
+    bg: "bg-sumi-gray/15",
+    border: "border-sumi-gray/30",
+    text: "text-sumi-gray",
   },
   skill: {
     bg: "bg-vermillion-glow/15",
@@ -169,12 +169,12 @@ export default function LearningPage() {
         transition={{ duration: 0.5, ease }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           Learning
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Sharpen the blade every day.
         </p>
       </motion.div>
@@ -192,13 +192,13 @@ export default function LearningPage() {
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder="What are you learning?"
-          className="flex-1 min-w-0 bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="flex-1 min-w-0 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <select
           value={newType}
           onChange={(e) => setNewType(e.target.value as TrackType)}
-          className="bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-3 py-2.5 text-parchment font-mono tracking-[0.08em] focus:outline-none focus:border-vermillion/30 transition-colors duration-300 appearance-none cursor-pointer"
+          className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-3 py-2.5 text-ink-black font-mono tracking-[0.08em] focus:outline-none focus:border-vermillion/30 transition-colors duration-300 appearance-none cursor-pointer"
           style={{ fontSize: "var(--text-micro)" }}
         >
           {TRACK_TYPES.map((t) => (
@@ -226,7 +226,7 @@ export default function LearningPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               Loading...
             </motion.div>
@@ -236,7 +236,7 @@ export default function LearningPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               No tracks yet. Start learning something new.
             </motion.div>
@@ -258,13 +258,13 @@ export default function LearningPage() {
                     duration: 0.4,
                     ease,
                   }}
-                  className="group bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                  className="group bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
                 >
                   {/* Title row */}
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <h3
-                        className="text-parchment font-light leading-snug truncate"
+                        className="text-ink-black font-light leading-snug truncate"
                         style={{ fontSize: "var(--text-body)" }}
                       >
                         {track.title}
@@ -289,7 +289,7 @@ export default function LearningPage() {
                             setLoggingTrackId(track.id);
                           }
                         }}
-                        className="h-7 flex items-center justify-center rounded-lg px-2 text-parchment-dim hover:text-gold-seal hover:bg-gold-seal/10 transition-colors duration-200 font-mono tracking-[0.08em]"
+                        className="h-7 flex items-center justify-center rounded-lg px-2 text-sumi-gray-light hover:text-gold-seal hover:bg-gold-seal/10 transition-colors duration-200 font-mono tracking-[0.08em]"
                         style={{ fontSize: "var(--text-micro)" }}
                         title="Log session"
                       >
@@ -297,7 +297,7 @@ export default function LearningPage() {
                       </button>
                       <button
                         onClick={() => deleteTrack(track.id)}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
                         title="Delete"
                       >
                         &times;
@@ -309,19 +309,19 @@ export default function LearningPage() {
                   <div className="space-y-1.5 mb-3">
                     <div className="flex items-center justify-between">
                       <span
-                        className="font-mono tracking-[0.08em] text-parchment-dim"
+                        className="font-mono tracking-[0.08em] text-sumi-gray-light"
                         style={{ fontSize: "var(--text-micro)" }}
                       >
                         Progress
                       </span>
                       <span
-                        className="font-mono tracking-[0.08em] text-parchment-muted"
+                        className="font-mono tracking-[0.08em] text-sumi-gray"
                         style={{ fontSize: "var(--text-micro)" }}
                       >
                         {Math.round(track.progress)}%
                       </span>
                     </div>
-                    <div className="relative h-1.5 bg-sumi-gray-dark/20 rounded-full overflow-hidden">
+                    <div className="relative h-1.5 bg-sumi-gray/20 rounded-full overflow-hidden">
                       <motion.div
                         className={`absolute inset-y-0 left-0 rounded-full ${
                           track.progress >= 100
@@ -356,7 +356,7 @@ export default function LearningPage() {
                           className="flex items-baseline gap-2 text-sm"
                         >
                           <span
-                            className="font-mono tracking-[0.08em] text-parchment-dim shrink-0"
+                            className="font-mono tracking-[0.08em] text-sumi-gray-light shrink-0"
                             style={{ fontSize: "var(--text-micro)" }}
                           >
                             {formatDate(log.date)}
@@ -369,7 +369,7 @@ export default function LearningPage() {
                               {log.duration}m
                             </span>
                           )}
-                          <span className="text-parchment-muted truncate text-sm">
+                          <span className="text-sumi-gray truncate text-sm">
                             {log.notes || "--"}
                           </span>
                         </div>
@@ -388,19 +388,19 @@ export default function LearningPage() {
                         transition={{ duration: 0.25, ease }}
                         className="overflow-hidden"
                       >
-                        <div className="pt-3 mt-2 border-t border-sumi-gray-dark/12 space-y-3">
+                        <div className="pt-3 mt-2 border-t border-sumi-gray/20 space-y-3">
                           <textarea
                             value={logNotes}
                             onChange={(e) => setLogNotes(e.target.value)}
                             placeholder="What did you learn?"
                             rows={2}
-                            className="w-full bg-ink-dark/60 border border-sumi-gray-dark/12 rounded-lg px-3 py-2 text-parchment placeholder:text-parchment-dim/40 focus:outline-none focus:border-vermillion/30 transition-colors duration-300 resize-none"
+                            className="w-full bg-parchment-warm/60 border border-sumi-gray/20 rounded-lg px-3 py-2 text-ink-black placeholder:text-sumi-gray-light/40 focus:outline-none focus:border-vermillion/30 transition-colors duration-300 resize-none"
                             style={{ fontSize: "var(--text-body)" }}
                           />
                           <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2">
                               <label
-                                className="font-mono tracking-[0.08em] text-parchment-dim"
+                                className="font-mono tracking-[0.08em] text-sumi-gray-light"
                                 style={{ fontSize: "var(--text-micro)" }}
                               >
                                 Duration
@@ -411,7 +411,7 @@ export default function LearningPage() {
                                 value={logDuration}
                                 onChange={(e) => setLogDuration(e.target.value)}
                                 placeholder="min"
-                                className="w-20 bg-ink-dark/60 border border-sumi-gray-dark/12 rounded-lg px-3 py-1.5 text-parchment placeholder:text-parchment-dim/40 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+                                className="w-20 bg-parchment-warm/60 border border-sumi-gray/20 rounded-lg px-3 py-1.5 text-ink-black placeholder:text-sumi-gray-light/40 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
                                 style={{ fontSize: "var(--text-body)" }}
                               />
                             </div>
@@ -431,7 +431,7 @@ export default function LearningPage() {
                                 setLogNotes("");
                                 setLogDuration("");
                               }}
-                              className="bg-ink-dark/20 border border-sumi-gray-dark/12 text-parchment-dim rounded-lg px-4 py-1.5 font-mono tracking-[0.12em] uppercase hover:border-sumi-gray-dark/25 hover:text-parchment-muted transition-all duration-300"
+                              className="bg-parchment-warm/20 border border-sumi-gray/20 text-sumi-gray-light rounded-lg px-4 py-1.5 font-mono tracking-[0.12em] uppercase hover:border-sumi-gray/20 hover:text-sumi-gray transition-all duration-300"
                               style={{ fontSize: "var(--text-micro)" }}
                             >
                               Cancel

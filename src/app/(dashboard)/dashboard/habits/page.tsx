@@ -120,12 +120,12 @@ export default function HabitsPage() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           Habits
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Small daily actions that compound over time.
         </p>
       </motion.div>
@@ -143,7 +143,7 @@ export default function HabitsPage() {
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder="New habit..."
-          className="flex-1 bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="flex-1 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <button
@@ -165,7 +165,7 @@ export default function HabitsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               Loading...
             </motion.div>
@@ -175,7 +175,7 @@ export default function HabitsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               No habits yet. Start building one.
             </motion.div>
@@ -192,12 +192,12 @@ export default function HabitsPage() {
                   duration: 0.4,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                className="group bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
               >
                 <div className="flex items-center justify-between gap-3 mb-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <h3
-                      className="text-parchment font-light leading-snug truncate"
+                      className="text-ink-black font-light leading-snug truncate"
                       style={{ fontSize: "var(--text-body)" }}
                     >
                       {habit.title}
@@ -215,7 +215,7 @@ export default function HabitsPage() {
                   {/* Delete button — visible on hover */}
                   <button
                     onClick={() => deleteHabit(habit.id)}
-                    className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 shrink-0"
+                    className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 shrink-0"
                     title="Delete"
                   >
                     &times;
@@ -233,7 +233,7 @@ export default function HabitsPage() {
                         className={`w-9 h-9 rounded-lg border text-xs font-mono tracking-wide transition-all duration-200 ${
                           completed
                             ? "bg-vermillion/20 border-vermillion/40 text-vermillion"
-                            : "bg-ink-mid/20 border-sumi-gray-dark/12 text-sumi-gray-dark hover:border-sumi-gray-dark/25"
+                            : "bg-parchment-warm/20 border-sumi-gray/20 text-sumi-gray hover:border-sumi-gray/20"
                         }`}
                         title={day.dateStr}
                       >

@@ -130,12 +130,12 @@ export default function InvestmentsPage() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           Investments
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Track your portfolio thesis and positions.
         </p>
       </motion.div>
@@ -153,7 +153,7 @@ export default function InvestmentsPage() {
           value={newSymbol}
           onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
           placeholder="Symbol..."
-          className="flex-1 bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment font-mono tracking-wider uppercase placeholder:text-parchment-dim/50 placeholder:normal-case focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="flex-1 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black font-mono tracking-wider uppercase placeholder:text-sumi-gray-light/50 placeholder:normal-case focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <input
@@ -162,7 +162,7 @@ export default function InvestmentsPage() {
           value={newEntryPrice}
           onChange={(e) => setNewEntryPrice(e.target.value)}
           placeholder="Entry price..."
-          className="w-36 bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="w-36 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <button
@@ -184,7 +184,7 @@ export default function InvestmentsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               Loading...
             </motion.div>
@@ -194,7 +194,7 @@ export default function InvestmentsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               No investments tracked yet.
             </motion.div>
@@ -215,18 +215,18 @@ export default function InvestmentsPage() {
                     duration: 0.4,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="group bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                  className="group bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       {/* Symbol */}
-                      <h3 className="text-parchment font-mono text-lg tracking-wider">
+                      <h3 className="text-ink-black font-mono text-lg tracking-wider">
                         {inv.symbol}
                       </h3>
 
                       {/* Thesis */}
                       {inv.thesis && (
-                        <p className="text-parchment-dim text-sm mt-1 leading-relaxed">
+                        <p className="text-sumi-gray-light text-sm mt-1 leading-relaxed">
                           {inv.thesis}
                         </p>
                       )}
@@ -235,7 +235,7 @@ export default function InvestmentsPage() {
                       <div className="flex items-center gap-4 mt-2">
                         {inv.entryPrice !== null && (
                           <span
-                            className="font-mono tracking-[0.08em] text-parchment-muted"
+                            className="font-mono tracking-[0.08em] text-sumi-gray"
                             style={{ fontSize: "var(--text-micro)" }}
                           >
                             Entry ${inv.entryPrice.toFixed(2)}
@@ -243,7 +243,7 @@ export default function InvestmentsPage() {
                         )}
                         {inv.currentPrice !== null && (
                           <span
-                            className="font-mono tracking-[0.08em] text-parchment-muted"
+                            className="font-mono tracking-[0.08em] text-sumi-gray"
                             style={{ fontSize: "var(--text-micro)" }}
                           >
                             Current ${inv.currentPrice.toFixed(2)}
@@ -267,7 +267,7 @@ export default function InvestmentsPage() {
                     <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0">
                       <button
                         onClick={() => deleteInvestment(inv.id)}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
                         title="Delete"
                       >
                         &times;
@@ -276,10 +276,10 @@ export default function InvestmentsPage() {
                   </div>
 
                   {/* Notes Section */}
-                  <div className="mt-3 pt-3 border-t border-sumi-gray-dark/8">
+                  <div className="mt-3 pt-3 border-t border-sumi-gray/20">
                     <button
                       onClick={() => toggleNotes(inv.id)}
-                      className="font-mono tracking-[0.12em] uppercase text-parchment-dim hover:text-parchment-muted transition-colors duration-200"
+                      className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light hover:text-sumi-gray transition-colors duration-200"
                       style={{ fontSize: "var(--text-micro)" }}
                     >
                       Notes ({inv.notes.length}){" "}
@@ -306,10 +306,10 @@ export default function InvestmentsPage() {
                                   key={note.id}
                                   className="flex items-start gap-2 text-sm"
                                 >
-                                  <span className="text-parchment-muted font-mono shrink-0" style={{ fontSize: "var(--text-micro)" }}>
+                                  <span className="text-sumi-gray font-mono shrink-0" style={{ fontSize: "var(--text-micro)" }}>
                                     {formatDate(note.createdAt)}
                                   </span>
-                                  <span className="text-parchment-dim leading-relaxed">
+                                  <span className="text-sumi-gray-light leading-relaxed">
                                     {note.content}
                                   </span>
                                 </div>
@@ -335,7 +335,7 @@ export default function InvestmentsPage() {
                                 }
                               }}
                               placeholder="Add a note..."
-                              className="flex-1 bg-ink-dark/30 border border-sumi-gray-dark/8 rounded-lg px-3 py-1.5 text-parchment text-sm placeholder:text-parchment-dim/40 focus:outline-none focus:border-vermillion/20 transition-colors duration-300"
+                              className="flex-1 bg-parchment-warm/30 border border-sumi-gray/20 rounded-lg px-3 py-1.5 text-ink-black text-sm placeholder:text-sumi-gray-light/40 focus:outline-none focus:border-vermillion/20 transition-colors duration-300"
                             />
                             <button
                               onClick={() => addNote(inv.id)}

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { BrushDivider } from "@/components/ink/BrushDivider";
 import { Footer } from "@/components/ui/Footer";
+import { WavePattern } from "@/components/ink/WavePattern";
 
 const PROJECTS = [
   {
@@ -18,10 +19,10 @@ const PROJECTS = [
     icon: (
       <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
         <path d="M20,70 C24,86 40,96 60,96 C80,96 96,86 100,70" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <path d="M14,70 L106,70" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M44,60 C44,50 40,38 44,28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
-        <path d="M60,56 C60,44 56,32 60,20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-        <path d="M76,60 C76,50 80,40 76,28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.25" />
+        <path d="M14,70 L106,70" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        <path d="M44,60 C44,50 40,38 44,28" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity="0.4" />
+        <path d="M60,56 C60,44 56,32 60,20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity="0.3" />
+        <path d="M76,60 C76,50 80,40 76,28" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity="0.25" />
       </svg>
     ),
   },
@@ -36,9 +37,9 @@ const PROJECTS = [
     // Storefront — simple architectural lines
     icon: (
       <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
-        <path d="M20,90 L20,40 L60,20 L100,40 L100,90" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-        <path d="M20,90 L100,90" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <rect x="42" y="58" width="36" height="32" rx="1" stroke="currentColor" strokeWidth="1.2" />
+        <path d="M20,90 L20,40 L60,20 L100,40 L100,90" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
+        <path d="M20,90 L100,90" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        <rect x="42" y="58" width="36" height="32" rx="1" stroke="currentColor" strokeWidth="2.5" />
         <path d="M60,58 L60,90" stroke="currentColor" strokeWidth="1" opacity="0.4" />
         <path d="M20,40 L100,40" stroke="currentColor" strokeWidth="1" opacity="0.3" />
       </svg>
@@ -55,16 +56,16 @@ const PROJECTS = [
     // Brain/circuit — neural network nodes
     icon: (
       <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
-        <circle cx="60" cy="40" r="6" stroke="currentColor" strokeWidth="1.5" />
-        <circle cx="34" cy="64" r="5" stroke="currentColor" strokeWidth="1.2" />
-        <circle cx="86" cy="64" r="5" stroke="currentColor" strokeWidth="1.2" />
-        <circle cx="44" cy="90" r="4" stroke="currentColor" strokeWidth="1.2" />
-        <circle cx="76" cy="90" r="4" stroke="currentColor" strokeWidth="1.2" />
+        <circle cx="60" cy="40" r="6" stroke="currentColor" strokeWidth="3" />
+        <circle cx="34" cy="64" r="5" stroke="currentColor" strokeWidth="2.5" />
+        <circle cx="86" cy="64" r="5" stroke="currentColor" strokeWidth="2.5" />
+        <circle cx="44" cy="90" r="4" stroke="currentColor" strokeWidth="2.5" />
+        <circle cx="76" cy="90" r="4" stroke="currentColor" strokeWidth="2.5" />
         <path d="M60,46 L34,64" stroke="currentColor" strokeWidth="1" opacity="0.4" />
         <path d="M60,46 L86,64" stroke="currentColor" strokeWidth="1" opacity="0.4" />
         <path d="M34,69 L44,86" stroke="currentColor" strokeWidth="1" opacity="0.3" />
         <path d="M86,69 L76,86" stroke="currentColor" strokeWidth="1" opacity="0.3" />
-        <path d="M39,64 L81,64" stroke="currentColor" strokeWidth="0.8" opacity="0.2" strokeDasharray="3 2" />
+        <path d="M39,64 L81,64" stroke="currentColor" strokeWidth="1.5" opacity="0.2" strokeDasharray="3 2" />
       </svg>
     ),
   },
@@ -79,9 +80,9 @@ const PROJECTS = [
     // Container/ship — cargo silhouette
     icon: (
       <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
-        <path d="M16,72 L24,48 L96,48 L104,72" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-        <path d="M10,72 L110,72" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M14,78 C30,86 60,88 90,86 C100,84 106,80 106,78" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M16,72 L24,48 L96,48 L104,72" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
+        <path d="M10,72 L110,72" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        <path d="M14,78 C30,86 60,88 90,86 C100,84 106,80 106,78" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
         <rect x="34" y="52" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.4" />
         <rect x="54" y="52" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.3" />
         <rect x="74" y="52" width="16" height="16" stroke="currentColor" strokeWidth="1" opacity="0.25" />
@@ -156,7 +157,7 @@ function ProjectSection({
 
           {/* Project name — display font */}
           <h2
-            className="text-parchment tracking-[-0.02em] mb-3"
+            className="text-ink-black tracking-[-0.02em] mb-3"
             style={{
               fontSize: "var(--text-heading)",
               fontFamily: "var(--font-display), serif",
@@ -176,7 +177,7 @@ function ProjectSection({
 
           {/* Description */}
           <p
-            className="text-parchment-muted font-light leading-[1.8] max-w-xl"
+            className="text-sumi-gray font-light leading-[1.8] max-w-xl"
             style={{ fontSize: "var(--text-body)" }}
           >
             {project.description}
@@ -202,7 +203,7 @@ export default function ProjectsPage() {
           Things I&apos;ve Built
         </motion.p>
         <motion.h1
-          className="text-parchment tracking-[-0.03em]"
+          className="text-ink-black tracking-[-0.03em]"
           style={{
             fontSize: "var(--text-display)",
             fontFamily: "var(--font-display), serif",
@@ -231,7 +232,10 @@ export default function ProjectsPage() {
       ))}
 
       <BrushDivider variant={3} color="sumi" className="px-6 md:px-12 lg:px-20 xl:px-28" />
-      <Footer />
+      <div className="relative">
+        <WavePattern className="absolute inset-x-0 top-0" opacity={0.04} rows={2} />
+        <Footer />
+      </div>
     </main>
   );
 }

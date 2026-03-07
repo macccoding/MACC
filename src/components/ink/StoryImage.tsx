@@ -25,7 +25,7 @@ export function StoryImage({
   src,
   alt,
   className = "",
-  blend = true,
+  blend = false,
   parallax = 0,
   priority = false,
   delay = 0,

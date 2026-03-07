@@ -18,16 +18,13 @@ import { BrushDivider } from "@/components/ink/BrushDivider";
    Right column: storefront, coffee, 3dprint
    ============================================================ */
 
-const LEFT_OBJECTS = [
-  { src: "/images/obj-camera.png", alt: "Photography — Sony A7IV", rotate: "-rotate-12", delay: 0 },
-  { src: "/images/obj-code.png", alt: "Code — building digital things", rotate: "-rotate-6", delay: 0.15 },
-  { src: "/images/obj-passport.png", alt: "Travel — 37+ countries", rotate: "-rotate-3", delay: 0.25 },
-];
-
-const RIGHT_OBJECTS = [
-  { src: "/images/obj-storefront.png", alt: "SuperPlus — Santa Cruz, Jamaica", rotate: "rotate-3", delay: 0.1 },
-  { src: "/images/obj-coffee.png", alt: "Coffee — daily ritual", rotate: "rotate-6", delay: 0.2 },
-  { src: "/images/obj-3dprint.png", alt: "3D Printing — BambuLab maker", rotate: "rotate-[8deg]", delay: 0.3 },
+const SCATTERED_OBJECTS = [
+  { src: "/images/obj-camera.png", alt: "Photography — Sony A7IV", rotate: "-rotate-12", delay: 0, pos: "top-[5%] left-[8%]", size: "w-28 md:w-40" },
+  { src: "/images/obj-code.png", alt: "Code — building digital things", rotate: "-rotate-6", delay: 0.15, pos: "top-[52%] left-[3%]", size: "w-24 md:w-36" },
+  { src: "/images/obj-passport.png", alt: "Travel — 37+ countries", rotate: "-rotate-3", delay: 0.25, pos: "top-[78%] left-[15%]", size: "w-24 md:w-32" },
+  { src: "/images/wok.png", alt: "Cooking — wok on fire", rotate: "rotate-3", delay: 0.1, pos: "top-[2%] right-[5%]", size: "w-32 md:w-48" },
+  { src: "/images/obj-coffee.png", alt: "Coffee — daily ritual", rotate: "rotate-6", delay: 0.2, pos: "top-[48%] right-[6%]", size: "w-20 md:w-32" },
+  { src: "/images/obj-3dprint.png", alt: "3D Printing — BambuLab maker", rotate: "rotate-[8deg]", delay: 0.3, pos: "top-[80%] right-[10%]", size: "w-24 md:w-36" },
 ];
 
 /* ============================================================
@@ -46,16 +43,14 @@ export default function Home() {
   const heroOpacity = useTransform(heroScroll, [0, 0.7], [1, 0]);
 
   return (
-    <main className="relative overflow-x-hidden">
+    <main className="relative overflow-x-clip">
       {/* ================================================================
           HERO — "The Path Isn't Straight"
           ================================================================ */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+        className="relative min-h-screen flex flex-col items-center justify-center overflow-x-clip"
       >
-        <CloudPattern position="top-right" opacity={0.04} className="z-0" />
-
         <motion.div
           className="relative z-10 flex flex-col items-center w-full px-6"
           style={{ opacity: heroOpacity }}
@@ -65,7 +60,7 @@ export default function Home() {
             src="/images/text-title.png"
             alt="The Path Isn't Straight"
             loading="eager"
-            className="w-[85vw] max-w-2xl h-auto mix-blend-multiply"
+            className="w-[85vw] max-w-2xl h-auto"
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -107,7 +102,7 @@ export default function Home() {
             src="/images/hero-wanderer.png"
             alt="A wanderer at the base of a winding mountain path"
             loading="eager"
-            className="w-[90vw] max-w-5xl h-auto mix-blend-multiply translate-y-[30%]"
+            className="w-[90vw] max-w-5xl h-auto translate-y-[30%]"
             initial={{ opacity: 0, y: 80 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -121,19 +116,21 @@ export default function Home() {
           ================================================================ */}
       <section className="relative z-10">
         <AtmosphericParticles mode="parchment" count={40} className="z-0" />
-        <div className="py-12" />
+        <div className="py-20 md:py-32" />
 
         <ScrollTextReveal
-          text="From a balcony above a supermarket in Santa Cruz, watching the town wake up every morning — I learned that life is built from the edges, not the center."
-          scrollSpan={1.6}
+          text="From a balcony above a supermarket in Santa Cruz, watching the town wake up every morning — I learned that life takes shape from the edges, not the center."
+          scrollSpan={1.2}
         />
 
-        {/* Mandeville scene */}
-        <div className="relative px-6 md:px-12 lg:px-20">
+        <div className="py-8 md:py-12" />
+
+        {/* Mandeville scene — full-bleed cinematic */}
+        <div className="relative w-full overflow-hidden">
           <StoryImage
             src="/images/mandeville.png"
             alt="Tropical hillside of Mandeville, Jamaica through morning mist"
-            className="max-w-4xl mx-auto"
+            className="w-full"
             parallax={0.4}
             inkBleed={10}
           />
@@ -144,44 +141,21 @@ export default function Home() {
           />
         </div>
 
+        <div className="py-6 md:py-10" />
+
         <ScrollTextReveal
-          text="I wanted to build things. To create something from nothing. To see the world and bring pieces of it back with me."
-          scrollSpan={1.5}
+          text="I wanted to make things that mattered. To see the world and bring pieces of it back with me."
+          scrollSpan={1.1}
           fontSize="var(--text-heading)"
           align="center"
         />
 
-        {/* Floating objects — 3-column grid layout */}
-        <div className="grid grid-cols-[1fr_2fr_1fr] md:grid-cols-3 gap-4 md:gap-8 px-4 md:px-12 py-12 md:py-20 items-center">
-          {/* Left column: camera, code, passport */}
-          <div className="flex flex-col gap-6 md:gap-10 items-center">
-            {LEFT_OBJECTS.map((obj, i) => (
-              <motion.div
-                key={obj.src}
-                className={`w-24 md:w-36 ${obj.rotate} ${i === 1 ? "ml-4" : i === 2 ? "-ml-2" : ""}`}
-                initial={{ opacity: 0, y: 40, scale: 0.85 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{
-                  duration: 1,
-                  delay: obj.delay,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <img
-                  src={obj.src}
-                  alt={obj.alt}
-                  loading="lazy"
-                  className="w-full h-auto mix-blend-multiply"
-                />
-              </motion.div>
-            ))}
-          </div>
-
+        {/* Floating objects — organic scattered layout */}
+        <div className="relative w-full min-h-[70vh] md:min-h-[80vh] px-4 md:px-12 py-12 md:py-20">
           {/* Center text */}
-          <div className="flex items-center justify-center px-4">
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
             <motion.p
-              className="text-center font-light max-w-lg"
+              className="text-center font-light max-w-lg px-4"
               style={{
                 fontSize: "var(--text-subheading)",
                 fontFamily: "var(--font-display), serif",
@@ -191,7 +165,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.3 }}
             >
-              Photography. Logistics. Code. Travel. Cooking. Making.
+              Photography. Code. Travel. Cooking. Music. Living.
               <br />
               <span className="text-vermillion/60 italic">
                 Everything moves me.
@@ -199,30 +173,28 @@ export default function Home() {
             </motion.p>
           </div>
 
-          {/* Right column: storefront, coffee, 3dprint */}
-          <div className="flex flex-col gap-6 md:gap-10 items-center">
-            {RIGHT_OBJECTS.map((obj, i) => (
-              <motion.div
-                key={obj.src}
-                className={`w-24 md:w-36 ${obj.rotate} ${i === 0 ? "w-32 md:w-44" : ""} ${i === 1 ? "-mr-4" : i === 2 ? "mr-2" : ""}`}
-                initial={{ opacity: 0, y: 40, scale: 0.85 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{
-                  duration: 1,
-                  delay: obj.delay,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <img
-                  src={obj.src}
-                  alt={obj.alt}
-                  loading="lazy"
-                  className="w-full h-auto mix-blend-multiply"
-                />
-              </motion.div>
-            ))}
-          </div>
+          {/* Scattered objects */}
+          {SCATTERED_OBJECTS.map((obj) => (
+            <motion.div
+              key={obj.src}
+              className={`absolute ${obj.pos} ${obj.size} ${obj.rotate}`}
+              initial={{ opacity: 0, y: 40, scale: 0.85 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{
+                duration: 1,
+                delay: obj.delay,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <img
+                src={obj.src}
+                alt={obj.alt}
+                loading="lazy"
+                className="w-full h-auto"
+              />
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -245,8 +217,8 @@ export default function Home() {
         </div>
 
         <ScrollTextReveal
-          text="When you chase everything that moves you, people want a straight answer for a winding path. They ask what you actually do."
-          scrollSpan={1.5}
+          text="When you chase everything that moves you, the hardest question anyone can ask is — what do you actually do? People want a straight answer for a winding path."
+          scrollSpan={1.1}
         />
 
         {/* Forking paths */}
@@ -261,8 +233,8 @@ export default function Home() {
         </div>
 
         <ScrollTextReveal
-          text="Pick a lane. Focus. Specialize. The pressure piles on. Slow at first. Then all at once."
-          scrollSpan={1.4}
+          text="Society says pick a lane. Focus. Specialize. And the longer you don't, the louder it gets."
+          scrollSpan={1.0}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -278,11 +250,11 @@ export default function Home() {
           />
         </div>
 
-        <div className="py-16" />
+        <div className="py-24 md:py-32" />
       </section>
 
       {/* ================================================================
-          INK TRANSITION — parchment dissolves into darkness
+          INK TRANSITION — parchment fades into darkness
           ================================================================ */}
       <InkSpillTransition direction="enter" />
 
@@ -310,13 +282,13 @@ export default function Home() {
         </div>
 
         <ScrollTextReveal
-          text="You're doing everything you're supposed to do. Building. Studying. Learning the languages. Showing up. But results never arrive fast enough to quiet the voice that says maybe you're spread too thin."
-          scrollSpan={1.8}
+          text="You're doing everything you're supposed to do. Learning. Working. 'Being an adult.' Showing up. But results never arrive fast enough to quiet the voice that says maybe you're spread too thin."
+          scrollSpan={1.3}
         />
 
         <ScrollTextReveal
-          text="Some nights you sink into the question — what if none of this connects? What if the winding path is just wandering?"
-          scrollSpan={1.4}
+          text="Some nights you sink into the question — what if none of this connects? What if the winding path is just... wandering?"
+          scrollSpan={1.1}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -334,8 +306,8 @@ export default function Home() {
         </div>
 
         <ScrollTextReveal
-          text="But honestly, that tiny ember in your chest — the one that won't let you stop building, won't let you stop moving — that's the only compass you've ever needed."
-          scrollSpan={1.6}
+          text="But that ember in your chest — the one that won't let you sit still, won't let you stop — that's the only compass you've ever needed."
+          scrollSpan={1.2}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -344,7 +316,7 @@ export default function Home() {
       </section>
 
       {/* ================================================================
-          LIGHT RETURNS — darkness yields to parchment
+          LIGHT RETURNS — darkness fades to parchment
           ================================================================ */}
       <InkSpillTransition direction="exit" />
 
@@ -355,7 +327,7 @@ export default function Home() {
       <section className="relative z-10">
         <AtmosphericParticles mode="parchment" count={30} className="z-0" />
         {/* Enso moment — the turn */}
-        <div className="relative px-6 md:px-12 lg:px-20 flex justify-center -mt-16">
+        <div className="relative px-6 md:px-12 lg:px-20 flex justify-center">
           <StoryImage
             src="/images/enso-moment.png"
             alt="A vermillion enso with divine golden energy spilling from the gap"
@@ -367,37 +339,44 @@ export default function Home() {
         </div>
 
         <ScrollTextReveal
-          text="Then something shifts. Not dramatically. Not all at once. You learn to breathe again."
-          scrollSpan={1.4}
+          text="Then something loosens. Quietly. You learn to breathe again."
+          scrollSpan={1.0}
           fontSize="var(--text-heading)"
           align="center"
         />
 
         <ScrollTextReveal
           text="You stop caring about the straight path and start trusting the winding one. You start finding beauty in the uncertainty."
-          scrollSpan={1.5}
+          scrollSpan={1.1}
         />
 
         {/* Winding river — the reveal. Full-width cinematic moment. */}
         <div className="relative w-full overflow-hidden">
           <CloudPattern position="top-right" opacity={0.03} className="z-0" />
-          <StoryImage
-            src="/images/winding-river.png"
-            alt="A vermillion river winding through ink-wash mountains — the path seen from above forms a beautiful pattern"
-            className="w-full"
-            parallax={0.6}
-            inkBleed={50}
-          />
+          <div
+            style={{
+              maskImage: "linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%)",
+            }}
+          >
+            <StoryImage
+              src="/images/winding-river.png"
+              alt="A vermillion river winding through ink-wash mountains — the path seen from above forms a beautiful pattern"
+              className="w-full"
+              parallax={0.6}
+              inkBleed={50}
+            />
+          </div>
         </div>
 
         <ScrollTextReveal
           text="You realize that the river — seen from above — was always drawing something beautiful. What felt chaotic at ground level is elegant from a distance."
-          scrollSpan={1.6}
+          scrollSpan={1.2}
         />
 
         <ScrollTextReveal
-          text="Growth isn't a sprint. It's the quiet endurance between failures."
-          scrollSpan={1.2}
+          text="Growth was never a sprint. It's the quiet endurance between failures."
+          scrollSpan={0.9}
           fontSize="var(--text-heading)"
           align="center"
         />
@@ -424,8 +403,8 @@ export default function Home() {
         </div>
 
         <ScrollTextReveal
-          text="And so, you keep going. You stop waiting for clarity and start walking anyway. You learn that direction comes slowly, like light in the morning — you don't notice it until it's already there."
-          scrollSpan={1.6}
+          text="And so, you keep going. You stop waiting for clarity and keep walking anyway. You learn that direction comes slowly, like light in the morning — you don't notice it until it's already there."
+          scrollSpan={1.2}
         />
 
         {/* Spiral Seasons — centered */}
@@ -435,26 +414,33 @@ export default function Home() {
             alt="A spiral of seasons — winter, spring, summer, autumn — time compounding into growth"
             className="max-w-md md:max-w-lg"
             parallax={0.3}
-            animationClass="animate-spiral-rotate"
+            animationClass=""
           />
         </div>
 
         <ScrollTextReveal
-          text="You stop trying to fix everything and instead let time do what it does best. Soften. Reveal. Align."
-          scrollSpan={1.4}
+          text="You stop trying to fix everything and instead let time do what it does best. Settle. Unfold. Align."
+          scrollSpan={1.0}
           fontSize="var(--text-heading)"
           align="center"
         />
 
         {/* Wolf Running — full-width climax */}
         <div className="relative w-full overflow-hidden">
-          <StoryImage
-            src="/images/wolf-running.png"
-            alt="An Ookami-inspired white wolf running at full speed, flowers blooming in its wake"
-            className="w-full"
-            parallax={0.5}
-            inkBleed={70}
-          />
+          <div
+            style={{
+              maskImage: "linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%)",
+            }}
+          >
+            <StoryImage
+              src="/images/wolf-running.png"
+              alt="An Ookami-inspired white wolf running at full speed, flowers blooming in its wake"
+              className="w-full"
+              parallax={0.5}
+              inkBleed={70}
+            />
+          </div>
         </div>
 
         <div className="py-8" />

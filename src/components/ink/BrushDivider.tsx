@@ -4,37 +4,39 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 interface BrushDividerProps {
-  /** Which brush stroke variation to use */
   variant?: 1 | 2 | 3;
-  /** Color of the stroke */
   color?: "vermillion" | "parchment" | "sumi";
-  /** Width of the container */
   className?: string;
 }
 
-// Hand-drawn brush stroke SVG paths — each feels organic, not geometric
-const STROKES: Record<number, { path: string; viewBox: string }> = {
+const STROKES: Record<
+  number,
+  { main: string; shadow: string; viewBox: string }
+> = {
   1: {
-    // Long horizontal sweep with natural taper — like a single fude brush pull
-    path: "M0,20 C30,18 60,22 100,16 C160,8 240,24 320,18 C380,12 440,22 500,20 C540,18 580,16 600,18",
-    viewBox: "0 0 600 40",
+    main: "M0,30 C30,26 60,34 100,24 C160,12 240,36 320,26 C380,16 440,34 500,30 C540,26 580,24 600,28",
+    shadow:
+      "M10,34 C40,30 70,37 110,28 C170,16 250,38 330,30 C390,20 450,36 510,34 C545,30 585,28 600,32",
+    viewBox: "0 0 600 60",
   },
   2: {
-    // Shorter, thicker, with a slight arc — confident downward stroke
-    path: "M0,24 C40,20 80,12 140,10 C200,8 280,16 360,12 C420,8 480,14 520,16 C560,18 590,14 600,16",
-    viewBox: "0 0 600 36",
+    main: "M0,34 C40,28 80,16 140,14 C200,10 280,24 360,16 C420,10 480,20 520,22 C560,26 590,18 600,22",
+    shadow:
+      "M8,38 C48,32 88,20 148,18 C208,14 288,28 368,20 C428,14 488,24 528,26 C565,30 594,22 600,26",
+    viewBox: "0 0 600 56",
   },
   3: {
-    // Wispy, thin — like the trailing end of a brush lifting off paper
-    path: "M0,16 C60,14 100,20 180,18 C240,16 300,12 380,14 C440,16 500,20 560,16 C580,14 595,18 600,18",
-    viewBox: "0 0 600 32",
+    main: "M0,24 C60,20 100,32 180,28 C240,24 300,16 380,20 C440,24 500,32 560,24 C580,20 595,28 600,28",
+    shadow:
+      "M8,28 C68,24 108,35 188,32 C248,28 308,20 388,24 C448,28 508,35 568,28 C586,24 598,32 600,32",
+    viewBox: "0 0 600 52",
   },
 };
 
 const COLORS = {
   vermillion: "#D03A2C",
-  parchment: "rgba(245, 237, 224, 0.15)",
-  sumi: "rgba(107, 99, 90, 0.25)",
+  parchment: "rgba(26, 24, 20, 0.08)",
+  sumi: "rgba(26, 24, 20, 0.2)",
 };
 
 export function BrushDivider({
@@ -50,7 +52,11 @@ export function BrushDivider({
   });
 
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.1, 0.8, 1], [0, 1, 1, 0.7]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.1, 0.8, 1],
+    [0, 1, 1, 0.7]
+  );
 
   const stroke = STROKES[variant];
   const strokeColor = COLORS[color];
@@ -67,9 +73,17 @@ export function BrushDivider({
         preserveAspectRatio="xMidYMid meet"
       >
         <motion.path
-          d={stroke.path}
+          d={stroke.shadow}
           stroke={strokeColor}
           strokeWidth="2"
+          strokeLinecap="round"
+          fill="none"
+          style={{ pathLength, opacity: 0.15 }}
+        />
+        <motion.path
+          d={stroke.main}
+          stroke={strokeColor}
+          strokeWidth="6"
           strokeLinecap="round"
           fill="none"
           style={{ pathLength, opacity }}

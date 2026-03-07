@@ -17,7 +17,7 @@ interface ScrollTextRevealProps {
 export function ScrollTextReveal({
   text,
   className = "",
-  scrollSpan = 2,
+  scrollSpan = 1.2,
   fontSize = "var(--text-subheading)",
   align = "left",
 }: ScrollTextRevealProps) {
@@ -26,17 +26,17 @@ export function ScrollTextReveal({
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 0.85", "end 0.35"],
+    offset: ["start 0.6", "end 0.4"],
   });
 
   return (
     <div
       ref={containerRef}
       className={`relative ${className}`}
-      style={{ minHeight: `${scrollSpan * 50}vh` }}
+      style={{ minHeight: `${scrollSpan * 50 + 20}vh` }}
     >
       <div
-        className={`sticky top-[35vh] px-6 md:px-12 lg:px-20 xl:px-28 max-w-4xl ${
+        className={`sticky top-[45vh] px-6 md:px-12 lg:px-20 xl:px-28 max-w-4xl ${
           align === "center" ? "mx-auto text-center" : ""
         }`}
       >
@@ -72,9 +72,9 @@ function Word({
 }) {
   // Each word has a reveal window within the scroll progress
   const start = index / total;
-  const end = Math.min(start + 1.5 / total, 1);
+  const end = Math.min(start + 2.5 / total, 1);
   const opacity = useTransform(scrollProgress, [start, end], [0.15, 1]);
-  const y = useTransform(scrollProgress, [start, end], [4, 0]);
+  const y = useTransform(scrollProgress, [start, end], [3, 0]);
 
   return (
     <motion.span

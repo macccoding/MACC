@@ -144,7 +144,7 @@ export function InkCursor() {
       } else {
         ctx.beginPath();
         ctx.arc(x, y, cursorSize, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245, 237, 224, ${cursorOpacity})`;
+        ctx.fillStyle = `rgba(26, 24, 20, ${cursorOpacity})`;
         ctx.fill();
       }
 
@@ -174,7 +174,7 @@ export function InkCursor() {
         if (d.size > 1.2) {
           ctx.beginPath();
           ctx.arc(d.x - d.size * 0.2, d.y - d.size * 0.2, d.size * 0.3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(245, 237, 224, ${alpha * 0.1})`;
+          ctx.fillStyle = `rgba(245, 237, 224, ${alpha * 0.15})`;
           ctx.fill();
         }
       }

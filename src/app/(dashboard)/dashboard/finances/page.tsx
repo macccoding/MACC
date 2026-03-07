@@ -87,12 +87,12 @@ export default function FinancesPage() {
         transition={{ duration: 0.5, ease: EASE }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           Financial Pulse
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           $15K debt &rarr; $0. Track the kill.
         </p>
       </motion.div>
@@ -105,7 +105,7 @@ export default function FinancesPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-parchment-dim text-sm py-12 text-center"
+            className="text-sumi-gray-light text-sm py-12 text-center"
           >
             Loading...
           </motion.div>
@@ -115,7 +115,7 @@ export default function FinancesPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-parchment-dim text-sm py-12 text-center"
+            className="text-sumi-gray-light text-sm py-12 text-center"
           >
             No financial data yet.
           </motion.div>
@@ -139,17 +139,17 @@ export default function FinancesPage() {
                     duration: 0.5,
                     ease: EASE,
                   }}
-                  className="bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                  className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
                 >
                   <p
-                    className="font-mono uppercase tracking-[0.12em] text-parchment-dim mb-1"
+                    className="font-mono uppercase tracking-[0.12em] text-sumi-gray-light mb-1"
                     style={{ fontSize: "var(--text-micro)" }}
                   >
                     {m.label}
                   </p>
                   <p
                     className={`text-lg font-serif ${
-                      m.accent ? "text-vermillion/50" : "text-parchment"
+                      m.accent ? "text-vermillion/50" : "text-ink-black"
                     }`}
                   >
                     {formatCurrency(latest[m.key])}
@@ -165,7 +165,7 @@ export default function FinancesPage() {
               transition={{ delay: 0.5, duration: 0.5, ease: EASE }}
             >
               <h2
-                className="font-mono uppercase tracking-[0.12em] text-parchment-dim mb-4"
+                className="font-mono uppercase tracking-[0.12em] text-sumi-gray-light mb-4"
                 style={{ fontSize: "var(--text-micro)" }}
               >
                 Recent Snapshots
@@ -183,36 +183,36 @@ export default function FinancesPage() {
                         duration: 0.4,
                         ease: EASE,
                       }}
-                      className="bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-3 flex items-center justify-between gap-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                      className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-3 flex items-center justify-between gap-4 hover:border-sumi-gray/20 transition-colors duration-300"
                     >
                       <span
-                        className="font-mono text-parchment-muted shrink-0"
+                        className="font-mono text-sumi-gray shrink-0"
                         style={{ fontSize: "var(--text-micro)" }}
                       >
                         {formatDate(snap.date)}
                       </span>
                       <div className="flex items-center gap-4 text-sm overflow-x-auto">
                         {d.netWorth !== undefined && (
-                          <span className="text-parchment-dim whitespace-nowrap">
-                            <span className="text-parchment-muted">NW</span>{" "}
+                          <span className="text-sumi-gray-light whitespace-nowrap">
+                            <span className="text-sumi-gray">NW</span>{" "}
                             {formatCurrency(d.netWorth)}
                           </span>
                         )}
                         {d.debt !== undefined && (
-                          <span className="text-parchment-dim whitespace-nowrap">
-                            <span className="text-parchment-muted">Debt</span>{" "}
+                          <span className="text-sumi-gray-light whitespace-nowrap">
+                            <span className="text-sumi-gray">Debt</span>{" "}
                             {formatCurrency(d.debt)}
                           </span>
                         )}
                         {d.savings !== undefined && (
-                          <span className="text-parchment-dim whitespace-nowrap">
-                            <span className="text-parchment-muted">Save</span>{" "}
+                          <span className="text-sumi-gray-light whitespace-nowrap">
+                            <span className="text-sumi-gray">Save</span>{" "}
                             {formatCurrency(d.savings)}
                           </span>
                         )}
                         {d.income !== undefined && (
-                          <span className="text-parchment-dim whitespace-nowrap">
-                            <span className="text-parchment-muted">Inc</span>{" "}
+                          <span className="text-sumi-gray-light whitespace-nowrap">
+                            <span className="text-sumi-gray">Inc</span>{" "}
                             {formatCurrency(d.income)}
                           </span>
                         )}

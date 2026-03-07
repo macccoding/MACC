@@ -104,12 +104,12 @@ export default function DashboardHome() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           {getGreeting()}, <span className="text-vermillion">Mike</span>
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Here&apos;s your day at a glance.
         </p>
       </motion.div>
@@ -119,7 +119,7 @@ export default function DashboardHome() {
         {cards.map((card, i) => (
           <motion.div
             key={card.title}
-            className="bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+            className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -130,13 +130,13 @@ export default function DashboardHome() {
           >
             <p
               className={`font-mono tracking-[0.12em] uppercase mb-2.5 ${
-                card.accent ? "text-vermillion/50" : "text-parchment-dim"
+                card.accent ? "text-vermillion/50" : "text-sumi-gray-light"
               }`}
               style={{ fontSize: "var(--text-micro)" }}
             >
               {card.title}
             </p>
-            <p className="text-parchment/80 text-sm leading-relaxed">
+            <p className="text-ink-black/80 text-sm leading-relaxed">
               {card.content}
             </p>
           </motion.div>

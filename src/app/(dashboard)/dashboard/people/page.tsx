@@ -171,12 +171,12 @@ export default function PeoplePage() {
         transition={{ duration: 0.5, ease }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           People
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Your relationships and interactions.
         </p>
       </motion.div>
@@ -192,7 +192,7 @@ export default function PeoplePage() {
           value={search}
           onChange={(e) => handleSearchChange(e.target.value)}
           placeholder="Search contacts..."
-          className="w-full bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
       </motion.div>
@@ -210,7 +210,7 @@ export default function PeoplePage() {
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Name..."
-          className="flex-1 bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="flex-1 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <input
@@ -218,7 +218,7 @@ export default function PeoplePage() {
           value={newContext}
           onChange={(e) => setNewContext(e.target.value)}
           placeholder="Context (optional)..."
-          className="w-48 bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="w-48 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <button
@@ -240,7 +240,7 @@ export default function PeoplePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               Loading...
             </motion.div>
@@ -250,7 +250,7 @@ export default function PeoplePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               {search ? "No contacts match your search." : "No contacts yet."}
             </motion.div>
@@ -271,18 +271,18 @@ export default function PeoplePage() {
                     duration: 0.4,
                     ease,
                   }}
-                  className="group bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                  className="group bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       {/* Name */}
-                      <h3 className="text-parchment font-medium text-lg">
+                      <h3 className="text-ink-black font-medium text-lg">
                         {contact.name}
                       </h3>
 
                       {/* Context */}
                       {contact.context && (
-                        <p className="text-parchment-dim text-sm mt-0.5 leading-relaxed">
+                        <p className="text-sumi-gray-light text-sm mt-0.5 leading-relaxed">
                           {contact.context}
                         </p>
                       )}
@@ -297,7 +297,7 @@ export default function PeoplePage() {
                         </span>
                         {contact.lastInteraction && (
                           <span
-                            className="font-mono tracking-[0.08em] text-parchment-muted"
+                            className="font-mono tracking-[0.08em] text-sumi-gray"
                             style={{ fontSize: "var(--text-micro)" }}
                           >
                             Last: {formatDate(contact.lastInteraction)}
@@ -310,7 +310,7 @@ export default function PeoplePage() {
                     <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0">
                       <button
                         onClick={() => deleteContact(contact.id)}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
                         title="Delete"
                       >
                         &times;
@@ -319,10 +319,10 @@ export default function PeoplePage() {
                   </div>
 
                   {/* Interactions Section */}
-                  <div className="mt-3 pt-3 border-t border-sumi-gray-dark/8">
+                  <div className="mt-3 pt-3 border-t border-sumi-gray/20">
                     <button
                       onClick={() => toggleExpanded(contact.id)}
-                      className="font-mono tracking-[0.12em] uppercase text-parchment-dim hover:text-parchment-muted transition-colors duration-200"
+                      className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light hover:text-sumi-gray transition-colors duration-200"
                       style={{ fontSize: "var(--text-micro)" }}
                     >
                       Interactions ({contact.interactions.length}){" "}
@@ -347,12 +347,12 @@ export default function PeoplePage() {
                                   className="flex items-start gap-2 text-sm"
                                 >
                                   <span
-                                    className="text-parchment-muted font-mono shrink-0"
+                                    className="text-sumi-gray font-mono shrink-0"
                                     style={{ fontSize: "var(--text-micro)" }}
                                   >
                                     {formatShortDate(interaction.date)}
                                   </span>
-                                  <span className="text-parchment-dim leading-relaxed">
+                                  <span className="text-sumi-gray-light leading-relaxed">
                                     {interaction.notes}
                                   </span>
                                 </div>
@@ -378,7 +378,7 @@ export default function PeoplePage() {
                                 }
                               }}
                               placeholder="Log an interaction..."
-                              className="flex-1 bg-ink-dark/30 border border-sumi-gray-dark/8 rounded-lg px-3 py-1.5 text-parchment text-sm placeholder:text-parchment-dim/40 focus:outline-none focus:border-vermillion/20 transition-colors duration-300"
+                              className="flex-1 bg-parchment-warm/30 border border-sumi-gray/20 rounded-lg px-3 py-1.5 text-ink-black text-sm placeholder:text-sumi-gray-light/40 focus:outline-none focus:border-vermillion/20 transition-colors duration-300"
                             />
                             <button
                               onClick={() => addInteraction(contact.id)}

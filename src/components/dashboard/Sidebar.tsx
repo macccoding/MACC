@@ -29,9 +29,9 @@ export function Sidebar({ onKemiClick }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-14 lg:w-52 bg-ink-deep/60 border-r border-sumi-gray-dark/15 flex flex-col z-40 backdrop-blur-sm">
+    <aside className="fixed left-0 top-0 bottom-0 w-14 lg:w-52 bg-parchment/60 border-r border-sumi-gray/15 flex flex-col z-40 backdrop-blur-sm">
       {/* Logo */}
-      <div className="h-14 flex items-center justify-center lg:justify-start lg:px-4 border-b border-sumi-gray-dark/15">
+      <div className="h-14 flex items-center justify-center lg:justify-start lg:px-4 border-b border-sumi-gray/15">
         <Link href="/dashboard" className="flex items-center gap-2">
           <span className="text-vermillion font-serif text-base font-semibold">
             <span className="lg:hidden">陳</span>
@@ -54,7 +54,7 @@ export function Sidebar({ onKemiClick }: SidebarProps) {
                   className={`flex items-center gap-2.5 px-2 py-2 rounded-lg transition-all duration-300 group ${
                     isActive
                       ? "bg-vermillion/8 text-vermillion"
-                      : "text-parchment-dim hover:text-parchment hover:bg-ink-mid/20"
+                      : "text-sumi-gray-light hover:text-ink-black hover:bg-parchment-warm/20"
                   }`}
                 >
                   <span className="w-7 h-7 flex items-center justify-center text-[13px] shrink-0 font-serif">
@@ -82,15 +82,15 @@ export function Sidebar({ onKemiClick }: SidebarProps) {
       </nav>
 
       {/* Kemi avatar */}
-      <div className="border-t border-sumi-gray-dark/15 p-2 lg:p-3">
+      <div className="border-t border-sumi-gray/15 p-2 lg:p-3">
         <button
           onClick={onKemiClick}
-          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-ink-mid/20 transition-colors group"
+          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-parchment-warm/20 transition-colors group"
         >
           <div className="w-8 h-8 rounded-full bg-vermillion/10 border border-vermillion/20 flex items-center justify-center shrink-0 group-hover:border-vermillion/40 transition-colors">
             <span className="text-vermillion text-xs font-serif">K</span>
           </div>
-          <span className="hidden lg:block text-xs text-parchment-dim group-hover:text-parchment transition-colors">
+          <span className="hidden lg:block text-xs text-sumi-gray-light group-hover:text-ink-black transition-colors">
             Talk to Kemi
           </span>
         </button>

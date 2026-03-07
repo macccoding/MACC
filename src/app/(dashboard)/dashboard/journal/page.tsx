@@ -178,12 +178,12 @@ export default function JournalPage() {
         transition={{ duration: 0.5, ease }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           Journal
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Write to think. Think to grow.
         </p>
       </motion.div>
@@ -192,7 +192,7 @@ export default function JournalPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-parchment-dim text-sm py-12 text-center"
+          className="text-sumi-gray-light text-sm py-12 text-center"
         >
           Loading...
         </motion.div>
@@ -210,7 +210,7 @@ export default function JournalPage() {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Start writing..."
-              className="w-full bg-transparent text-parchment font-serif resize-none focus:outline-none placeholder:text-parchment-dim/30"
+              className="w-full bg-transparent text-ink-black font-serif resize-none focus:outline-none placeholder:text-sumi-gray-light/30"
               style={{
                 fontSize: "var(--text-subheading)",
                 lineHeight: 1.8,
@@ -249,7 +249,7 @@ export default function JournalPage() {
               <button
                 key={prompt}
                 onClick={() => appendPrompt(prompt)}
-                className="bg-ink-dark/40 border border-sumi-gray-dark/12 text-parchment-dim rounded-full px-4 py-1.5 font-mono tracking-[0.04em] hover:border-vermillion/30 hover:text-parchment-muted transition-all duration-300"
+                className="bg-parchment-warm/40 border border-sumi-gray/20 text-sumi-gray-light rounded-full px-4 py-1.5 font-mono tracking-[0.04em] hover:border-vermillion/30 hover:text-sumi-gray transition-all duration-300"
                 style={{ fontSize: "var(--text-micro)" }}
               >
                 {prompt}
@@ -260,7 +260,7 @@ export default function JournalPage() {
           {/* Divider */}
           {entries.length > 0 && (
             <motion.div
-              className="border-t border-sumi-gray-dark/12"
+              className="border-t border-sumi-gray/20"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
@@ -276,7 +276,7 @@ export default function JournalPage() {
               transition={{ delay: 0.3, duration: 0.5, ease }}
             >
               <h2
-                className="font-mono tracking-[0.12em] uppercase text-parchment-dim mb-4"
+                className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light mb-4"
                 style={{ fontSize: "var(--text-micro)" }}
               >
                 Previous Entries
@@ -288,22 +288,22 @@ export default function JournalPage() {
                   <motion.div
                     key={entry.id || entry.date}
                     layout
-                    className="bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl overflow-hidden"
+                    className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl overflow-hidden"
                   >
                     <button
                       onClick={() =>
                         setExpandedId(isExpanded ? null : (entry.id ?? null))
                       }
-                      className="w-full text-left p-4 flex items-start gap-4 hover:bg-ink-dark/60 transition-colors duration-200"
+                      className="w-full text-left p-4 flex items-start gap-4 hover:bg-parchment-warm/60 transition-colors duration-200"
                     >
                       <span
-                        className="font-mono text-parchment-muted shrink-0 mt-0.5"
+                        className="font-mono text-sumi-gray shrink-0 mt-0.5"
                         style={{ fontSize: "var(--text-micro)" }}
                       >
                         {formatDate(entry.date)}
                       </span>
                       <span
-                        className="text-parchment-dim text-sm leading-relaxed"
+                        className="text-sumi-gray-light text-sm leading-relaxed"
                         style={{ fontSize: "var(--text-small)" }}
                       >
                         {isExpanded ? "" : preview(entry.content)}
@@ -321,7 +321,7 @@ export default function JournalPage() {
                         >
                           <div className="px-4 pb-4 pt-0">
                             <div
-                              className="text-parchment font-serif whitespace-pre-wrap leading-relaxed"
+                              className="text-ink-black font-serif whitespace-pre-wrap leading-relaxed"
                               style={{ fontSize: "var(--text-body)" }}
                             >
                               {entry.content}

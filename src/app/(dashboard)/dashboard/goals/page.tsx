@@ -104,12 +104,12 @@ export default function GoalsPage() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           Goals
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Track what you&apos;re building toward.
         </p>
       </motion.div>
@@ -127,7 +127,7 @@ export default function GoalsPage() {
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder="New goal..."
-          className="flex-1 bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="flex-1 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <button
@@ -154,7 +154,7 @@ export default function GoalsPage() {
             className={`font-mono tracking-[0.12em] uppercase px-4 py-1.5 rounded-full border transition-all duration-300 ${
               filter === f.value
                 ? "bg-vermillion/15 border-vermillion/30 text-vermillion"
-                : "bg-ink-dark/20 border-sumi-gray-dark/12 text-parchment-dim hover:border-sumi-gray-dark/25 hover:text-parchment-muted"
+                : "bg-parchment-warm/20 border-sumi-gray/20 text-sumi-gray-light hover:border-sumi-gray/20 hover:text-sumi-gray"
             }`}
             style={{ fontSize: "var(--text-micro)" }}
           >
@@ -172,7 +172,7 @@ export default function GoalsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               Loading...
             </motion.div>
@@ -182,7 +182,7 @@ export default function GoalsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-parchment-dim text-sm py-8 text-center"
+              className="text-sumi-gray-light text-sm py-8 text-center"
             >
               No {filter} goals yet.
             </motion.div>
@@ -199,12 +199,12 @@ export default function GoalsPage() {
                   duration: 0.4,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                className="group bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <h3
-                      className={`text-parchment font-light leading-snug ${
+                      className={`text-ink-black font-light leading-snug ${
                         goal.status === "completed"
                           ? "line-through opacity-50"
                           : ""
@@ -214,13 +214,13 @@ export default function GoalsPage() {
                       {goal.title}
                     </h3>
                     {goal.description && (
-                      <p className="text-parchment-dim text-sm mt-1 leading-relaxed">
+                      <p className="text-sumi-gray-light text-sm mt-1 leading-relaxed">
                         {goal.description}
                       </p>
                     )}
                     {goal.deadline && (
                       <p
-                        className="font-mono tracking-[0.08em] text-parchment-muted mt-2"
+                        className="font-mono tracking-[0.08em] text-sumi-gray mt-2"
                         style={{ fontSize: "var(--text-micro)" }}
                       >
                         Due {formatDeadline(goal.deadline)}
@@ -233,7 +233,7 @@ export default function GoalsPage() {
                     {goal.status !== "completed" ? (
                       <button
                         onClick={() => updateGoalStatus(goal.id, "completed")}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim hover:text-green-400 hover:bg-green-400/10 transition-colors duration-200"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light hover:text-green-400 hover:bg-green-400/10 transition-colors duration-200"
                         title="Complete"
                       >
                         &#10003;
@@ -241,7 +241,7 @@ export default function GoalsPage() {
                     ) : (
                       <button
                         onClick={() => updateGoalStatus(goal.id, "active")}
-                        className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim hover:text-vermillion hover:bg-vermillion/10 transition-colors duration-200"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light hover:text-vermillion hover:bg-vermillion/10 transition-colors duration-200"
                         title="Reactivate"
                       >
                         &#8617;
@@ -249,7 +249,7 @@ export default function GoalsPage() {
                     )}
                     <button
                       onClick={() => deleteGoal(goal.id)}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light hover:text-red-400 hover:bg-red-400/10 transition-colors duration-200"
                       title="Delete"
                     >
                       &times;

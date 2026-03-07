@@ -47,10 +47,10 @@ export function InkWashBackground() {
       vx: (Math.random() - 0.5) * 0.15,
       vy: (Math.random() - 0.5) * 0.1,
       radius: Math.random() * 180 + 80,
-      opacity: Math.random() * 0.025 + 0.008,
+      opacity: Math.random() * 0.012 + 0.006,
       phase: Math.random() * Math.PI * 2,
       speed: Math.random() * 0.0015 + 0.0005,
-      hue: Math.random() * 10 - 5, // slight warm/cool shift
+      hue: Math.random() * 6 - 3, // slight warm/cool shift
     }));
 
     let time = 0;
@@ -76,10 +76,10 @@ export function InkWashBackground() {
         const breathe =
           b.opacity * (0.65 + 0.35 * Math.sin(time * b.speed * 1.3 + b.phase));
 
-        // Warm-tinted radial gradient
-        const r = 42 + b.hue;
-        const g = 37 + b.hue * 0.5;
-        const bl = 32;
+        // Sumi-ink tinted radial gradient (dark blobs on parchment)
+        const r = 26 + b.hue;
+        const g = 24 + b.hue * 0.5;
+        const bl = 20;
 
         const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.radius);
         grad.addColorStop(0, `rgba(${r}, ${g}, ${bl}, ${breathe})`);

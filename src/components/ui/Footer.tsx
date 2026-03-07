@@ -76,7 +76,7 @@ export function Footer() {
       {/* Email */}
       <motion.a
         href="mailto:hello@mikechen.xyz"
-        className="text-parchment-muted hover:text-parchment font-mono tracking-[0.15em] transition-colors duration-500"
+        className="text-sumi-gray hover:text-ink-black font-mono tracking-[0.15em] transition-colors duration-500"
         style={{ fontSize: "var(--text-small)" }}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -110,7 +110,7 @@ export function Footer() {
 
       {/* Copyright */}
       <p
-        className="text-sumi-gray-dark font-mono mt-8"
+        className="text-sumi-gray-light font-mono mt-8"
         style={{ fontSize: "var(--text-micro)" }}
       >
         &copy; {new Date().getFullYear()} Mike Chen

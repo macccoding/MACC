@@ -9,12 +9,12 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [chatOpen, setChatOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-ink-black">
+    <div className="min-h-screen bg-parchment">
       <Sidebar onKemiClick={() => setChatOpen(true)} />
 
       <main className="ml-14 lg:ml-52 min-h-screen">
         {/* Top bar */}
-        <div className="h-14 flex items-center justify-between px-5 lg:px-7 border-b border-sumi-gray-dark/10">
+        <div className="h-14 flex items-center justify-between px-5 lg:px-7 border-b border-sumi-gray/15">
           <div /> {/* spacer */}
           <QuickCapture />
         </div>

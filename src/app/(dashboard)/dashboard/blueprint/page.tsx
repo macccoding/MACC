@@ -152,12 +152,12 @@ export default function BlueprintPage() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
         <h1
-          className="text-parchment font-light"
+          className="text-ink-black font-light"
           style={{ fontSize: "var(--text-heading)" }}
         >
           Blueprint
         </h1>
-        <p className="text-parchment-dim text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1">
           The architecture of your life.
         </p>
       </motion.div>
@@ -175,14 +175,14 @@ export default function BlueprintPage() {
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder="New milestone..."
-          className="flex-1 min-w-[200px] bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment placeholder:text-parchment-dim/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
+          className="flex-1 min-w-[200px] bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
           style={{ fontSize: "var(--text-body)" }}
         />
         <input
           type="date"
           value={newDeadline}
           onChange={(e) => setNewDeadline(e.target.value)}
-          className="bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl px-4 py-2.5 text-parchment focus:outline-none focus:border-vermillion/30 transition-colors duration-300 [color-scheme:dark]"
+          className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black focus:outline-none focus:border-vermillion/30 transition-colors duration-300 "
           style={{ fontSize: "var(--text-body)" }}
         />
         <button
@@ -200,7 +200,7 @@ export default function BlueprintPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-parchment-dim text-sm py-8 text-center"
+          className="text-sumi-gray-light text-sm py-8 text-center"
         >
           Loading...
         </motion.div>
@@ -219,11 +219,11 @@ export default function BlueprintPage() {
             <div key={col.key} className="space-y-3">
               {/* Column Header */}
               <h2
-                className="font-mono tracking-[0.12em] uppercase text-parchment-muted border-b border-sumi-gray-dark/12 pb-2"
+                className="font-mono tracking-[0.12em] uppercase text-sumi-gray border-b border-sumi-gray/20 pb-2"
                 style={{ fontSize: "var(--text-micro)" }}
               >
                 {col.label}
-                <span className="ml-2 text-parchment-dim">
+                <span className="ml-2 text-sumi-gray-light">
                   {col.items.length}
                 </span>
               </h2>
@@ -237,7 +237,7 @@ export default function BlueprintPage() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="text-parchment-dim text-sm py-6 text-center"
+                      className="text-sumi-gray-light text-sm py-6 text-center"
                     >
                       Nothing here yet.
                     </motion.p>
@@ -258,12 +258,12 @@ export default function BlueprintPage() {
                           duration: 0.4,
                           ease: [0.22, 1, 0.36, 1],
                         }}
-                        className="group bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"
+                        className="group bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <h3
-                              className={`text-parchment font-light leading-snug ${
+                              className={`text-ink-black font-light leading-snug ${
                                 bp.status === "completed"
                                   ? "line-through opacity-50"
                                   : ""
@@ -273,13 +273,13 @@ export default function BlueprintPage() {
                               {bp.title}
                             </h3>
                             {stripPrefix(bp.description) && (
-                              <p className="text-parchment-dim text-sm mt-1 leading-relaxed">
+                              <p className="text-sumi-gray-light text-sm mt-1 leading-relaxed">
                                 {stripPrefix(bp.description)}
                               </p>
                             )}
                             {bp.deadline && (
                               <p
-                                className="font-mono tracking-[0.08em] text-parchment-muted mt-2"
+                                className="font-mono tracking-[0.08em] text-sumi-gray mt-2"
                                 style={{ fontSize: "var(--text-micro)" }}
                               >
                                 {formatDeadline(bp.deadline)}
@@ -290,7 +290,7 @@ export default function BlueprintPage() {
                           {/* Delete (hover) */}
                           <button
                             onClick={() => deleteBlueprint(bp.id)}
-                            className="w-7 h-7 flex items-center justify-center rounded-lg text-parchment-dim opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 shrink-0"
+                            className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 shrink-0"
                             title="Delete"
                           >
                             &times;

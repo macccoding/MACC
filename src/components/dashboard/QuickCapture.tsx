@@ -51,10 +51,10 @@ export function QuickCapture() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-ink-dark/40 border border-sumi-gray-dark/20 text-sumi-gray text-xs hover:border-sumi-gray-dark/40 transition-colors"
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-parchment-warm/40 border border-sumi-gray/20 text-sumi-gray text-xs hover:border-sumi-gray/40 transition-colors"
       >
         <span className="font-mono tracking-wider">Capture</span>
-        <kbd className="text-[9px] font-mono bg-ink-mid/30 px-1.5 py-0.5 rounded text-sumi-gray-light">
+        <kbd className="text-[9px] font-mono bg-parchment-warm/30 px-1.5 py-0.5 rounded text-sumi-gray-light">
           ⌘K
         </kbd>
       </button>
@@ -71,7 +71,7 @@ export function QuickCapture() {
               if (e.target === e.currentTarget) setOpen(false);
             }}
           >
-            <div className="absolute inset-0 bg-ink-black/50 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-parchment/50 backdrop-blur-sm" />
 
             <motion.form
               onSubmit={handleSubmit}
@@ -87,10 +87,10 @@ export function QuickCapture() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="Capture a thought, link, idea..."
-                className="w-full px-5 py-4 bg-ink-dark border border-sumi-gray-dark/30 rounded-xl text-parchment placeholder:text-sumi-gray font-serif outline-none focus:border-vermillion/30 transition-colors"
+                className="w-full px-5 py-4 bg-parchment-warm border border-sumi-gray/20 rounded-xl text-ink-black placeholder:text-sumi-gray font-serif outline-none focus:border-vermillion/30 transition-colors"
                 style={{ fontSize: "var(--text-body)" }}
               />
-              <p className="text-center mt-3 text-sumi-gray-dark font-mono" style={{ fontSize: "var(--text-micro)" }}>
+              <p className="text-center mt-3 text-sumi-gray font-mono" style={{ fontSize: "var(--text-micro)" }}>
                 Enter to capture &middot; Esc to close
               </p>
             </motion.form>

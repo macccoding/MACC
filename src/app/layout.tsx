@@ -1,21 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Serif, IBM_Plex_Mono, Shippori_Mincho } from "next/font/google";
+import { Alegreya, IBM_Plex_Mono, Zen_Antique } from "next/font/google";
 import { InkCursor } from "@/components/ink/InkCursor";
 import { LoadingScreen } from "@/components/ink/LoadingScreen";
 import "./globals.css";
 
-const shipporiMincho = Shippori_Mincho({
+const zenAntique = Zen_Antique({
   subsets: ["latin"],
   variable: "--font-shippori",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: "400",
 });
 
-const notoSerif = Noto_Serif({
+const alegreya = Alegreya({
   subsets: ["latin"],
   variable: "--font-noto-serif",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -27,11 +27,11 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Mike Chen",
-  description: "Build things. Taste everything. Design the rest.",
+  description: "Experience. Build. Move.",
   metadataBase: new URL("https://mikechen.xyz"),
   openGraph: {
     title: "Mike Chen",
-    description: "Build things. Taste everything. Design the rest.",
+    description: "Experience. Build. Move.",
     url: "https://mikechen.xyz",
     siteName: "Mike Chen",
     type: "website",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1A1814",
+  themeColor: "#F5EDE0",
   width: "device-width",
   initialScale: 1,
 };
@@ -56,9 +56,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${shipporiMincho.variable} ${notoSerif.variable} ${ibmPlexMono.variable}`}
+      className={`${zenAntique.variable} ${alegreya.variable} ${ibmPlexMono.variable}`}
     >
-      <body className="bg-ink-black text-parchment antialiased">
+      <body className="bg-parchment text-ink-black antialiased">
         <LoadingScreen />
         <InkCursor />
         {children}
