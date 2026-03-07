@@ -94,8 +94,8 @@ html {
 }
 
 body {
-  background-color: var(--ink-black);
-  color: var(--parchment);
+  background-color: var(--parchment);
+  color: var(--ink-black);
   font-family: var(--font-serif), Georgia, serif;
   overflow-x: hidden;
 }
@@ -116,10 +116,11 @@ body::after {
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.18;
+  background-image: url("/textures/parchment-seamless.png");
   background-size: 512px 512px;
-  mix-blend-mode: soft-light;
+  background-repeat: repeat;
+  mix-blend-mode: multiply;
 }
 
 /* ========================================
@@ -191,5 +192,5 @@ body::after {
   font-size: var(--text-micro);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--parchment-muted);
+  color: var(--sumi-gray);
 }
