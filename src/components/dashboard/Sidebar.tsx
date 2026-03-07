@@ -13,6 +13,7 @@ const MODULES = [
   { label: "Finances", href: "/dashboard/finances", icon: "金" },
   { label: "Email", href: "/dashboard/email", icon: "信" },
   { label: "Goals", href: "/dashboard/goals", icon: "的" },
+  { label: "Habits", href: "/dashboard/habits", icon: "習" },
   { label: "Health", href: "/dashboard/health", icon: "体" },
   { label: "Learning", href: "/dashboard/learning", icon: "学" },
   { label: "Journal", href: "/dashboard/journal", icon: "記" },

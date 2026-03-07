@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // Auth check
-  const session = request.cookies.get("mikeos-session");
-  if (!session || session.value !== "authenticated") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireAuth(request);
+  if (authError) return authError;
 
   const { id } = await params;
 
@@ -48,11 +46,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // Auth check
-  const session = request.cookies.get("mikeos-session");
-  if (!session || session.value !== "authenticated") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireAuth(request);
+  if (authError) return authError;
 
   const { id } = await params;
 

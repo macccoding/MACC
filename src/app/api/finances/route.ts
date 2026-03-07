@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 import type { Prisma } from "@/generated/prisma/client";
 
 export async function GET(request: NextRequest) {
-  // Auth check
-  const session = request.cookies.get("mikeos-session");
-  if (!session || session.value !== "authenticated") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireAuth(request);
+  if (authError) return authError;
 
   const { searchParams } = new URL(request.url);
   const days = parseInt(searchParams.get("days") || "30", 10);
@@ -32,11 +30,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  // Auth check
-  const session = request.cookies.get("mikeos-session");
-  if (!session || session.value !== "authenticated") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireAuth(request);
+  if (authError) return authError;
 
   let date: string;
   let data: Prisma.InputJsonValue;

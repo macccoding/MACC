@@ -1,39 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-const CARDS = [
-  {
-    title: "Calendar",
-    content: "No events today",
-    accent: false,
-  },
-  {
-    title: "Kill / Live / Build",
-    content: "$15K debt → $0 by July",
-    accent: true,
-  },
-  {
-    title: "Email",
-    content: "3 unread, 1 flagged",
-    accent: false,
-  },
-  {
-    title: "Health",
-    content: "7,234 steps · 6h 42m sleep",
-    accent: false,
-  },
-  {
-    title: "Streaks",
-    content: "Spanish: 12 days · Gym: 4 days",
-    accent: true,
-  },
-  {
-    title: "Kemi says",
-    content: '"You said you\'d review finances this week. That was 5 days ago."',
-    accent: false,
-  },
-];
+interface DashboardBrief {
+  goals: { active: number; titles: string[] };
+  habits: { total: number; completedToday: number };
+  captures: { unprocessed: number };
+  finances: Record<string, unknown> | null;
+}
+
+interface DashboardCard {
+  title: string;
+  content: string;
+  accent: boolean;
+}
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -42,7 +23,79 @@ function getGreeting() {
   return "Good evening";
 }
 
+function buildCards(brief: DashboardBrief | null): DashboardCard[] {
+  if (!brief) {
+    return [
+      { title: "Loading", content: "Fetching your data...", accent: false },
+    ];
+  }
+
+  const cards: DashboardCard[] = [];
+
+  // Goals card
+  const goalLine =
+    brief.goals.active > 0
+      ? `${brief.goals.active} active — ${brief.goals.titles[0] || ""}${brief.goals.titles.length > 1 ? ` +${brief.goals.titles.length - 1} more` : ""}`
+      : "No active goals";
+  cards.push({ title: "Goals", content: goalLine, accent: brief.goals.active > 0 });
+
+  // Habits card
+  const habitLine =
+    brief.habits.total > 0
+      ? `${brief.habits.completedToday}/${brief.habits.total} completed today`
+      : "No habits tracked";
+  cards.push({
+    title: "Habits",
+    content: habitLine,
+    accent: brief.habits.completedToday === brief.habits.total && brief.habits.total > 0,
+  });
+
+  // Captures card
+  const captureCount = brief.captures.unprocessed;
+  cards.push({
+    title: "Captures",
+    content:
+      captureCount > 0
+        ? `${captureCount} unprocessed capture${captureCount !== 1 ? "s" : ""}`
+        : "Inbox zero",
+    accent: captureCount > 0,
+  });
+
+  // Finances card
+  if (brief.finances && typeof brief.finances === "object") {
+    const fin = brief.finances as Record<string, unknown>;
+    const parts: string[] = [];
+    if (fin.debt !== undefined) parts.push(`Debt: $${Number(fin.debt).toLocaleString()}`);
+    if (fin.savings !== undefined) parts.push(`Savings: $${Number(fin.savings).toLocaleString()}`);
+    if (fin.netWorth !== undefined) parts.push(`Net worth: $${Number(fin.netWorth).toLocaleString()}`);
+    cards.push({
+      title: "Finances",
+      content: parts.length > 0 ? parts.join(" · ") : "Latest snapshot recorded",
+      accent: false,
+    });
+  } else {
+    cards.push({
+      title: "Finances",
+      content: "No snapshot yet",
+      accent: false,
+    });
+  }
+
+  return cards;
+}
+
 export default function DashboardHome() {
+  const [brief, setBrief] = useState<DashboardBrief | null>(null);
+
+  useEffect(() => {
+    fetch("/api/dashboard/brief")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setBrief(data))
+      .catch(() => setBrief(null));
+  }, []);
+
+  const cards = buildCards(brief);
+
   return (
     <div className="space-y-8">
       <motion.div
@@ -63,7 +116,7 @@ export default function DashboardHome() {
 
       {/* Brief cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-        {CARDS.map((card, i) => (
+        {cards.map((card, i) => (
           <motion.div
             key={card.title}
             className="bg-ink-dark/40 border border-sumi-gray-dark/12 rounded-xl p-4 hover:border-sumi-gray-dark/25 transition-colors duration-300"

@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { processMessage } from "@/lib/kemi/agent";
+import { requireAuth } from "@/lib/auth";
 import type { KemiMessage } from "@/lib/kemi/types";
 
 export async function POST(request: NextRequest) {
-  // Auth check — mikeos-session cookie
-  const session = request.cookies.get("mikeos-session");
-  if (!session || session.value !== "authenticated") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireAuth(request);
+  if (authError) return authError;
 
   // Parse body
   let message: string;
