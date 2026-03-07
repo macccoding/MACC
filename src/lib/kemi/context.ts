@@ -91,10 +91,25 @@ export async function buildContext(userMessage: string): Promise<string> {
     len = appendWithBudget(parts, taskSection, len);
   }
 
-  // Memory context (placeholder)
-  if (matchesAny(userMessage, MEMORY_KEYWORDS)) {
-    const memorySection = "\n\n[Memory: Kioku recall not yet connected]";
-    len = appendWithBudget(parts, memorySection, len);
+  // Memory context via Kioku recall
+  const includeMemories = matchesAny(userMessage, MEMORY_KEYWORDS);
+  if (includeMemories) {
+    try {
+      const { recall } = await import("@/lib/kioku/recall");
+      const memories = await recall(userMessage, 2);
+      if (memories.length > 0) {
+        const lines = memories.map(
+          (m) => `  (${(m.similarity * 100).toFixed(0)}%) ${m.content}`
+        );
+        len = appendWithBudget(
+          parts,
+          "\n\nRELEVANT MEMORY:\n" + lines.join("\n"),
+          len
+        );
+      }
+    } catch {
+      // Kioku not available yet — graceful degradation
+    }
     void len; // suppress unused-variable warning
   }
 

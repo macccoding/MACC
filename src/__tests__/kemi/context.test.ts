@@ -65,15 +65,16 @@ describe("buildContext", () => {
     expect(ctx).toContain("Tasks");
   });
 
-  it("includes memory placeholder when message mentions recall", async () => {
+  it("degrades gracefully when Kioku recall is unavailable", async () => {
+    // When recall import fails (no DB), the catch block silently degrades
     const ctx = await buildContext("do you remember the gate code");
-    expect(ctx).toContain("Memory");
+    // Should still have the timestamp, but no crash
+    expect(ctx).toContain("Jamaica");
   });
 
-  it("does not include task/memory sections for unrelated messages", async () => {
+  it("does not include task section for unrelated messages", async () => {
     const ctx = await buildContext("what is the weather");
     expect(ctx).not.toContain("Tasks");
-    expect(ctx).not.toContain("Memory");
   });
 
   it("stays within MAX_CONTEXT_CHARS budget", async () => {
