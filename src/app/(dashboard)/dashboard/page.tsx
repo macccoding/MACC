@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { MODULES } from "@/components/dashboard/Sidebar";
 
 interface DashboardBrief {
   goals: { active: number; titles: string[] };
@@ -84,6 +86,23 @@ function buildCards(brief: DashboardBrief | null): DashboardCard[] {
   return cards;
 }
 
+// Prioritized order for mobile homescreen
+const MOBILE_MODULES = [
+  "Finances",
+  "Habits",
+  "Journal",
+  "Goals",
+  "Health",
+  "Email",
+  "Learning",
+  "Investments",
+  "Travel",
+  "Creative",
+  "Reading",
+  "People",
+  "Blueprint",
+];
+
 export default function DashboardHome() {
   const [brief, setBrief] = useState<DashboardBrief | null>(null);
 
@@ -95,6 +114,11 @@ export default function DashboardHome() {
   }, []);
 
   const cards = buildCards(brief);
+
+  // Build mobile tiles from MODULES (skip Home)
+  const mobileTiles = MOBILE_MODULES.map((label) =>
+    MODULES.find((m) => m.label === label)
+  ).filter(Boolean) as typeof MODULES;
 
   return (
     <div className="space-y-8">
@@ -109,13 +133,69 @@ export default function DashboardHome() {
         >
           {getGreeting()}, <span className="text-vermillion">Mike</span>
         </h1>
-        <p className="text-sumi-gray-light text-sm mt-1">
+        <p className="text-sumi-gray-light text-sm mt-1 hidden md:block">
           Here&apos;s your day at a glance.
         </p>
       </motion.div>
 
-      {/* Brief cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+      {/* Mobile: App homescreen grid */}
+      <div className="md:hidden grid grid-cols-3 gap-4">
+        {mobileTiles.map((mod, i) => (
+          <motion.div
+            key={mod.href}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              delay: 0.05 + i * 0.03,
+              duration: 0.4,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <Link
+              href={mod.href}
+              className="flex flex-col items-center gap-2 py-3 group"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-parchment-warm/60 border border-sumi-gray/15 flex items-center justify-center group-active:scale-95 transition-transform duration-150">
+                <span className="text-xl font-serif text-ink-black/70 group-hover:text-vermillion transition-colors">
+                  {mod.icon}
+                </span>
+              </div>
+              <span className="text-[11px] text-sumi-gray-light tracking-wide text-center">
+                {mod.label}
+              </span>
+            </Link>
+          </motion.div>
+        ))}
+
+        {/* Kemi special tile */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            delay: 0.05 + mobileTiles.length * 0.03,
+            duration: 0.4,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          <button
+            onClick={() => {
+              // Trigger Kemi chat open via custom event
+              window.dispatchEvent(new CustomEvent("open-kemi"));
+            }}
+            className="flex flex-col items-center gap-2 py-3 w-full group"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-vermillion/8 border border-vermillion/20 flex items-center justify-center group-active:scale-95 transition-transform duration-150">
+              <span className="text-xl font-serif text-vermillion">K</span>
+            </div>
+            <span className="text-[11px] text-vermillion/70 tracking-wide text-center">
+              Kemi
+            </span>
+          </button>
+        </motion.div>
+      </div>
+
+      {/* Desktop: Brief cards */}
+      <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-3">
         {cards.map((card, i) => (
           <motion.div
             key={card.title}

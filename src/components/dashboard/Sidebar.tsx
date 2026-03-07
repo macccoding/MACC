@@ -8,7 +8,7 @@ interface SidebarProps {
   onKemiClick?: () => void;
 }
 
-const MODULES = [
+export const MODULES = [
   { label: "Home", href: "/dashboard", icon: "家" },
   { label: "Finances", href: "/dashboard/finances", icon: "金" },
   { label: "Email", href: "/dashboard/email", icon: "信" },
@@ -29,7 +29,7 @@ export function Sidebar({ onKemiClick }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-14 lg:w-52 bg-parchment/60 border-r border-sumi-gray/15 flex flex-col z-40 backdrop-blur-sm">
+    <aside className="hidden lg:fixed lg:left-0 lg:top-0 lg:bottom-0 lg:w-52 lg:flex lg:flex-col bg-parchment/60 border-r border-sumi-gray/15 z-40 backdrop-blur-sm">
       {/* Logo */}
       <div className="h-14 flex items-center justify-center lg:justify-start lg:px-4 border-b border-sumi-gray/15">
         <Link href="/dashboard" className="flex items-center gap-2">
