@@ -1,8 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Serif, IBM_Plex_Mono } from "next/font/google";
+import { Noto_Serif, IBM_Plex_Mono, Shippori_Mincho } from "next/font/google";
 import { InkCursor } from "@/components/ink/InkCursor";
 import { LoadingScreen } from "@/components/ink/LoadingScreen";
 import "./globals.css";
+
+const shipporiMincho = Shippori_Mincho({
+  subsets: ["latin"],
+  variable: "--font-shippori",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 const notoSerif = Noto_Serif({
   subsets: ["latin"],
@@ -49,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${notoSerif.variable} ${ibmPlexMono.variable}`}
+      className={`${shipporiMincho.variable} ${notoSerif.variable} ${ibmPlexMono.variable}`}
     >
       <body className="bg-ink-black text-parchment antialiased">
         <LoadingScreen />

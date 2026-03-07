@@ -80,7 +80,7 @@
   /* Fonts */
   --font-serif: var(--font-noto-serif);
   --font-mono: var(--font-ibm-plex-mono);
-  --font-display: var(--font-noto-serif); /* Will be replaced with custom brush font */
+  --font-display: var(--font-shippori);
 }
 
 /* ========================================

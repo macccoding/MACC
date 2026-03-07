@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const SOCIALS = [
   { label: "Instagram", href: "https://instagram.com/macccoding" },
@@ -9,50 +10,66 @@ const SOCIALS = [
 ];
 
 export function Footer() {
+  const sealRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sealRef,
+    offset: ["start 0.95", "end 0.6"],
+  });
+
+  // Seal stamps in with a satisfying reveal
+  const sealScale = useTransform(scrollYProgress, [0, 0.5], [0.7, 1]);
+  const sealOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+  const sealRotation = useTransform(scrollYProgress, [0, 0.5], [-8, 0]);
+
   return (
-    <footer className="relative z-10 py-20 md:py-28 flex flex-col items-center gap-8">
-      {/* Hanko seal stamp */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <svg viewBox="0 0 72 72" className="w-16 h-16 md:w-20 md:h-20">
+    <footer className="relative z-10 py-28 md:py-40 flex flex-col items-center gap-10">
+      {/* Hanko seal stamp — larger, more dramatic */}
+      <motion.div ref={sealRef} style={{ scale: sealScale, opacity: sealOpacity, rotate: sealRotation }}>
+        <svg
+          viewBox="0 0 96 96"
+          className="w-20 h-20 md:w-28 md:h-28"
+        >
+          {/* Outer border */}
           <rect
             x="4"
             y="4"
-            width="64"
-            height="64"
-            rx="5"
+            width="88"
+            height="88"
+            rx="4"
             stroke="#D03A2C"
-            strokeWidth="1.5"
+            strokeWidth="2"
             fill="none"
             opacity="0.7"
           />
-          {/* Subtle inner border */}
+          {/* Inner border */}
           <rect
-            x="8"
-            y="8"
-            width="56"
-            height="56"
-            rx="3"
+            x="10"
+            y="10"
+            width="76"
+            height="76"
+            rx="2"
             stroke="#D03A2C"
-            strokeWidth="0.5"
+            strokeWidth="0.75"
             fill="none"
-            opacity="0.3"
+            opacity="0.25"
           />
+          {/* Kanji */}
           <text
-            x="36"
-            y="48"
+            x="48"
+            y="62"
             textAnchor="middle"
             fill="#D03A2C"
-            fontSize="28"
+            fontSize="38"
             fontFamily="serif"
-            opacity="0.7"
+            opacity="0.8"
           >
             陳
           </text>
+          {/* Subtle stamp texture — tiny dots to simulate ink texture */}
+          <circle cx="20" cy="20" r="0.5" fill="#D03A2C" opacity="0.15" />
+          <circle cx="76" cy="24" r="0.7" fill="#D03A2C" opacity="0.1" />
+          <circle cx="24" cy="76" r="0.6" fill="#D03A2C" opacity="0.12" />
+          <circle cx="72" cy="72" r="0.5" fill="#D03A2C" opacity="0.08" />
         </svg>
       </motion.div>
 
@@ -83,7 +100,7 @@ export function Footer() {
             href={s.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sumi-gray hover:text-parchment-muted font-mono tracking-[0.1em] uppercase transition-colors duration-500"
+            className="text-sumi-gray hover:text-vermillion font-mono tracking-[0.1em] uppercase transition-colors duration-500"
             style={{ fontSize: "var(--text-micro)" }}
           >
             {s.label}
@@ -93,7 +110,7 @@ export function Footer() {
 
       {/* Copyright */}
       <p
-        className="text-sumi-gray-dark font-mono mt-6"
+        className="text-sumi-gray-dark font-mono mt-8"
         style={{ fontSize: "var(--text-micro)" }}
       >
         &copy; {new Date().getFullYear()} Mike Chen
