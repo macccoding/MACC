@@ -3,313 +3,546 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ScrollTextReveal } from "@/components/ink/ScrollTextReveal";
-import { BrushDivider } from "@/components/ink/BrushDivider";
-import { Footer } from "@/components/ui/Footer";
+import { StoryImage } from "@/components/ink/StoryImage";
+import { CloudPattern } from "@/components/ink/CloudPattern";
+import { InkSplatter } from "@/components/ink/InkSplatter";
+import { WavePattern } from "@/components/ink/WavePattern";
+import { InkSpillTransition } from "@/components/gl/InkSpillTransition";
 
-// Sumi-e brush stroke SVG icons for each interest
-// Minimal, evocative, drawn with organic brush paths
-const INTERESTS = [
+/* ============================================================
+   FLOATING OBJECTS — scattered interests that drift into view
+   ============================================================ */
+
+const FLOATING_OBJECTS = [
   {
-    label: "Food & Heritage",
-    detail: "Chinese-Jamaican kitchen",
-    // Wok with steam rising
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <path d="M12,38 C14,46 22,52 32,52 C42,52 50,46 52,38" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        <path d="M8,38 L56,38" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M24,32 C24,28 22,22 24,18" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
-        <path d="M32,30 C32,24 30,18 33,12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
-        <path d="M40,32 C40,28 42,24 40,18" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.3" />
-      </svg>
-    ),
+    src: "/images/obj-camera.png",
+    alt: "Photography — Sony A7IV",
+    style: "top-[2%] left-[3%] w-28 md:w-40 -rotate-12",
+    delay: 0,
   },
   {
-    label: "Photography",
-    detail: "Sony A7IV",
-    // Camera body with lens circle
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <rect x="10" y="22" width="44" height="28" rx="3" stroke="currentColor" strokeWidth="1.5" />
-        <circle cx="32" cy="36" r="10" stroke="currentColor" strokeWidth="1.5" />
-        <circle cx="32" cy="36" r="4" stroke="currentColor" strokeWidth="1" opacity="0.5" />
-        <rect x="22" y="18" width="12" height="4" rx="1" stroke="currentColor" strokeWidth="1" />
-      </svg>
-    ),
+    src: "/images/obj-storefront.png",
+    alt: "SuperPlus — Santa Cruz, Jamaica",
+    style: "top-[8%] right-[2%] w-36 md:w-52 rotate-3",
+    delay: 0.1,
   },
   {
-    label: "Fitness",
-    detail: "Physical discipline",
-    // Figure in motion — running silhouette as brush strokes
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <circle cx="36" cy="14" r="5" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M32,20 C30,28 28,34 24,42" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M34,20 C36,28 38,34 42,40" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M24,42 C20,48 18,52 14,56" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M26,40 C30,46 34,50 38,56" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M28,28 C22,26 18,28 14,30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M34,26 C40,22 46,24 50,28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    ),
+    src: "/images/obj-code.png",
+    alt: "Code — building digital things",
+    style: "top-[38%] left-[1%] w-24 md:w-32 -rotate-6",
+    delay: 0.15,
   },
   {
-    label: "Table Tennis",
-    detail: "The game within the game",
-    // Paddle and ball
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <ellipse cx="28" cy="28" rx="14" ry="16" transform="rotate(-15 28 28)" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M38,40 C42,46 44,52 46,56" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-        <circle cx="50" cy="16" r="4" stroke="currentColor" strokeWidth="1.2" />
-      </svg>
-    ),
+    src: "/images/obj-coffee.png",
+    alt: "Coffee — daily ritual",
+    style: "top-[42%] right-[3%] w-24 md:w-32 rotate-6",
+    delay: 0.2,
   },
   {
-    label: "Porsche 911 RWB",
-    detail: "The dream",
-    // Car profile — low slung silhouette
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <path d="M6,40 C8,40 12,40 16,40 C18,34 22,28 28,26 C34,24 42,24 48,26 C52,28 56,34 58,40" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M6,40 L58,40" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-        <circle cx="18" cy="42" r="5" stroke="currentColor" strokeWidth="1.5" />
-        <circle cx="48" cy="42" r="5" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M24,30 L28,26 L40,26 L44,30" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
-      </svg>
-    ),
+    src: "/images/obj-passport.png",
+    alt: "Travel — 37+ countries",
+    style: "top-[72%] left-[5%] w-28 md:w-36 -rotate-3",
+    delay: 0.25,
   },
   {
-    label: "3D Printing",
-    detail: "BambuLab maker",
-    // Cube being built layer by layer
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <path d="M32,12 L52,24 L52,44 L32,56 L12,44 L12,24 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-        <path d="M32,12 L32,56" stroke="currentColor" strokeWidth="1" opacity="0.4" />
-        <path d="M12,24 L52,24" stroke="currentColor" strokeWidth="1" opacity="0.3" />
-        <path d="M12,32 L52,32" stroke="currentColor" strokeWidth="0.8" opacity="0.2" strokeDasharray="3 2" />
-        <path d="M12,40 L52,40" stroke="currentColor" strokeWidth="0.8" opacity="0.15" strokeDasharray="3 2" />
-      </svg>
-    ),
-  },
-  {
-    label: "Travel",
-    detail: "37+ countries",
-    // Compass rose
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <circle cx="32" cy="32" r="18" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M32,14 L35,28 L32,32 L29,28 Z" stroke="currentColor" strokeWidth="1" fill="currentColor" opacity="0.3" />
-        <path d="M32,50 L35,36 L32,32 L29,36 Z" stroke="currentColor" strokeWidth="1" />
-        <path d="M14,32 L28,29 L32,32 L28,35 Z" stroke="currentColor" strokeWidth="1" />
-        <path d="M50,32 L36,29 L32,32 L36,35 Z" stroke="currentColor" strokeWidth="1" />
-        <circle cx="32" cy="32" r="2" stroke="currentColor" strokeWidth="1" />
-      </svg>
-    ),
-  },
-  {
-    label: "Code",
-    detail: "Building digital things",
-    // Angle brackets with brush stroke quality
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <path d="M24,20 L10,32 L24,44" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M40,20 L54,32 L40,44" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M36,16 L28,48" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-      </svg>
-    ),
-  },
-  {
-    label: "Coffee",
-    detail: "4+ cups, daily ritual",
-    // Cup with steam curls
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-        <path d="M14,28 L14,48 C14,52 20,56 32,56 C44,56 50,52 50,48 L50,28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M14,28 L50,28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M50,32 C54,32 58,34 58,38 C58,42 54,44 50,44" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-        <path d="M26,22 C26,18 24,14 26,10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
-        <path d="M32,20 C32,16 34,12 32,8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.35" />
-        <path d="M38,22 C38,18 36,14 38,10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.3" />
-      </svg>
-    ),
+    src: "/images/obj-3dprint.png",
+    alt: "3D Printing — BambuLab maker",
+    style: "top-[76%] right-[6%] w-24 md:w-32 rotate-8",
+    delay: 0.3,
   },
 ];
 
+/* ============================================================
+   MAIN PAGE — "The Path Isn't Straight"
+   A scroll-driven story in five acts
+   ============================================================ */
+
 export default function Home() {
+  /* Hero parallax */
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroOpacity = useTransform(heroScroll, [0, 0.8], [1, 0]);
-  const heroY = useTransform(heroScroll, [0, 0.8], [0, -60]);
+  const heroImgY = useTransform(heroScroll, [0, 1], [0, -120]);
+  const heroOpacity = useTransform(heroScroll, [0, 0.7], [1, 0]);
 
   return (
-    <main className="relative">
-      {/* ===== HERO ===== */}
+    <main className="relative overflow-x-hidden">
+      {/* ================================================================
+          HERO — "The Path Isn't Straight"
+          ================================================================ */}
       <section
         ref={heroRef}
-        className="relative z-10 min-h-screen flex flex-col items-center justify-center"
+        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       >
-        <motion.div
-          className="flex flex-col items-center gap-3"
-          style={{ opacity: heroOpacity, y: heroY }}
-        >
-          {/* Name — Shippori Mincho display font */}
-          <motion.h1
-            className="text-parchment tracking-[-0.04em] leading-[0.85]"
-            style={{
-              fontSize: "var(--text-hero)",
-              fontFamily: "var(--font-display), serif",
-              fontWeight: 500,
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span className="text-vermillion">M</span>ike{" "}
-            <span className="text-vermillion">C</span>hen
-          </motion.h1>
+        <CloudPattern position="top-right" opacity={0.04} className="z-0" />
 
-          {/* Tagline */}
+        <motion.div
+          className="relative z-10 flex flex-col items-center w-full px-6"
+          style={{ opacity: heroOpacity }}
+        >
+          {/* Title brush calligraphy */}
+          <motion.img
+            src="/images/text-title.png"
+            alt="The Path Isn't Straight"
+            loading="eager"
+            className="w-[85vw] max-w-2xl h-auto mix-blend-multiply"
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          />
+
+          {/* Subtitle */}
           <motion.p
-            className="font-mono text-parchment-dim tracking-[0.2em] uppercase mt-3"
+            className="font-mono text-sumi-gray tracking-[0.2em] uppercase mt-6"
             style={{ fontSize: "var(--text-micro)" }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            transition={{ duration: 1, delay: 0.8 }}
+            animate={{ opacity: 0.5 }}
+            transition={{ delay: 1.6, duration: 1 }}
           >
-            Build things &middot; Taste everything &middot; Design the rest
+            Mike Chen
           </motion.p>
 
           {/* Scroll indicator */}
           <motion.div
             className="mt-20 flex flex-col items-center gap-2"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.3 }}
-            transition={{ delay: 1.5, duration: 1 }}
+            animate={{ opacity: 0.25 }}
+            transition={{ delay: 2.4, duration: 1 }}
           >
             <motion.div
-              className="w-[1px] h-10 bg-parchment/20"
+              className="w-[1px] h-12 bg-ink-black/20"
               animate={{ scaleY: [0.3, 1, 0.3] }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
               style={{ transformOrigin: "top" }}
             />
           </motion.div>
         </motion.div>
+
+        {/* Hero wanderer — peeks up from below */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none"
+          style={{ y: heroImgY }}
+        >
+          <motion.img
+            src="/images/hero-wanderer.png"
+            alt="A wanderer at the base of a winding mountain path"
+            loading="eager"
+            className="w-[90vw] max-w-5xl h-auto mix-blend-multiply translate-y-[30%]"
+            initial={{ opacity: 0, y: 80 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </motion.div>
       </section>
 
-      {/* ===== PHILOSOPHY SCROLL ===== */}
+      {/* ================================================================
+          ACT 1 — THE ORIGIN
+          "Where I started. Small island. Big appetite."
+          ================================================================ */}
+      <section className="relative z-10">
+        <div className="py-12" />
+
+        <ScrollTextReveal
+          text="From a balcony above a supermarket in Santa Cruz, watching the town wake up every morning — I learned that life is built from the edges, not the center."
+          scrollSpan={2.2}
+        />
+
+        {/* Mandeville scene */}
+        <div className="relative px-6 md:px-12 lg:px-20">
+          <StoryImage
+            src="/images/mandeville.png"
+            alt="Tropical hillside of Mandeville, Jamaica through morning mist"
+            className="max-w-4xl mx-auto"
+            parallax={0.4}
+          />
+          <InkSplatter
+            className="absolute -bottom-8 right-1/4 w-24 opacity-30"
+            seed={23}
+            count={5}
+          />
+        </div>
+
+        <ScrollTextReveal
+          text="I wanted to build things. To create something from nothing. To see the world and bring pieces of it back with me."
+          scrollSpan={2}
+          fontSize="var(--text-heading)"
+          align="center"
+        />
+
+        {/* Floating objects — scattered interests */}
+        <div className="relative min-h-[80vh] md:min-h-[100vh]">
+          {FLOATING_OBJECTS.map((obj) => (
+            <motion.div
+              key={obj.src}
+              className={`absolute ${obj.style}`}
+              initial={{ opacity: 0, y: 40, scale: 0.85 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{
+                duration: 1,
+                delay: obj.delay,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <img
+                src={obj.src}
+                alt={obj.alt}
+                loading="lazy"
+                className="w-full h-auto mix-blend-multiply"
+              />
+            </motion.div>
+          ))}
+
+          {/* Center text among objects */}
+          <div className="absolute inset-0 flex items-center justify-center px-8">
+            <motion.p
+              className="text-center font-light max-w-lg"
+              style={{
+                fontSize: "var(--text-subheading)",
+                fontFamily: "var(--font-display), serif",
+              }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 0.6 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
+              Photography. Logistics. Code. Travel. Cooking. Making.
+              <br />
+              <span className="text-vermillion/60 italic">
+                Everything moves me.
+              </span>
+            </motion.p>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
+          ACT 2 — THE WINDING
+          "The path twists. Many directions at once."
+          ================================================================ */}
       <section className="relative z-10">
         <div className="py-8" />
+
+        {/* "But..." brush text */}
+        <div className="flex justify-center px-6 md:px-12 mb-8">
+          <StoryImage
+            src="/images/text-but.png"
+            alt="But..."
+            className="max-w-sm md:max-w-md"
+          />
+        </div>
+
         <ScrollTextReveal
-          text="Abundance favors the persistent, not the deserving."
+          text="When you chase everything that moves you, people want a straight answer for a winding path. They ask what you actually do."
+          scrollSpan={2}
+        />
+
+        {/* Forking paths */}
+        <div className="relative px-6 md:px-12 lg:px-20 flex justify-center">
+          <StoryImage
+            src="/images/forking-paths.png"
+            alt="A path splitting into many diverging trails"
+            className="max-w-lg md:max-w-xl"
+            parallax={0.3}
+          />
+        </div>
+
+        <ScrollTextReveal
+          text="Pick a lane. Focus. Specialize. The pressure piles on. Slow at first. Then all at once."
+          scrollSpan={1.8}
+          fontSize="var(--text-heading)"
+          align="center"
+        />
+
+        {/* The Weight */}
+        <div className="relative px-6 md:px-12 lg:px-20">
+          <StoryImage
+            src="/images/the-weight.png"
+            alt="A figure hunched under an enormous bundle, still walking forward"
+            className="max-w-5xl mx-auto"
+            parallax={0.5}
+          />
+        </div>
+
+        <div className="py-16" />
+      </section>
+
+      {/* ================================================================
+          INK TRANSITION — parchment dissolves into darkness
+          ================================================================ */}
+      <InkSpillTransition direction="enter" />
+
+      {/* ================================================================
+          ACT 3 — THE DARK WATER
+          "The seasons where nothing made sense."
+          ================================================================ */}
+      <section
+        className="relative z-10 text-parchment"
+        style={{ backgroundColor: "var(--ink-deep)" }}
+      >
+        <div className="py-12" />
+
+        {/* Submerged figure */}
+        <div className="relative px-4 md:px-8">
+          <StoryImage
+            src="/images/submerged.png"
+            alt="A figure submerged in deep water, sinking slowly, a vermillion ember glowing at the chest"
+            className="max-w-5xl mx-auto"
+            blend={false}
+            parallax={0.3}
+          />
+        </div>
+
+        <ScrollTextReveal
+          text="You're doing everything you're supposed to do. Building. Studying. Learning the languages. Showing up. But results never arrive fast enough to quiet the voice that says maybe you're spread too thin."
+          scrollSpan={2.5}
+        />
+
+        <ScrollTextReveal
+          text="Some nights you sink into the question — what if none of this connects? What if the winding path is just wandering?"
+          scrollSpan={1.8}
+          fontSize="var(--text-heading)"
+          align="center"
+        />
+
+        {/* Koi — life in the dark */}
+        <div className="relative px-6 md:px-12 lg:px-20 flex justify-center">
+          <StoryImage
+            src="/images/koi.png"
+            alt="A koi fish swimming upward through dark water, vermillion and gold trailing behind"
+            className="max-w-3xl"
+            blend={false}
+            parallax={0.4}
+          />
+        </div>
+
+        <ScrollTextReveal
+          text="But honestly, that tiny ember in your chest — the one that won't let you stop building, won't let you stop moving — that's the only compass you've ever needed."
+          scrollSpan={2.2}
+          fontSize="var(--text-heading)"
+          align="center"
+        />
+
+        <div className="py-12" />
+      </section>
+
+      {/* ================================================================
+          LIGHT RETURNS — darkness yields to parchment
+          ================================================================ */}
+      <InkSpillTransition direction="exit" />
+
+      {/* ================================================================
+          ACT 4 — THE BRUSH FINDS ITS STROKE
+          "When you stop trying to go straight."
+          ================================================================ */}
+      <section className="relative z-10">
+        {/* Enso moment — the turn */}
+        <div className="relative px-6 md:px-12 lg:px-20 flex justify-center -mt-16">
+          <StoryImage
+            src="/images/enso-moment.png"
+            alt="A vermillion enso with divine golden energy spilling from the gap"
+            className="max-w-3xl md:max-w-4xl"
+            parallax={0.2}
+          />
+        </div>
+
+        <ScrollTextReveal
+          text="Then something shifts. Not dramatically. Not all at once. You learn to breathe again."
           scrollSpan={1.8}
           fontSize="var(--text-heading)"
           align="center"
         />
 
         <ScrollTextReveal
-          text="I believe in building things with your hands. In tasting everything life puts in front of you. In showing up when it's hard and staying long after it stops being exciting."
+          text="You stop caring about the straight path and start trusting the winding one. You start finding beauty in the uncertainty."
+          scrollSpan={2}
+        />
+
+        {/* Winding river — the reveal. Full-width cinematic moment. */}
+        <div className="relative w-full overflow-hidden">
+          <CloudPattern position="top-right" opacity={0.03} className="z-0" />
+          <StoryImage
+            src="/images/winding-river.png"
+            alt="A vermillion river winding through ink-wash mountains — the path seen from above forms a beautiful pattern"
+            className="w-full"
+            parallax={0.6}
+          />
+        </div>
+
+        <ScrollTextReveal
+          text="You realize that the river — seen from above — was always drawing something beautiful. What felt chaotic at ground level is elegant from a distance."
           scrollSpan={2.2}
         />
 
         <ScrollTextReveal
-          text="Stay humble. Care for the people around you. The grind isn't glamorous but the compound effect of showing up every day is the closest thing to magic I've found."
-          scrollSpan={2}
-        />
-
-        <ScrollTextReveal
-          text="From Mandeville to wherever this takes me — I build, I make, I learn, I taste, I move."
+          text="Growth isn't a sprint. It's the quiet endurance between failures."
           scrollSpan={1.5}
           fontSize="var(--text-heading)"
           align="center"
         />
       </section>
 
-      {/* ===== BRUSH DIVIDER ===== */}
-      <BrushDivider variant={1} color="vermillion" className="px-6 md:px-12 lg:px-20 xl:px-28" />
+      {/* ================================================================
+          ACT 5 — EXPERIENCE. BUILD. MOVE.
+          "Everything connects."
+          ================================================================ */}
+      <section className="relative z-10">
+        <div className="py-8" />
 
-      {/* ===== INTERESTS SECTION — Sumi-e Illustrated ===== */}
-      <section className="relative z-10 py-16 md:py-24">
-        <div className="px-6 md:px-12 lg:px-20 xl:px-28">
-          <motion.p
-            className="font-mono text-vermillion/50 tracking-[0.25em] uppercase mb-16 md:mb-20"
-            style={{ fontSize: "var(--text-micro)" }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            What moves me
-          </motion.p>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10 max-w-4xl">
-            {INTERESTS.map((item, i) => (
-              <motion.div
-                key={item.label}
-                className="group relative"
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{
-                  delay: i * 0.07,
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                {/* Card with atmospheric depth */}
-                <div className="relative rounded-2xl border border-sumi-gray-dark/10 bg-ink-dark/20 p-5 md:p-6 transition-all duration-700 group-hover:border-vermillion/20 group-hover:bg-ink-dark/40">
-                  {/* Sumi-e icon */}
-                  <div className="w-10 h-10 md:w-12 md:h-12 text-parchment-dim/40 group-hover:text-vermillion/60 transition-colors duration-700 mb-4">
-                    {item.icon}
-                  </div>
-
-                  {/* Text */}
-                  <p
-                    className="text-parchment font-light group-hover:text-vermillion transition-colors duration-500"
-                    style={{
-                      fontSize: "var(--text-body)",
-                      fontFamily: "var(--font-display), serif",
-                    }}
-                  >
-                    {item.label}
-                  </p>
-                  <p
-                    className="text-parchment-dim/60 font-mono mt-1"
-                    style={{ fontSize: "var(--text-micro)" }}
-                  >
-                    {item.detail}
-                  </p>
-
-                  {/* Subtle glow on hover */}
-                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-br from-vermillion/[0.03] to-transparent" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        {/* Divine Brush — creation */}
+        <div className="relative px-6 md:px-12 lg:px-20">
+          <StoryImage
+            src="/images/divine-brush.png"
+            alt="A celestial brush painting reality into existence — color blooms where it touches"
+            className="max-w-5xl mx-auto"
+            parallax={0.4}
+          />
         </div>
+
+        <ScrollTextReveal
+          text="And so, you keep going. You stop waiting for clarity and start walking anyway. You learn that direction comes slowly, like light in the morning — you don't notice it until it's already there."
+          scrollSpan={2.2}
+        />
+
+        {/* Spiral Seasons — centered */}
+        <div className="relative flex justify-center px-6 md:px-12">
+          <StoryImage
+            src="/images/spiral-seasons.png"
+            alt="A spiral of seasons — winter, spring, summer, autumn — time compounding into growth"
+            className="max-w-md md:max-w-lg"
+            parallax={0.3}
+          />
+        </div>
+
+        <ScrollTextReveal
+          text="You stop trying to fix everything and instead let time do what it does best. Soften. Reveal. Align."
+          scrollSpan={1.8}
+          fontSize="var(--text-heading)"
+          align="center"
+        />
+
+        {/* Wolf Running — full-width climax */}
+        <div className="relative w-full overflow-hidden">
+          <StoryImage
+            src="/images/wolf-running.png"
+            alt="An Ookami-inspired white wolf running at full speed, flowers blooming in its wake"
+            className="w-full"
+            parallax={0.5}
+          />
+        </div>
+
+        <div className="py-8" />
+
+        {/* "Experience. Build. Move." text image */}
+        <div className="flex justify-center px-6 md:px-12">
+          <StoryImage
+            src="/images/text-ebm.png"
+            alt="Experience. Build. Move."
+            className="max-w-xs md:max-w-sm"
+          />
+        </div>
+
+        <div className="py-16" />
       </section>
 
-      {/* ===== BRUSH DIVIDER ===== */}
-      <BrushDivider variant={2} color="sumi" className="px-6 md:px-12 lg:px-20 xl:px-28" />
-
-      {/* ===== CLOSING QUOTE ===== */}
+      {/* ================================================================
+          CLOSING — the whisper
+          ================================================================ */}
       <section className="relative z-10">
         <ScrollTextReveal
-          text="The path isn't straight. It was never supposed to be."
+          text="Maybe direction isn't found."
+          scrollSpan={1.3}
+          fontSize="var(--text-heading)"
+          align="center"
+        />
+
+        <ScrollTextReveal
+          text="Maybe it forms under your feet as you keep walking."
           scrollSpan={1.5}
           fontSize="var(--text-heading)"
           align="center"
         />
+
+        <ScrollTextReveal
+          text="From Mandeville to wherever this takes me."
+          scrollSpan={1.2}
+          align="center"
+        />
       </section>
 
-      {/* ===== FOOTER ===== */}
-      <Footer />
+      {/* ================================================================
+          FOOTER
+          ================================================================ */}
+      <footer className="relative z-10 pb-12 pt-8">
+        <WavePattern className="absolute inset-x-0 top-0" opacity={0.03} rows={2} />
+
+        {/* Footer enso seal */}
+        <div className="flex justify-center px-6 mb-12">
+          <StoryImage
+            src="/images/footer-enso.png"
+            alt="Enso circle with vermillion seal"
+            className="max-w-[200px] md:max-w-[260px]"
+          />
+        </div>
+
+        {/* Personal note */}
+        <div className="max-w-md mx-auto px-6 text-center mb-10">
+          <p
+            className="text-sumi-gray/70 font-light leading-relaxed"
+            style={{ fontSize: "var(--text-small)" }}
+          >
+            I created this as an expression of my present chapter.
+            <br />
+            If you&apos;re on a winding path of your own, just know — it gets
+            clearer.
+          </p>
+          <p
+            className="text-sumi-gray/40 font-mono mt-4 italic"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Tatakae.
+          </p>
+        </div>
+
+        {/* Social links */}
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex gap-8 text-sumi-gray/50">
+            {[
+              { label: "Instagram", href: "https://instagram.com/macccoding" },
+              { label: "LinkedIn", href: "https://linkedin.com/in/mikechendev" },
+              { label: "X (Twitter)", href: "https://x.com/macccoding" },
+              { label: "Email Me", href: "mailto:mike@mikechen.xyz" },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono uppercase tracking-wider hover:text-vermillion transition-colors duration-500"
+                style={{ fontSize: "var(--text-micro)" }}
+              >
+                {link.label}{" "}
+                <span className="inline-block translate-y-[-1px]">{"↗"}</span>
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4 mt-6 text-sumi-gray/30">
+            <p className="font-mono" style={{ fontSize: "var(--text-micro)" }}>
+              &copy; {new Date().getFullYear()} Mike Chen
+            </p>
+            <span className="text-sumi-gray/15">|</span>
+            <p
+              className="font-mono italic"
+              style={{ fontSize: "var(--text-micro)" }}
+            >
+              Designed by Manifold
+            </p>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
