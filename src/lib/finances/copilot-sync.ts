@@ -6,8 +6,10 @@ type CopilotTransaction = {
   date: string;
   name: string;
   amount: number;
-  category?: string;
-  account?: string;
+  categoryId: string;
+  accountId: string;
+  isReviewed: boolean;
+  type: string;
 };
 
 type SyncResult = {
@@ -16,20 +18,41 @@ type SyncResult = {
   error?: string;
 };
 
-export async function syncFromCopilot(days = 30): Promise<SyncResult> {
+// Cache category ID → name mapping
+let categoryMap: Record<string, string> | null = null;
+
+async function getCategoryMap(): Promise<Record<string, string>> {
+  if (categoryMap) return categoryMap;
+  try {
+    const raw = execSync("copilot categories list --output json", {
+      encoding: "utf-8",
+      timeout: 15000,
+    });
+    const categories: { id: string; name: string }[] = JSON.parse(raw);
+    categoryMap = {};
+    for (const cat of categories) {
+      categoryMap[cat.id] = cat.name;
+    }
+    return categoryMap;
+  } catch {
+    return {};
+  }
+}
+
+export async function syncFromCopilot(pages = 4): Promise<SyncResult> {
   let raw: string;
   try {
     raw = execSync(
-      `copilot-money-cli transactions --format json --days ${days}`,
+      `copilot transactions list --output json --limit 50 --pages ${pages} --sort date-desc`,
       { encoding: "utf-8", timeout: 30000 }
     );
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    if (message.includes("auth") || message.includes("token")) {
+    if (message.includes("token") || message.includes("auth") || message.includes("401")) {
       return {
         synced: 0,
         newTransactions: 0,
-        error: "Auth expired. Run `copilot-money-cli auth` in terminal.",
+        error: "Auth expired. Run `copilot auth set-token --token <token>` in terminal.",
       };
     }
     return { synced: 0, newTransactions: 0, error: message };
@@ -37,18 +60,22 @@ export async function syncFromCopilot(days = 30): Promise<SyncResult> {
 
   let transactions: CopilotTransaction[];
   try {
-    transactions = JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    transactions = parsed.transactions ?? parsed;
   } catch {
     return {
       synced: 0,
       newTransactions: 0,
-      error: "Failed to parse copilot-money-cli output",
+      error: "Failed to parse copilot CLI output",
     };
   }
+
+  const catMap = await getCategoryMap();
 
   let newCount = 0;
 
   for (const tx of transactions) {
+    const category = tx.categoryId ? (catMap[tx.categoryId] ?? "") : "";
     const result = await prisma.transaction.upsert({
       where: { externalId: tx.id },
       create: {
@@ -56,14 +83,16 @@ export async function syncFromCopilot(days = 30): Promise<SyncResult> {
         date: new Date(tx.date),
         name: tx.name,
         amount: tx.amount,
-        category: tx.category ?? "",
-        account: tx.account ?? "",
+        category,
+        account: tx.accountId ?? "",
+        reviewed: tx.isReviewed ?? false,
       },
       update: {
         name: tx.name,
         amount: tx.amount,
-        category: tx.category ?? "",
-        account: tx.account ?? "",
+        category,
+        account: tx.accountId ?? "",
+        reviewed: tx.isReviewed ?? false,
       },
     });
     if (result.createdAt.getTime() > Date.now() - 5000) {
