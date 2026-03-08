@@ -36,14 +36,6 @@ export async function POST(request: NextRequest) {
   const expectedKey = process.env.HEALTH_INGEST_KEY;
   const isWebhook = apiKey && expectedKey && apiKey === expectedKey;
 
-  console.log("[health] auth debug:", {
-    hasApiKey: !!apiKey,
-    hasExpectedKey: !!expectedKey,
-    expectedKeyLength: expectedKey?.length,
-    apiKeyLength: apiKey?.length,
-    match: apiKey === expectedKey,
-  });
-
   if (!isWebhook) {
     const authError = requireAuth(request);
     if (authError) return authError;
