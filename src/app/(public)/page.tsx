@@ -363,6 +363,8 @@ export default function Home() {
               src="/images/winding-river.png"
               alt="A vermillion river winding through ink-wash mountains — the path seen from above forms a beautiful pattern"
               className="w-full"
+              width={1536}
+              height={1024}
               parallax={0.6}
               inkBleed={50}
             />
@@ -437,6 +439,8 @@ export default function Home() {
               src="/images/wolf-running.png"
               alt="An Ookami-inspired white wolf running at full speed, flowers blooming in its wake"
               className="w-full"
+              width={1536}
+              height={1024}
               parallax={0.5}
               inkBleed={70}
             />

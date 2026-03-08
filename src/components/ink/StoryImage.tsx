@@ -19,6 +19,10 @@ interface StoryImageProps {
   inkBleed?: number;
   /** CSS class for animations (used by scroll-triggered effects) */
   animationClass?: string;
+  /** Intrinsic width — prevents layout collapse for lazy-loaded images */
+  width?: number;
+  /** Intrinsic height — prevents layout collapse for lazy-loaded images */
+  height?: number;
 }
 
 export function StoryImage({
@@ -31,6 +35,8 @@ export function StoryImage({
   delay = 0,
   inkBleed,
   animationClass,
+  width,
+  height,
 }: StoryImageProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -81,6 +87,8 @@ export function StoryImage({
       <motion.img
         src={src}
         alt={alt}
+        width={width}
+        height={height}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         style={{
