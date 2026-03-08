@@ -16,7 +16,15 @@ export async function GET(request: NextRequest) {
         ...(status ? { status } : {}),
         ...(type ? { type } : {}),
       },
-      orderBy: { updatedAt: "desc" },
+      include: { logs: true },
+      orderBy: [{ updatedAt: "desc" }],
+    });
+
+    // Sort: currently-reading first, then by updatedAt desc
+    items.sort((a, b) => {
+      if (a.status === "reading" && b.status !== "reading") return -1;
+      if (b.status === "reading" && a.status !== "reading") return 1;
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
 
     return NextResponse.json(items);
@@ -33,20 +41,21 @@ export async function POST(request: NextRequest) {
   const authError = requireAuth(request);
   if (authError) return authError;
 
-  let title: string;
-  let type: string | undefined;
-  let status: string | undefined;
-
+  let body: Record<string, unknown>;
   try {
-    const body = await request.json();
-    title = body.title;
-    type = body.type;
-    status = body.status;
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (!title || typeof title !== "string" || title.trim().length === 0) {
+  const title = body.title;
+  const type = body.type as string | undefined;
+  const status = body.status as string | undefined;
+  const author = body.author as string | undefined;
+  const coverUrl = body.coverUrl as string | undefined;
+  const format = body.format as string | undefined;
+
+  if (!title || typeof title !== "string" || (title as string).trim().length === 0) {
     return NextResponse.json(
       { error: "Title is required" },
       { status: 400 }
@@ -56,10 +65,14 @@ export async function POST(request: NextRequest) {
   try {
     const item = await prisma.readingItem.create({
       data: {
-        title: title.trim(),
+        title: (title as string).trim(),
         ...(type ? { type } : {}),
         ...(status ? { status } : {}),
+        ...(typeof author === "string" ? { author: author.trim() || null } : {}),
+        ...(typeof coverUrl === "string" ? { coverUrl: coverUrl.trim() || null } : {}),
+        ...(typeof format === "string" ? { format } : {}),
       },
+      include: { logs: true },
     });
 
     return NextResponse.json(item, { status: 201 });

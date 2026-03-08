@@ -29,6 +29,47 @@ export async function PATCH(
     }
   }
 
+  // Validate progress if provided
+  if (body.progress !== undefined) {
+    const progress = Number(body.progress);
+    if (isNaN(progress) || progress < 0 || progress > 100) {
+      return NextResponse.json(
+        { error: "Progress must be between 0 and 100" },
+        { status: 400 }
+      );
+    }
+  }
+
+  // Fetch current item for auto-set logic
+  let currentItem;
+  try {
+    currentItem = await prisma.readingItem.findUnique({ where: { id } });
+    if (!currentItem) {
+      return NextResponse.json(
+        { error: "Reading item not found" },
+        { status: 404 }
+      );
+    }
+  } catch (err) {
+    console.error("[reading] Fetch error:", err);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+
+  // Auto-set startedAt/finishedAt on status transitions
+  const newStatus = typeof body.status === "string" ? body.status : null;
+  let autoStartedAt: Date | undefined;
+  let autoFinishedAt: Date | undefined;
+
+  if (newStatus === "reading" && !currentItem.startedAt && !body.startedAt) {
+    autoStartedAt = new Date();
+  }
+  if (newStatus === "completed" && !currentItem.finishedAt && !body.finishedAt) {
+    autoFinishedAt = new Date();
+  }
+
   try {
     const item = await prisma.readingItem.update({
       where: { id },
@@ -38,6 +79,19 @@ export async function PATCH(
           : {}),
         ...(typeof body.type === "string" ? { type: body.type } : {}),
         ...(typeof body.status === "string" ? { status: body.status } : {}),
+        ...(typeof body.author === "string"
+          ? { author: body.author.trim() || null }
+          : {}),
+        ...(typeof body.coverUrl === "string"
+          ? { coverUrl: body.coverUrl.trim() || null }
+          : {}),
+        ...(typeof body.format === "string" ? { format: body.format } : {}),
+        ...(body.progress !== undefined
+          ? { progress: Number(body.progress) }
+          : {}),
+        ...(typeof body.takeaway === "string"
+          ? { takeaway: body.takeaway.trim() || null }
+          : {}),
         ...(typeof body.rating === "number"
           ? { rating: body.rating }
           : body.rating === null
@@ -46,7 +100,18 @@ export async function PATCH(
         ...(typeof body.notes === "string"
           ? { notes: body.notes.trim() }
           : {}),
+        ...(typeof body.startedAt === "string"
+          ? { startedAt: new Date(body.startedAt) }
+          : autoStartedAt
+            ? { startedAt: autoStartedAt }
+            : {}),
+        ...(typeof body.finishedAt === "string"
+          ? { finishedAt: new Date(body.finishedAt) }
+          : autoFinishedAt
+            ? { finishedAt: autoFinishedAt }
+            : {}),
       },
+      include: { logs: true },
     });
 
     return NextResponse.json(item);
