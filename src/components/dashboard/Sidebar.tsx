@@ -11,7 +11,9 @@ interface SidebarProps {
 export const MODULES = [
   { label: "Home", href: "/dashboard", icon: "家" },
   { label: "Finances", href: "/dashboard/finances", icon: "金" },
+  { label: "Budget", href: "/dashboard/budget", icon: "算" },
   { label: "Email", href: "/dashboard/email", icon: "信" },
+  { label: "Calendar", href: "/dashboard/calendar", icon: "暦" },
   { label: "Goals", href: "/dashboard/goals", icon: "的" },
   { label: "Habits", href: "/dashboard/habits", icon: "習" },
   { label: "Health", href: "/dashboard/health", icon: "体" },
