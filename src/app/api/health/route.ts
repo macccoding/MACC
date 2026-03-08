@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import type { Prisma } from "@/generated/prisma/client";
+import { mapHealthPayload } from "@/lib/health/ingest-mapper";
 
 export async function GET(request: NextRequest) {
   const authError = requireAuth(request);
@@ -30,27 +31,66 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const authError = requireAuth(request);
-  if (authError) return authError;
+  // Webhook auth: x-api-key header OR session cookie
+  const apiKey = request.headers.get("x-api-key");
+  const expectedKey = process.env.HEALTH_INGEST_KEY;
+  const isWebhook = apiKey && expectedKey && apiKey === expectedKey;
 
-  let date: string;
-  let steps: number | undefined;
-  let calories: number | undefined;
-  let heartRate: number | undefined;
-  let sleep: number | undefined;
-  let data: Prisma.InputJsonValue | undefined;
+  if (!isWebhook) {
+    const authError = requireAuth(request);
+    if (authError) return authError;
+  }
 
+  let body: Record<string, unknown>;
   try {
-    const body = await request.json();
-    date = body.date;
-    steps = body.steps;
-    calories = body.calories;
-    heartRate = body.heartRate;
-    sleep = body.sleep;
-    data = body.data;
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
+
+  // Webhook path: use field mapper for Health Auto Export payloads
+  if (isWebhook) {
+    const mapped = mapHealthPayload(body);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    try {
+      const snapshot = await prisma.healthSnapshot.upsert({
+        where: { date: today },
+        create: {
+          date: today,
+          steps: mapped.steps,
+          calories: mapped.calories,
+          heartRate: mapped.heartRate,
+          sleep: mapped.sleep,
+          data: mapped.data,
+        },
+        update: {
+          ...(mapped.steps !== null ? { steps: mapped.steps } : {}),
+          ...(mapped.calories !== null ? { calories: mapped.calories } : {}),
+          ...(mapped.heartRate !== null ? { heartRate: mapped.heartRate } : {}),
+          ...(mapped.sleep !== null ? { sleep: mapped.sleep } : {}),
+          ...(Object.keys(mapped.data).length > 0 ? { data: mapped.data } : {}),
+        },
+      });
+      return NextResponse.json(snapshot, { status: 201 });
+    } catch (err) {
+      console.error("[health] Ingest error:", err);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Manual entry path: explicit fields
+  const date = body.date as string | undefined;
+  const steps = body.steps as number | undefined;
+  const calories = body.calories as number | undefined;
+  const heartRate = body.heartRate as number | undefined;
+  const sleep = body.sleep as number | undefined;
+  const data = body.data as Prisma.InputJsonValue | undefined;
 
   if (!date) {
     return NextResponse.json(

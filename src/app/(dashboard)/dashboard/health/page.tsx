@@ -11,7 +11,22 @@ type HealthSnapshot = {
   heartRate: number | null;
   sleep: number | null;
   data: Record<string, unknown>;
+  createdAt?: string;
 };
+
+type ParsedData = {
+  distance: number | null;
+  exerciseMinutes: number | null;
+  standHours: number | null;
+};
+
+function parseData(data: Record<string, unknown> | null | undefined): ParsedData {
+  return {
+    distance: typeof data?.distance === "number" ? data.distance : null,
+    exerciseMinutes: typeof data?.exerciseMinutes === "number" ? data.exerciseMinutes : null,
+    standHours: typeof data?.standHours === "number" ? data.standHours : null,
+  };
+}
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -26,6 +41,43 @@ function fmtSleep(hours: number | null | undefined): string {
   const m = Math.round((hours - h) * 60);
   return `${h}h ${m}m`;
 }
+
+function fmtDistance(km: number | null | undefined): string {
+  if (km == null) return "--";
+  return `${km.toFixed(1)} km`;
+}
+
+function fmtMinutes(mins: number | null | undefined): string {
+  if (mins == null) return "--";
+  return `${Math.round(mins)} min`;
+}
+
+function fmtHours(hrs: number | null | undefined): string {
+  if (hrs == null) return "--";
+  return `${Math.round(hrs)} hr`;
+}
+
+function relativeTime(dateStr: string): string {
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diffMs = now - then;
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return "just now";
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDays = Math.floor(diffHr / 24);
+  return `${diffDays}d ago`;
+}
+
+type MetricDef = {
+  key: string;
+  label: string;
+  format: (v: number | null | undefined) => string;
+  color: string;
+  barColor: string;
+  getValue: (s: HealthSnapshot) => number | null;
+};
 
 export default function HealthPage() {
   const [snapshots, setSnapshots] = useState<HealthSnapshot[]>([]);
@@ -90,23 +142,22 @@ export default function HealthPage() {
   // Today's snapshot
   const todayStr = new Date().toISOString().slice(0, 10);
   const today = snapshots.find((s) => s.date.slice(0, 10) === todayStr);
+  const todayData = parseData(today?.data);
+
+  // Last synced: most recent snapshot's createdAt
+  const lastSynced = snapshots.length > 0 ? snapshots[0] : null;
 
   // Last 7 days for mini charts (most recent 7, reversed to chronological)
   const last7 = snapshots.slice(0, 7).reverse();
 
-  const metrics: {
-    key: keyof Pick<HealthSnapshot, "steps" | "calories" | "heartRate" | "sleep">;
-    label: string;
-    format: (v: number | null | undefined) => string;
-    color: string;
-    barColor: string;
-  }[] = [
+  const metrics: MetricDef[] = [
     {
       key: "steps",
       label: "Steps",
       format: fmt,
       color: "text-vermillion",
       barColor: "bg-vermillion",
+      getValue: (s) => s.steps,
     },
     {
       key: "calories",
@@ -114,6 +165,7 @@ export default function HealthPage() {
       format: fmt,
       color: "text-ink-black",
       barColor: "bg-ink-black/30",
+      getValue: (s) => s.calories,
     },
     {
       key: "heartRate",
@@ -121,6 +173,7 @@ export default function HealthPage() {
       format: (v) => (v != null ? `${v} bpm` : "--"),
       color: "text-ink-black",
       barColor: "bg-ink-black/30",
+      getValue: (s) => s.heartRate,
     },
     {
       key: "sleep",
@@ -128,8 +181,37 @@ export default function HealthPage() {
       format: fmtSleep,
       color: "text-gold-seal",
       barColor: "bg-gold-seal",
+      getValue: (s) => s.sleep,
+    },
+    {
+      key: "exerciseMinutes",
+      label: "Exercise",
+      format: fmtMinutes,
+      color: "text-vermillion",
+      barColor: "bg-vermillion/60",
+      getValue: (s) => parseData(s.data).exerciseMinutes,
+    },
+    {
+      key: "distance",
+      label: "Distance",
+      format: fmtDistance,
+      color: "text-ink-black",
+      barColor: "bg-ink-black/20",
+      getValue: (s) => parseData(s.data).distance,
+    },
+    {
+      key: "standHours",
+      label: "Stand Hours",
+      format: fmtHours,
+      color: "text-gold-seal",
+      barColor: "bg-gold-seal/60",
+      getValue: (s) => parseData(s.data).standHours,
     },
   ];
+
+  // Split metrics into primary (top cards) and all (for charts)
+  const primaryMetrics = metrics.slice(0, 4);
+  const extraMetrics = metrics.slice(4);
 
   return (
     <div className="space-y-8">
@@ -180,14 +262,36 @@ export default function HealthPage() {
         </motion.div>
       ) : (
         <>
-          {/* Today's Metrics — 4 stat cards */}
+          {/* Last Synced Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.05, duration: 0.4, ease }}
+            className="flex items-center gap-2"
+          >
+            <span
+              className={`inline-block w-1.5 h-1.5 rounded-full ${
+                today ? "bg-green-500" : "bg-sumi-gray/40"
+              }`}
+            />
+            <span
+              className="font-mono tracking-[0.08em] text-sumi-gray-light"
+              style={{ fontSize: "var(--text-micro)" }}
+            >
+              {today
+                ? `Last synced ${lastSynced?.createdAt ? relativeTime(lastSynced.createdAt) : "today"}`
+                : "Waiting for Health Auto Export..."}
+            </span>
+          </motion.div>
+
+          {/* Today's Metrics — Primary stat cards */}
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-3"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5, ease }}
           >
-            {metrics.map((m) => (
+            {primaryMetrics.map((m) => (
               <div
                 key={m.key}
                 className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 flex flex-col items-center justify-center gap-1"
@@ -195,7 +299,7 @@ export default function HealthPage() {
                 <span
                   className={`text-2xl md:text-3xl font-light ${m.color}`}
                 >
-                  {m.format(today?.[m.key] as number | null | undefined)}
+                  {m.format(m.getValue(today as HealthSnapshot))}
                 </span>
                 <span
                   className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
@@ -206,6 +310,35 @@ export default function HealthPage() {
               </div>
             ))}
           </motion.div>
+
+          {/* Extra Metrics — Exercise, Distance, Stand Hours */}
+          {(todayData.exerciseMinutes != null || todayData.distance != null || todayData.standHours != null) && (
+            <motion.div
+              className="grid grid-cols-3 gap-3"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.5, ease }}
+            >
+              {extraMetrics.map((m) => (
+                <div
+                  key={m.key}
+                  className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 flex flex-col items-center justify-center gap-1"
+                >
+                  <span
+                    className={`text-xl md:text-2xl font-light ${m.color}`}
+                  >
+                    {m.format(m.getValue(today as HealthSnapshot))}
+                  </span>
+                  <span
+                    className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
+                    style={{ fontSize: "var(--text-micro)" }}
+                  >
+                    {m.label}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+          )}
 
           {/* 7-Day Mini Charts */}
           <motion.div
@@ -223,11 +356,13 @@ export default function HealthPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {metrics.map((m) => {
                 const values = last7.map(
-                  (s) => (s[m.key] as number | null) ?? null
+                  (s) => m.getValue(s)
                 );
                 const nums = values.filter((v): v is number => v != null);
-                const min = nums.length > 0 ? Math.min(...nums) : 0;
-                const max = nums.length > 0 ? Math.max(...nums) : 1;
+                // Skip chart row entirely if no data at all for this metric
+                if (nums.length === 0) return null;
+                const min = Math.min(...nums);
+                const max = Math.max(...nums);
                 const range = max - min || 1;
 
                 return (

@@ -1,0 +1,91 @@
+type HealthAutoExportPayload = {
+  data?: {
+    metrics?: Array<{
+      name: string;
+      data?: Array<{
+        qty?: number;
+        date?: string;
+      }>;
+    }>;
+  };
+  [key: string]: unknown;
+};
+
+type MappedHealth = {
+  steps: number | null;
+  calories: number | null;
+  heartRate: number | null;
+  sleep: number | null;
+  data: {
+    distance?: number;
+    exerciseMinutes?: number;
+    standHours?: number;
+  };
+};
+
+const FIELD_MAP: Record<string, string> = {
+  step_count: "steps",
+  steps: "steps",
+  active_energy: "calories",
+  activeCalories: "calories",
+  active_calories: "calories",
+  resting_heart_rate: "heartRate",
+  restingHeartRate: "heartRate",
+  sleep_analysis: "sleep",
+  sleepHours: "sleep",
+  sleep_hours: "sleep",
+  walking_running_distance: "data.distance",
+  distanceWalking: "data.distance",
+  distance_walking: "data.distance",
+  exercise_time: "data.exerciseMinutes",
+  exerciseMinutes: "data.exerciseMinutes",
+  exercise_minutes: "data.exerciseMinutes",
+  stand_hour: "data.standHours",
+  standHours: "data.standHours",
+  stand_hours: "data.standHours",
+};
+
+export function mapHealthPayload(payload: HealthAutoExportPayload): MappedHealth {
+  const result: MappedHealth = {
+    steps: null,
+    calories: null,
+    heartRate: null,
+    sleep: null,
+    data: {},
+  };
+
+  // Handle structured metrics array (Health Auto Export format)
+  if (payload.data?.metrics && Array.isArray(payload.data.metrics)) {
+    for (const metric of payload.data.metrics) {
+      const target = FIELD_MAP[metric.name];
+      if (!target) continue;
+      const value = metric.data?.[0]?.qty ?? null;
+      if (value === null) continue;
+      setMappedValue(result, target, value);
+    }
+    return result;
+  }
+
+  // Handle flat key-value format
+  for (const [key, value] of Object.entries(payload)) {
+    const target = FIELD_MAP[key];
+    if (!target || typeof value !== "number") continue;
+    setMappedValue(result, target, value);
+  }
+
+  return result;
+}
+
+function setMappedValue(result: MappedHealth, target: string, value: number) {
+  if (target.startsWith("data.")) {
+    const dataKey = target.slice(5) as keyof MappedHealth["data"];
+    result.data[dataKey] = value;
+  } else {
+    const key = target as keyof Omit<MappedHealth, "data">;
+    if (key === "steps" || key === "calories" || key === "heartRate") {
+      (result as Record<string, unknown>)[key] = Math.round(value);
+    } else {
+      (result as Record<string, unknown>)[key] = value;
+    }
+  }
+}
