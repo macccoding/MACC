@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
+import { classifyCapture, executeRoute } from "@/lib/captures/auto-route";
+import type { InputJsonValue } from "@prisma/client/runtime/client";
 
 export async function POST(request: NextRequest) {
   const authError = requireAuth(request);
@@ -27,12 +29,40 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const capture = await prisma.capture.create({
+    // Create the capture
+    let capture = await prisma.capture.create({
       data: {
         content: content.trim(),
         ...(category ? { category } : {}),
       },
     });
+
+    // Classify with AI
+    const classification = await classifyCapture(content.trim());
+
+    // Update capture with classification results
+    capture = await prisma.capture.update({
+      where: { id: capture.id },
+      data: {
+        suggestedRoute: classification.route,
+        suggestedData: classification.data as InputJsonValue,
+        confidence: classification.confidence,
+      },
+    });
+
+    // Auto-execute if high confidence
+    if (classification.confidence >= 0.85 && classification.route !== "none") {
+      const result = await executeRoute(
+        capture.id,
+        classification.route,
+        classification.data
+      );
+      if (result.success) {
+        capture = await prisma.capture.findUniqueOrThrow({
+          where: { id: capture.id },
+        });
+      }
+    }
 
     return NextResponse.json(capture, { status: 201 });
   } catch (err) {
@@ -49,14 +79,25 @@ export async function GET(request: NextRequest) {
   if (authError) return authError;
 
   const { searchParams } = new URL(request.url);
-  const processedParam = searchParams.get("processed");
+  const status = searchParams.get("status");
 
   // Build filter
-  const where: { processed?: boolean } = {};
-  if (processedParam === "true") {
-    where.processed = true;
-  } else if (processedParam === "false") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: Record<string, any> = {};
+
+  if (status === "inbox") {
     where.processed = false;
+  } else if (status === "routed") {
+    where.processed = true;
+    where.routedTo = { not: null };
+  } else {
+    // Legacy support: ?processed=true/false still works
+    const processedParam = searchParams.get("processed");
+    if (processedParam === "true") {
+      where.processed = true;
+    } else if (processedParam === "false") {
+      where.processed = false;
+    }
   }
 
   try {
