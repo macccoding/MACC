@@ -3,20 +3,146 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MODULES } from "@/components/dashboard/Sidebar";
 
-interface DashboardBrief {
-  goals: { active: number; titles: string[] };
-  habits: { total: number; completedToday: number };
-  captures: { unprocessed: number };
-  finances: Record<string, unknown> | null;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+interface BriefData {
+  habits: { completed: number; total: number };
+  goals: { active: number; overdue: number };
+  health: { steps: number | null; sleep: number | null };
+  portfolio: { totalValue: number; positions: number };
+  finances: { netWorth: number | null; debt: number | null };
+  email: { unread: number; actionNeeded: number };
+  captures: { pending: number };
+  learning: { trackName: string | null; progress: number | null };
+  reading: { currentlyReading: string | null; queued: number };
+  journal: { writtenToday: boolean };
+  travel: { planning: number };
+  people: { overdueReachouts: number };
+  creative: { inProgress: number };
+  blueprint: { active: number };
 }
 
-interface DashboardCard {
-  title: string;
-  content: string;
-  accent: boolean;
-}
+const MODULES: {
+  key: string;
+  label: string;
+  href: string;
+  icon: string;
+  render: (d: BriefData) => string;
+}[] = [
+  {
+    key: "habits",
+    label: "Habits",
+    href: "/dashboard/habits",
+    icon: "習",
+    render: (d) => `${d.habits.completed}/${d.habits.total} today`,
+  },
+  {
+    key: "goals",
+    label: "Goals",
+    href: "/dashboard/goals",
+    icon: "的",
+    render: (d) =>
+      `${d.goals.active} active${d.goals.overdue > 0 ? `, ${d.goals.overdue} overdue` : ""}`,
+  },
+  {
+    key: "health",
+    label: "Health",
+    href: "/dashboard/health",
+    icon: "体",
+    render: (d) =>
+      `${d.health.steps?.toLocaleString() ?? "—"} steps, ${d.health.sleep ?? "—"}h sleep`,
+  },
+  {
+    key: "portfolio",
+    label: "Portfolio",
+    href: "/dashboard/investments",
+    icon: "株",
+    render: (d) =>
+      `$${d.portfolio.totalValue.toLocaleString("en-US", { maximumFractionDigits: 0 })}`,
+  },
+  {
+    key: "finances",
+    label: "Finances",
+    href: "/dashboard/finances",
+    icon: "金",
+    render: (d) =>
+      d.finances.netWorth !== null
+        ? `NW $${d.finances.netWorth.toLocaleString()}`
+        : "No data yet",
+  },
+  {
+    key: "email",
+    label: "Email",
+    href: "/dashboard/email",
+    icon: "信",
+    render: (d) =>
+      `${d.email.unread} unread${d.email.actionNeeded > 0 ? `, ${d.email.actionNeeded} action` : ""}`,
+  },
+  {
+    key: "captures",
+    label: "Captures",
+    href: "/dashboard/captures",
+    icon: "捕",
+    render: (d) => (d.captures.pending > 0 ? `${d.captures.pending} pending` : "All clear"),
+  },
+  {
+    key: "learning",
+    label: "Learning",
+    href: "/dashboard/learning",
+    icon: "学",
+    render: (d) =>
+      d.learning.trackName
+        ? `${d.learning.trackName} — ${Math.round(d.learning.progress ?? 0)}%`
+        : "No active tracks",
+  },
+  {
+    key: "reading",
+    label: "Reading",
+    href: "/dashboard/reading",
+    icon: "読",
+    render: (d) => d.reading.currentlyReading ?? `${d.reading.queued} queued`,
+  },
+  {
+    key: "journal",
+    label: "Journal",
+    href: "/dashboard/journal",
+    icon: "記",
+    render: (d) => (d.journal.writtenToday ? "Written today" : "Not yet"),
+  },
+  {
+    key: "travel",
+    label: "Travel",
+    href: "/dashboard/travel",
+    icon: "旅",
+    render: (d) => (d.travel.planning > 0 ? `${d.travel.planning} planning` : "No plans"),
+  },
+  {
+    key: "people",
+    label: "People",
+    href: "/dashboard/people",
+    icon: "人",
+    render: (d) =>
+      d.people.overdueReachouts > 0
+        ? `${d.people.overdueReachouts} overdue`
+        : "All caught up",
+  },
+  {
+    key: "creative",
+    label: "Creative",
+    href: "/dashboard/creative",
+    icon: "芸",
+    render: (d) =>
+      d.creative.inProgress > 0 ? `${d.creative.inProgress} in progress` : "No projects",
+  },
+  {
+    key: "blueprint",
+    label: "Blueprint",
+    href: "/dashboard/blueprint",
+    icon: "図",
+    render: (d) => (d.blueprint.active > 0 ? `${d.blueprint.active} active` : "None"),
+  },
+];
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -25,103 +151,33 @@ function getGreeting() {
   return "Good evening";
 }
 
-function buildCards(brief: DashboardBrief | null): DashboardCard[] {
-  if (!brief) {
-    return [
-      { title: "Loading", content: "Fetching your data...", accent: false },
-    ];
-  }
-
-  const cards: DashboardCard[] = [];
-
-  // Goals card
-  const goalLine =
-    brief.goals.active > 0
-      ? `${brief.goals.active} active — ${brief.goals.titles[0] || ""}${brief.goals.titles.length > 1 ? ` +${brief.goals.titles.length - 1} more` : ""}`
-      : "No active goals";
-  cards.push({ title: "Goals", content: goalLine, accent: brief.goals.active > 0 });
-
-  // Habits card
-  const habitLine =
-    brief.habits.total > 0
-      ? `${brief.habits.completedToday}/${brief.habits.total} completed today`
-      : "No habits tracked";
-  cards.push({
-    title: "Habits",
-    content: habitLine,
-    accent: brief.habits.completedToday === brief.habits.total && brief.habits.total > 0,
-  });
-
-  // Captures card
-  const captureCount = brief.captures.unprocessed;
-  cards.push({
-    title: "Captures",
-    content:
-      captureCount > 0
-        ? `${captureCount} unprocessed capture${captureCount !== 1 ? "s" : ""}`
-        : "Inbox zero",
-    accent: captureCount > 0,
-  });
-
-  // Finances card
-  if (brief.finances && typeof brief.finances === "object") {
-    const fin = brief.finances as Record<string, unknown>;
-    const parts: string[] = [];
-    if (fin.debt !== undefined) parts.push(`Debt: $${Number(fin.debt).toLocaleString()}`);
-    if (fin.savings !== undefined) parts.push(`Savings: $${Number(fin.savings).toLocaleString()}`);
-    if (fin.netWorth !== undefined) parts.push(`Net worth: $${Number(fin.netWorth).toLocaleString()}`);
-    cards.push({
-      title: "Finances",
-      content: parts.length > 0 ? parts.join(" · ") : "Latest snapshot recorded",
-      accent: false,
-    });
-  } else {
-    cards.push({
-      title: "Finances",
-      content: "No snapshot yet",
-      accent: false,
-    });
-  }
-
-  return cards;
-}
-
-// Prioritized order for mobile homescreen
-const MOBILE_MODULES = [
-  "Finances",
-  "Habits",
-  "Journal",
-  "Goals",
-  "Health",
-  "Email",
-  "Learning",
-  "Investments",
-  "Travel",
-  "Creative",
-  "Reading",
-  "People",
-  "Blueprint",
-];
-
 export default function DashboardHome() {
-  const [brief, setBrief] = useState<DashboardBrief | null>(null);
+  const [brief, setBrief] = useState<BriefData | null>(null);
+  const [briefing, setBriefing] = useState<string | null>(null);
+  const [briefingLoading, setBriefingLoading] = useState(true);
+  const [briefingOpen, setBriefingOpen] = useState(true);
 
   useEffect(() => {
     fetch("/api/dashboard/brief")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => setBrief(data))
       .catch(() => setBrief(null));
+
+    fetch("/api/kemi/briefing")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        setBriefing(data?.briefing ?? null);
+        setBriefingLoading(false);
+      })
+      .catch(() => {
+        setBriefing(null);
+        setBriefingLoading(false);
+      });
   }, []);
-
-  const cards = buildCards(brief);
-
-  // Build mobile tiles from MODULES (skip Home)
-  const mobileTiles = MOBILE_MODULES.map((label) =>
-    MODULES.find((m) => m.label === label)
-  ).filter(Boolean) as typeof MODULES;
 
   return (
     <div className="space-y-8">
+      {/* Greeting */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -133,92 +189,90 @@ export default function DashboardHome() {
         >
           {getGreeting()}, <span className="text-vermillion">Mike</span>
         </h1>
-        <p className="text-sumi-gray-light text-sm mt-1 hidden md:block">
+        <p className="text-sumi-gray-light text-sm mt-1">
           Here&apos;s your day at a glance.
         </p>
       </motion.div>
 
-      {/* Mobile: App homescreen grid */}
-      <div className="md:hidden grid grid-cols-3 gap-4">
-        {mobileTiles.map((mod, i) => (
+      {/* Kemi Briefing Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="bg-parchment-warm/40 border border-vermillion/20 rounded-xl p-5"
+      >
+        <button
+          onClick={() => setBriefingOpen(!briefingOpen)}
+          className="flex items-center gap-2.5 w-full text-left"
+        >
+          <span className="text-vermillion font-serif text-lg">恵</span>
+          <span
+            className="font-mono tracking-[0.12em] uppercase text-vermillion/60"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Kemi&apos;s Briefing
+          </span>
+          <span className="ml-auto text-sumi-gray-light text-xs">
+            {briefingOpen ? "▲" : "▼"}
+          </span>
+        </button>
+
+        {briefingOpen && (
           <motion.div
-            key={mod.href}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-3"
+          >
+            {briefingLoading ? (
+              <p className="text-sumi-gray-light text-sm italic">
+                Generating your briefing...
+              </p>
+            ) : briefing ? (
+              <p className="text-ink-black/80 text-sm leading-relaxed whitespace-pre-line">
+                {briefing}
+              </p>
+            ) : (
+              <p className="text-sumi-gray-light text-sm italic">
+                Could not load briefing.
+              </p>
+            )}
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Module Cards Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+        {MODULES.map((mod, i) => (
+          <motion.div
+            key={mod.key}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
-              delay: 0.05 + i * 0.03,
-              duration: 0.4,
+              delay: 0.2 + i * 0.03,
+              duration: 0.5,
               ease: [0.22, 1, 0.36, 1],
             }}
           >
             <Link
               href={mod.href}
-              className="flex flex-col items-center gap-2 py-3 group"
+              className="block bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/30 transition-colors duration-300 h-full"
             >
-              <div className="w-14 h-14 rounded-2xl bg-parchment-warm/60 border border-sumi-gray/15 flex items-center justify-center group-active:scale-95 transition-transform duration-150">
-                <span className="text-xl font-serif text-ink-black/70 group-hover:text-vermillion transition-colors">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg font-serif text-ink-black/60">
                   {mod.icon}
                 </span>
+                <span
+                  className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
+                  style={{ fontSize: "var(--text-micro)" }}
+                >
+                  {mod.label}
+                </span>
               </div>
-              <span className="text-[11px] text-sumi-gray-light tracking-wide text-center">
-                {mod.label}
-              </span>
+              <p className="text-ink-black/80 text-sm leading-relaxed">
+                {brief ? mod.render(brief) : "—"}
+              </p>
             </Link>
-          </motion.div>
-        ))}
-
-        {/* Kemi special tile */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            delay: 0.05 + mobileTiles.length * 0.03,
-            duration: 0.4,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        >
-          <button
-            onClick={() => {
-              // Trigger Kemi chat open via custom event
-              window.dispatchEvent(new CustomEvent("open-kemi"));
-            }}
-            className="flex flex-col items-center gap-2 py-3 w-full group"
-          >
-            <div className="w-14 h-14 rounded-2xl bg-vermillion/8 border border-vermillion/20 flex items-center justify-center group-active:scale-95 transition-transform duration-150">
-              <span className="text-xl font-serif text-vermillion">K</span>
-            </div>
-            <span className="text-[11px] text-vermillion/70 tracking-wide text-center">
-              Kemi
-            </span>
-          </button>
-        </motion.div>
-      </div>
-
-      {/* Desktop: Brief cards */}
-      <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-3">
-        {cards.map((card, i) => (
-          <motion.div
-            key={card.title}
-            className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.1 + i * 0.06,
-              duration: 0.5,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <p
-              className={`font-mono tracking-[0.12em] uppercase mb-2.5 ${
-                card.accent ? "text-vermillion/50" : "text-sumi-gray-light"
-              }`}
-              style={{ fontSize: "var(--text-micro)" }}
-            >
-              {card.title}
-            </p>
-            <p className="text-ink-black/80 text-sm leading-relaxed">
-              {card.content}
-            </p>
           </motion.div>
         ))}
       </div>
