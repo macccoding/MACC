@@ -35,6 +35,8 @@ export async function POST(request: NextRequest) {
   let thesis: string | undefined;
   let entryPrice: number | undefined;
   let currentPrice: number | undefined;
+  let quantity: number | undefined;
+  let assetType: string | undefined;
 
   try {
     const body = await request.json();
@@ -42,6 +44,8 @@ export async function POST(request: NextRequest) {
     thesis = body.thesis;
     entryPrice = body.entryPrice;
     currentPrice = body.currentPrice;
+    quantity = body.quantity;
+    assetType = body.assetType;
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
@@ -61,6 +65,8 @@ export async function POST(request: NextRequest) {
         ...(thesis ? { thesis: thesis.trim() } : {}),
         ...(typeof entryPrice === "number" ? { entryPrice } : {}),
         ...(typeof currentPrice === "number" ? { currentPrice } : {}),
+        ...(typeof quantity === "number" ? { quantity } : {}),
+        ...(assetType ? { assetType } : {}),
       },
     });
 
