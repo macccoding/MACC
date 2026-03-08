@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 
+const FREQUENCY_DAYS: Record<string, number> = {
+  weekly: 7,
+  biweekly: 14,
+  monthly: 30,
+  quarterly: 90,
+};
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -33,6 +40,20 @@ export async function POST(
   const interactionDate = date ? new Date(date) : new Date();
 
   try {
+    // First, fetch the contact to get contactFrequency
+    const contact = await prisma.contact.findUniqueOrThrow({
+      where: { id },
+      select: { contactFrequency: true },
+    });
+
+    // Compute nextReachOut based on contactFrequency
+    let nextReachOut: Date | undefined;
+    if (contact.contactFrequency && FREQUENCY_DAYS[contact.contactFrequency]) {
+      const days = FREQUENCY_DAYS[contact.contactFrequency];
+      nextReachOut = new Date(interactionDate);
+      nextReachOut.setDate(nextReachOut.getDate() + days);
+    }
+
     const [interaction] = await prisma.$transaction([
       prisma.contactInteraction.create({
         data: {
@@ -43,7 +64,10 @@ export async function POST(
       }),
       prisma.contact.update({
         where: { id },
-        data: { lastInteraction: interactionDate },
+        data: {
+          lastInteraction: interactionDate,
+          ...(nextReachOut ? { nextReachOut } : {}),
+        },
       }),
     ]);
 

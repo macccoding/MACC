@@ -19,19 +19,39 @@ export async function PATCH(
   }
 
   try {
+    const data: Record<string, unknown> = {};
+
+    if (typeof body.name === "string") data.name = (body.name as string).trim();
+    if (typeof body.context === "string") data.context = (body.context as string).trim();
+    if (typeof body.email === "string") data.email = (body.email as string).trim() || null;
+    if (typeof body.phone === "string") data.phone = (body.phone as string).trim() || null;
+    if (typeof body.company === "string") data.company = (body.company as string).trim() || null;
+    if (typeof body.relationship === "string") data.relationship = (body.relationship as string).trim() || null;
+    if (typeof body.importance === "string") data.importance = body.importance || null;
+    if (typeof body.contactFrequency === "string") data.contactFrequency = body.contactFrequency || null;
+
+    // Handle birthday — accept string date or null to clear
+    if (body.birthday === null) {
+      data.birthday = null;
+    } else if (typeof body.birthday === "string" && body.birthday) {
+      data.birthday = new Date(body.birthday as string);
+    }
+
+    // Handle nextReachOut — accept string date or null to clear
+    if (body.nextReachOut === null) {
+      data.nextReachOut = null;
+    } else if (typeof body.nextReachOut === "string" && body.nextReachOut) {
+      data.nextReachOut = new Date(body.nextReachOut as string);
+    }
+
+    // Handle lastInteraction
+    if (body.lastInteraction) {
+      data.lastInteraction = new Date(body.lastInteraction as string);
+    }
+
     const contact = await prisma.contact.update({
       where: { id },
-      data: {
-        ...(typeof body.name === "string"
-          ? { name: body.name.trim() }
-          : {}),
-        ...(typeof body.context === "string"
-          ? { context: body.context.trim() }
-          : {}),
-        ...(body.lastInteraction
-          ? { lastInteraction: new Date(body.lastInteraction as string) }
-          : {}),
-      },
+      data,
     });
 
     return NextResponse.json(contact);

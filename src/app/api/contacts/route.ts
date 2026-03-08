@@ -11,7 +11,13 @@ export async function GET(request: NextRequest) {
   try {
     const contacts = await prisma.contact.findMany({
       where: search
-        ? { name: { contains: search, mode: "insensitive" } }
+        ? {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { email: { contains: search, mode: "insensitive" } },
+              { company: { contains: search, mode: "insensitive" } },
+            ],
+          }
         : undefined,
       orderBy: { lastInteraction: { sort: "desc", nulls: "last" } },
       include: {
@@ -36,19 +42,17 @@ export async function POST(request: NextRequest) {
   const authError = requireAuth(request);
   if (authError) return authError;
 
-  let name: string;
-  let context: string | undefined;
-
+  let body: Record<string, unknown>;
   try {
-    const body = await request.json();
-    name = body.name;
-    context = body.context;
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
+  const name = body.name;
+
   // Validate name
-  if (!name || typeof name !== "string" || name.trim().length === 0) {
+  if (!name || typeof name !== "string" || (name as string).trim().length === 0) {
     return NextResponse.json(
       { error: "Name is required" },
       { status: 400 }
@@ -58,9 +62,30 @@ export async function POST(request: NextRequest) {
   try {
     const contact = await prisma.contact.create({
       data: {
-        name: name.trim(),
-        ...(context && typeof context === "string"
-          ? { context: context.trim() }
+        name: (name as string).trim(),
+        ...(typeof body.context === "string"
+          ? { context: (body.context as string).trim() }
+          : {}),
+        ...(typeof body.email === "string"
+          ? { email: (body.email as string).trim() || null }
+          : {}),
+        ...(typeof body.phone === "string"
+          ? { phone: (body.phone as string).trim() || null }
+          : {}),
+        ...(typeof body.company === "string"
+          ? { company: (body.company as string).trim() || null }
+          : {}),
+        ...(typeof body.relationship === "string"
+          ? { relationship: (body.relationship as string).trim() || null }
+          : {}),
+        ...(typeof body.birthday === "string" && body.birthday
+          ? { birthday: new Date(body.birthday as string) }
+          : {}),
+        ...(typeof body.importance === "string"
+          ? { importance: body.importance as string }
+          : {}),
+        ...(typeof body.contactFrequency === "string"
+          ? { contactFrequency: body.contactFrequency as string }
           : {}),
       },
     });
