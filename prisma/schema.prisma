@@ -80,6 +80,20 @@ model Journal {
   @@map("journals")
 }
 
+model JournalEntry {
+  id        String   @id @default(cuid())
+  type      String   @default("reflection")
+  title     String?
+  body      String
+  prompt    String?
+  tags      String[] @default([])
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("journal_entries")
+}
+
 // ─── Dashboard Modules ──────────────────────────────────────────
 
 model Goal {
@@ -97,6 +111,14 @@ model Goal {
 model Habit {
   id               String   @id @default(cuid())
   title            String
+  type             String   @default("daily")
+  targetValue      Float    @default(1)
+  frequencyPerPeriod Int    @default(1)
+  period           String   @default("day")
+  color            String   @default("#e04835")
+  icon             String?
+  sortOrder        Int      @default(0)
+  archived         Boolean  @default(false)
   frequency        String   @default("daily")
   streakProtection Boolean  @default(false)
   createdAt        DateTime @default(now())
@@ -112,6 +134,9 @@ model HabitLog {
   habitId   String
   date      DateTime @db.Date
   completed Boolean  @default(true)
+  value     Float    @default(1)
+  skipped   Boolean  @default(false)
+  note      String?
   createdAt DateTime @default(now())
 
   habit Habit @relation(fields: [habitId], references: [id], onDelete: Cascade)
@@ -174,25 +199,56 @@ model CreativeProject {
 }
 
 model ReadingItem {
-  id        String   @id @default(cuid())
-  title     String
-  type      String   @default("book")
-  status    String   @default("to_read")
-  rating    Int?
-  notes     String   @default("")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String    @id @default(cuid())
+  title      String
+  author     String?
+  coverUrl   String?
+  type       String    @default("book")
+  format     String?
+  status     String    @default("to_read")
+  progress   Float     @default(0)
+  startedAt  DateTime?
+  finishedAt DateTime?
+  rating     Int?
+  takeaway   String?
+  notes      String    @default("")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  logs ReadingLog[]
 
   @@map("reading_items")
 }
 
+model ReadingLog {
+  id            String   @id @default(cuid())
+  readingItemId String
+  date          DateTime @db.Date
+  minutesRead   Int?
+  pagesRead     Int?
+  note          String?
+  createdAt     DateTime @default(now())
+
+  readingItem ReadingItem @relation(fields: [readingItemId], references: [id], onDelete: Cascade)
+
+  @@map("reading_logs")
+}
+
 model Contact {
-  id              String    @id @default(cuid())
-  name            String
-  context         String    @default("")
-  lastInteraction DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  name             String
+  context          String    @default("")
+  email            String?
+  phone            String?
+  company          String?
+  relationship     String?
+  birthday         DateTime? @db.Date
+  importance       String?
+  contactFrequency String?
+  nextReachOut     DateTime? @db.Date
+  lastInteraction  DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   interactions ContactInteraction[]
 
@@ -315,6 +371,44 @@ model KemiConversation {
   updatedAt DateTime @updatedAt
 
   @@map("kemi_conversations")
+}
+
+// ─── Budget & Recurring ─────────────────────────────────────────
+
+model BudgetAllocation {
+  id            String   @id @default(cuid())
+  category      String
+  amount        Float
+  percentage    Float?
+  period        String   @default("monthly")
+  effectiveFrom DateTime @db.Date
+  createdAt     DateTime @default(now())
+
+  @@map("budget_allocations")
+}
+
+model BudgetScore {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  score     Int
+  breakdown Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@map("budget_scores")
+}
+
+model RecurringTransaction {
+  id        String    @id @default(cuid())
+  name      String
+  amount    Float
+  currency  String    @default("USD")
+  category  String?
+  frequency String    @default("monthly")
+  nextDate  DateTime? @db.Date
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  @@map("recurring_transactions")
 }
 
 // ─── WebAuthn Passkeys ──────────────────────────────────────────
