@@ -32,6 +32,18 @@ type Transaction = {
   reviewed: boolean;
 };
 
+type RecurringTransaction = {
+  id: string;
+  name: string;
+  amount: number;
+  currency: string;
+  category: string | null;
+  frequency: string;
+  nextDate: string | null;
+  active: boolean;
+  createdAt: string;
+};
+
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 function formatCurrency(value: number | undefined): string {
@@ -68,6 +80,15 @@ function formatDateShort(dateStr: string): string {
   });
 }
 
+function toInputDate(dateStr: string | null): string {
+  if (!dateStr) return "";
+  return new Date(dateStr).toISOString().split("T")[0];
+}
+
+function todayStr(): string {
+  return new Date().toISOString().split("T")[0];
+}
+
 type MetricDef = {
   key: keyof SnapshotData;
   label: string;
@@ -82,14 +103,372 @@ const METRICS: MetricDef[] = [
   { key: "income", label: "Income", accent: true },
 ];
 
+const FREQUENCIES = ["weekly", "monthly", "yearly"] as const;
+
+function frequencyLabel(freq: string): string {
+  switch (freq) {
+    case "weekly":
+      return "/wk";
+    case "yearly":
+      return "/yr";
+    default:
+      return "/mo";
+  }
+}
+
+function monthlyEquivalent(amount: number, frequency: string): number {
+  switch (frequency) {
+    case "weekly":
+      return amount * 4.33;
+    case "yearly":
+      return amount / 12;
+    default:
+      return amount;
+  }
+}
+
+/* ─── Modal Backdrop ─────────────────────────────────────────── */
+function ModalBackdrop({
+  children,
+  onClose,
+}: {
+  children: React.ReactNode;
+  onClose: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink-black/40 backdrop-blur-sm p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 16, scale: 0.97 }}
+        transition={{ duration: 0.3, ease: EASE }}
+        className="bg-parchment border border-sumi-gray/20 rounded-2xl w-full max-w-md shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ─── Quick-Add Transaction Modal ────────────────────────────── */
+function QuickAddModal({
+  onClose,
+  onSaved,
+}: {
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState(todayStr());
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !amount) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/finances/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, amount: parseFloat(amount), category, date }),
+      });
+      if (res.ok) {
+        onSaved();
+        onClose();
+      }
+    } catch (err) {
+      console.error("Failed to save transaction:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <ModalBackdrop onClose={onClose}>
+      <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <h2
+          className="text-ink-black font-light"
+          style={{ fontSize: "var(--text-heading)" }}
+        >
+          Add Transaction
+        </h2>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Name
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+            placeholder="Coffee, Groceries..."
+          />
+        </div>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Amount (negative = expense)
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+            placeholder="-4.50"
+          />
+        </div>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Category
+          </label>
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+            placeholder="Food, Transport..."
+          />
+        </div>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Date
+          </label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+          />
+        </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 font-mono tracking-[0.12em] uppercase text-sumi-gray hover:text-ink-black transition-colors rounded-xl"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={saving || !name || !amount}
+            className="bg-vermillion/15 border border-vermillion/20 text-vermillion rounded-xl px-5 py-2.5 font-mono tracking-[0.12em] uppercase disabled:opacity-50 disabled:cursor-not-allowed hover:bg-vermillion/25 transition-colors"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            {saving ? "Saving..." : "Save"}
+          </button>
+        </div>
+      </form>
+    </ModalBackdrop>
+  );
+}
+
+/* ─── Add/Edit Subscription Modal ────────────────────────────── */
+function SubscriptionModal({
+  item,
+  onClose,
+  onSaved,
+}: {
+  item?: RecurringTransaction;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState(item?.name ?? "");
+  const [amount, setAmount] = useState(item?.amount?.toString() ?? "");
+  const [frequency, setFrequency] = useState(item?.frequency ?? "monthly");
+  const [category, setCategory] = useState(item?.category ?? "");
+  const [nextDate, setNextDate] = useState(toInputDate(item?.nextDate ?? null));
+  const [saving, setSaving] = useState(false);
+
+  const isEdit = !!item;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !amount) return;
+    setSaving(true);
+    try {
+      const url = isEdit
+        ? `/api/finances/recurring/${item.id}`
+        : "/api/finances/recurring";
+      const method = isEdit ? "PATCH" : "POST";
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          amount: parseFloat(amount),
+          frequency,
+          category: category || null,
+          nextDate: nextDate || null,
+        }),
+      });
+      if (res.ok) {
+        onSaved();
+        onClose();
+      }
+    } catch (err) {
+      console.error("Failed to save subscription:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <ModalBackdrop onClose={onClose}>
+      <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <h2
+          className="text-ink-black font-light"
+          style={{ fontSize: "var(--text-heading)" }}
+        >
+          {isEdit ? "Edit Subscription" : "Add Subscription"}
+        </h2>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Name
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+            placeholder="Netflix, Spotify..."
+          />
+        </div>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Amount
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+            placeholder="14.99"
+          />
+        </div>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Frequency
+          </label>
+          <select
+            value={frequency}
+            onChange={(e) => setFrequency(e.target.value)}
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+          >
+            {FREQUENCIES.map((f) => (
+              <option key={f} value={f}>
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Category
+          </label>
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+            placeholder="Entertainment, SaaS..."
+          />
+        </div>
+        <div>
+          <label
+            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light block mb-1"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Next Billing Date
+          </label>
+          <input
+            type="date"
+            value={nextDate}
+            onChange={(e) => setNextDate(e.target.value)}
+            className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-sm text-ink-black focus:outline-none focus:border-vermillion/40 transition-colors"
+          />
+        </div>
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 font-mono tracking-[0.12em] uppercase text-sumi-gray hover:text-ink-black transition-colors rounded-xl"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={saving || !name || !amount}
+            className="bg-vermillion/15 border border-vermillion/20 text-vermillion rounded-xl px-5 py-2.5 font-mono tracking-[0.12em] uppercase disabled:opacity-50 disabled:cursor-not-allowed hover:bg-vermillion/25 transition-colors"
+            style={{ fontSize: "var(--text-micro)" }}
+          >
+            {saving ? "Saving..." : isEdit ? "Update" : "Add"}
+          </button>
+        </div>
+      </form>
+    </ModalBackdrop>
+  );
+}
+
+/* ─── Main Page ──────────────────────────────────────────────── */
 export default function FinancesPage() {
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [recurring, setRecurring] = useState<RecurringTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+
+  // Modal state
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [showSubModal, setShowSubModal] = useState(false);
+  const [editingSub, setEditingSub] = useState<RecurringTransaction | undefined>(
+    undefined
+  );
 
   const fetchSnapshots = useCallback(async () => {
     try {
@@ -120,6 +499,56 @@ export default function FinancesPage() {
     []
   );
 
+  const fetchRecurring = useCallback(async () => {
+    try {
+      const res = await fetch("/api/finances/recurring");
+      if (res.ok) {
+        const data = await res.json();
+        setRecurring(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch recurring:", err);
+    }
+  }, []);
+
+  const toggleRecurringActive = useCallback(
+    async (item: RecurringTransaction) => {
+      try {
+        const res = await fetch(`/api/finances/recurring/${item.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ active: !item.active }),
+        });
+        if (res.ok) {
+          setRecurring((prev) =>
+            prev.map((r) =>
+              r.id === item.id ? { ...r, active: !r.active } : r
+            )
+          );
+        }
+      } catch (err) {
+        console.error("Failed to toggle recurring:", err);
+      }
+    },
+    []
+  );
+
+  const deleteRecurring = useCallback(
+    async (id: string) => {
+      try {
+        const res = await fetch(`/api/finances/recurring/${id}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          setRecurring((prev) => prev.filter((r) => r.id !== id));
+        }
+      } catch (err) {
+        console.error("Failed to delete recurring:", err);
+      }
+    },
+    []
+  );
+
   const syncFinances = useCallback(async () => {
     setSyncing(true);
     setSyncError(null);
@@ -130,8 +559,11 @@ export default function FinancesPage() {
         setSyncError(data.error);
       } else {
         setLastSynced(new Date().toLocaleTimeString());
-        // Refresh data after sync
-        await Promise.all([fetchSnapshots(), fetchTransactions(categoryFilter)]);
+        await Promise.all([
+          fetchSnapshots(),
+          fetchTransactions(categoryFilter),
+          fetchRecurring(),
+        ]);
       }
     } catch (err) {
       setSyncError("Network error during sync");
@@ -139,16 +571,16 @@ export default function FinancesPage() {
     } finally {
       setSyncing(false);
     }
-  }, [fetchSnapshots, fetchTransactions, categoryFilter]);
+  }, [fetchSnapshots, fetchTransactions, fetchRecurring, categoryFilter]);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      await Promise.all([fetchSnapshots(), fetchTransactions()]);
+      await Promise.all([fetchSnapshots(), fetchTransactions(), fetchRecurring()]);
       setLoading(false);
     };
     load();
-  }, [fetchSnapshots, fetchTransactions]);
+  }, [fetchSnapshots, fetchTransactions, fetchRecurring]);
 
   useEffect(() => {
     fetchTransactions(categoryFilter);
@@ -165,6 +597,13 @@ export default function FinancesPage() {
   // Spending by category from snapshot data
   const byCategory = latest.byCategory ?? {};
   const maxCategorySpend = Math.max(...Object.values(byCategory), 1);
+
+  // Recurring totals
+  const activeRecurring = recurring.filter((r) => r.active);
+  const monthlyTotal = activeRecurring.reduce(
+    (sum, r) => sum + monthlyEquivalent(r.amount, r.frequency),
+    0
+  );
 
   return (
     <div className="space-y-8">
@@ -447,12 +886,212 @@ export default function FinancesPage() {
               </motion.div>
             )}
 
+            {/* Subscriptions & Recurring */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5, ease: EASE }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2
+                  className="font-mono uppercase tracking-[0.12em] text-sumi-gray-light"
+                  style={{ fontSize: "var(--text-micro)" }}
+                >
+                  Subscriptions &amp; Recurring
+                </h2>
+                <button
+                  onClick={() => {
+                    setEditingSub(undefined);
+                    setShowSubModal(true);
+                  }}
+                  className="bg-vermillion/15 border border-vermillion/20 text-vermillion rounded-xl px-5 py-2.5 font-mono tracking-[0.12em] uppercase hover:bg-vermillion/25 transition-colors"
+                  style={{ fontSize: "var(--text-micro)" }}
+                >
+                  Add Subscription
+                </button>
+              </div>
+
+              {/* Monthly Total */}
+              {activeRecurring.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.65, duration: 0.4, ease: EASE }}
+                  className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 mb-3"
+                >
+                  <p
+                    className="font-mono uppercase tracking-[0.12em] text-sumi-gray-light mb-1"
+                    style={{ fontSize: "var(--text-micro)" }}
+                  >
+                    Monthly Total
+                  </p>
+                  <p className="text-lg font-serif text-vermillion/50">
+                    {formatCurrencyPrecise(monthlyTotal)}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Recurring Items */}
+              {recurring.length === 0 ? (
+                <div className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-8 text-center text-sumi-gray-light text-sm">
+                  No subscriptions yet. Add your first recurring expense.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {recurring.map((item, i) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: 0.7 + i * 0.03,
+                        duration: 0.4,
+                        ease: EASE,
+                      }}
+                      className={`bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-3 hover:border-sumi-gray/40 transition-colors duration-300 group ${
+                        !item.active ? "opacity-50" : ""
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="text-sm text-ink-black truncate">
+                            {item.name}
+                          </span>
+                          {item.category && (
+                            <span
+                              className="font-mono uppercase tracking-[0.12em] text-sumi-gray-light bg-sumi-gray/5 px-2 py-0.5 rounded-md hidden sm:inline-block"
+                              style={{ fontSize: "var(--text-micro)" }}
+                            >
+                              {item.category}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="font-mono text-sm text-vermillion font-medium">
+                            {formatCurrencyPrecise(item.amount)}
+                            <span className="text-sumi-gray-light font-normal">
+                              {frequencyLabel(item.frequency)}
+                            </span>
+                          </span>
+
+                          {/* Hover actions */}
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            {/* Active toggle */}
+                            <button
+                              onClick={() => toggleRecurringActive(item)}
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                                item.active
+                                  ? "text-emerald-600 hover:bg-emerald-50"
+                                  : "text-sumi-gray-light hover:bg-sumi-gray/10"
+                              }`}
+                              title={item.active ? "Pause" : "Activate"}
+                            >
+                              {item.active ? (
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M20 6 9 17l-5-5" />
+                                </svg>
+                              ) : (
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <rect x="6" y="4" width="4" height="16" />
+                                  <rect x="14" y="4" width="4" height="16" />
+                                </svg>
+                              )}
+                            </button>
+
+                            {/* Edit */}
+                            <button
+                              onClick={() => {
+                                setEditingSub(item);
+                                setShowSubModal(true);
+                              }}
+                              className="w-8 h-8 rounded-lg flex items-center justify-center text-sumi-gray-light hover:text-ink-black hover:bg-sumi-gray/10 transition-colors"
+                              title="Edit"
+                            >
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                <path d="m15 5 4 4" />
+                              </svg>
+                            </button>
+
+                            {/* Delete */}
+                            <button
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    `Delete "${item.name}"?`
+                                  )
+                                ) {
+                                  deleteRecurring(item.id);
+                                }
+                              }}
+                              className="w-8 h-8 rounded-lg flex items-center justify-center text-sumi-gray-light hover:text-vermillion hover:bg-vermillion/10 transition-colors"
+                              title="Delete"
+                            >
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      {item.nextDate && (
+                        <p
+                          className="font-mono text-sumi-gray-light mt-1"
+                          style={{ fontSize: "var(--text-micro)" }}
+                        >
+                          Next: {formatDate(item.nextDate)}
+                        </p>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+
             {/* Snapshot History */}
             {history.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.5, ease: EASE }}
+                transition={{ delay: 0.7, duration: 0.5, ease: EASE }}
               >
                 <h2
                   className="font-mono uppercase tracking-[0.12em] text-sumi-gray-light mb-4"
@@ -469,7 +1108,7 @@ export default function FinancesPage() {
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
-                          delay: 0.65 + i * 0.04,
+                          delay: 0.75 + i * 0.04,
                           duration: 0.4,
                           ease: EASE,
                         }}
@@ -514,6 +1153,52 @@ export default function FinancesPage() {
               </motion.div>
             )}
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Quick-Add FAB */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.8, duration: 0.4, ease: EASE }}
+        onClick={() => setShowQuickAdd(true)}
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-vermillion text-white rounded-full shadow-lg flex items-center justify-center hover:bg-vermillion/90 active:scale-95 transition-all duration-200"
+        title="Quick add transaction"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 5v14" />
+          <path d="M5 12h14" />
+        </svg>
+      </motion.button>
+
+      {/* Modals */}
+      <AnimatePresence>
+        {showQuickAdd && (
+          <QuickAddModal
+            key="quick-add"
+            onClose={() => setShowQuickAdd(false)}
+            onSaved={() => fetchTransactions(categoryFilter)}
+          />
+        )}
+        {showSubModal && (
+          <SubscriptionModal
+            key="sub-modal"
+            item={editingSub}
+            onClose={() => {
+              setShowSubModal(false);
+              setEditingSub(undefined);
+            }}
+            onSaved={fetchRecurring}
+          />
         )}
       </AnimatePresence>
     </div>
