@@ -14,6 +14,17 @@ export async function GET(request: NextRequest) {
   const date = todayMidnight();
 
   try {
+    // Check new JournalEntry model first (reflection for today)
+    const newEntry = await prisma.journalEntry.findFirst({
+      where: { date, type: "reflection" },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (newEntry) {
+      return NextResponse.json(newEntry);
+    }
+
+    // Fall back to old Journal model
     const entry = await prisma.journal.findUnique({ where: { date } });
 
     if (entry) {
