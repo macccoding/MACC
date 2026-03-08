@@ -121,13 +121,17 @@ model HabitLog {
 }
 
 model Investment {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   symbol       String
-  thesis       String   @default("")
+  thesis       String    @default("")
   entryPrice   Float?
   currentPrice Float?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  quantity     Float?
+  assetType    String    @default("stock")
+  costBasis    Float?
+  lastSyncedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   notes InvestmentNote[]
 
@@ -234,12 +238,16 @@ model LearningLog {
 }
 
 model Capture {
-  id        String   @id @default(cuid())
-  content   String
-  category  String?
-  processed Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(cuid())
+  content        String
+  category       String   @default("")
+  processed      Boolean  @default(false)
+  suggestedRoute String?
+  suggestedData  Json?
+  routedTo       String?
+  confidence     Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("captures")
 }
@@ -249,8 +257,14 @@ model EmailCache {
   gmailId   String   @unique
   subject   String
   sender    String
-  category  String?
-  summary   String?
+  snippet   String   @default("")
+  date      DateTime @default(now())
+  isRead    Boolean  @default(false)
+  isStarred Boolean  @default(false)
+  labels    String[] @default([])
+  body      String   @default("")
+  category  String   @default("")
+  summary   String   @default("")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -277,6 +291,20 @@ model FinancialSnapshot {
   createdAt DateTime @default(now())
 
   @@map("financial_snapshots")
+}
+
+model Transaction {
+  id         String   @id @default(cuid())
+  externalId String   @unique
+  date       DateTime
+  name       String
+  amount     Float
+  category   String   @default("")
+  account    String   @default("")
+  reviewed   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@map("transactions")
 }
 
 model KemiConversation {
