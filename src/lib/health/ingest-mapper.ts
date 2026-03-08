@@ -20,6 +20,9 @@ type MappedHealth = {
     distance?: number;
     exerciseMinutes?: number;
     standHours?: number;
+    weight?: number;
+    bodyFat?: number;
+    bmi?: number;
   };
 };
 
@@ -43,6 +46,13 @@ const FIELD_MAP: Record<string, string> = {
   stand_hour: "data.standHours",
   standHours: "data.standHours",
   stand_hours: "data.standHours",
+  weight: "data.weight",
+  body_mass: "data.weight",
+  bodyFat: "data.bodyFat",
+  body_fat_percentage: "data.bodyFat",
+  body_fat: "data.bodyFat",
+  bmi: "data.bmi",
+  body_mass_index: "data.bmi",
 };
 
 export function mapHealthPayload(payload: HealthAutoExportPayload): MappedHealth {

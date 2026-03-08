@@ -18,6 +18,9 @@ type ParsedData = {
   distance: number | null;
   exerciseMinutes: number | null;
   standHours: number | null;
+  weight: number | null;
+  bodyFat: number | null;
+  bmi: number | null;
 };
 
 function parseData(data: Record<string, unknown> | null | undefined): ParsedData {
@@ -25,6 +28,9 @@ function parseData(data: Record<string, unknown> | null | undefined): ParsedData
     distance: typeof data?.distance === "number" ? data.distance : null,
     exerciseMinutes: typeof data?.exerciseMinutes === "number" ? data.exerciseMinutes : null,
     standHours: typeof data?.standHours === "number" ? data.standHours : null,
+    weight: typeof data?.weight === "number" ? data.weight : null,
+    bodyFat: typeof data?.bodyFat === "number" ? data.bodyFat : null,
+    bmi: typeof data?.bmi === "number" ? data.bmi : null,
   };
 }
 
@@ -55,6 +61,21 @@ function fmtMinutes(mins: number | null | undefined): string {
 function fmtHours(hrs: number | null | undefined): string {
   if (hrs == null) return "--";
   return `${Math.round(hrs)} hr`;
+}
+
+function fmtWeight(lbs: number | null | undefined): string {
+  if (lbs == null) return "--";
+  return `${lbs.toFixed(1)} lbs`;
+}
+
+function fmtPercent(pct: number | null | undefined): string {
+  if (pct == null) return "--";
+  return `${pct.toFixed(1)}%`;
+}
+
+function fmtDecimal(n: number | null | undefined): string {
+  if (n == null) return "--";
+  return n.toFixed(1);
 }
 
 function relativeTime(dateStr: string): string {
@@ -207,11 +228,36 @@ export default function HealthPage() {
       barColor: "bg-gold-seal/60",
       getValue: (s) => parseData(s.data).standHours,
     },
+    {
+      key: "weight",
+      label: "Weight",
+      format: fmtWeight,
+      color: "text-vermillion",
+      barColor: "bg-vermillion/50",
+      getValue: (s) => parseData(s.data).weight,
+    },
+    {
+      key: "bodyFat",
+      label: "Body Fat",
+      format: fmtPercent,
+      color: "text-ink-black",
+      barColor: "bg-ink-black/20",
+      getValue: (s) => parseData(s.data).bodyFat,
+    },
+    {
+      key: "bmi",
+      label: "BMI",
+      format: fmtDecimal,
+      color: "text-gold-seal",
+      barColor: "bg-gold-seal/40",
+      getValue: (s) => parseData(s.data).bmi,
+    },
   ];
 
-  // Split metrics into primary (top cards) and all (for charts)
+  // Split metrics into primary (top cards), body comp, and activity
   const primaryMetrics = metrics.slice(0, 4);
-  const extraMetrics = metrics.slice(4);
+  const activityMetrics = metrics.slice(4, 7);
+  const bodyMetrics = metrics.slice(7);
 
   return (
     <div className="space-y-8">
@@ -319,7 +365,36 @@ export default function HealthPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.5, ease }}
             >
-              {extraMetrics.map((m) => (
+              {activityMetrics.map((m) => (
+                <div
+                  key={m.key}
+                  className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 flex flex-col items-center justify-center gap-1"
+                >
+                  <span
+                    className={`text-xl md:text-2xl font-light ${m.color}`}
+                  >
+                    {m.format(m.getValue(today as HealthSnapshot))}
+                  </span>
+                  <span
+                    className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
+                    style={{ fontSize: "var(--text-micro)" }}
+                  >
+                    {m.label}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Body Composition — Weight, Body Fat, BMI */}
+          {(todayData.weight != null || todayData.bodyFat != null || todayData.bmi != null) && (
+            <motion.div
+              className="grid grid-cols-3 gap-3"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5, ease }}
+            >
+              {bodyMetrics.map((m) => (
                 <div
                   key={m.key}
                   className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 flex flex-col items-center justify-center gap-1"
