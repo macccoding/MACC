@@ -12,12 +12,22 @@ export async function POST(
   const { id } = await params;
 
   let dateInput: string | undefined;
+  let value: number | undefined;
+  let skipped: boolean | undefined;
+  let note: string | undefined;
+
   try {
     const body = await request.json();
     dateInput = body.date;
+    if (typeof body.value === "number") value = body.value;
+    if (typeof body.skipped === "boolean") skipped = body.skipped;
+    if (typeof body.note === "string") note = body.note;
   } catch {
-    // No body or invalid JSON — default to today
+    // No body or invalid JSON — default to today with no extras
   }
+
+  const hasExtras =
+    value !== undefined || skipped !== undefined || note !== undefined;
 
   // Parse date, default to today
   const logDate = dateInput ? new Date(dateInput) : new Date();
@@ -35,20 +45,47 @@ export async function POST(
     });
 
     if (existing) {
-      // Toggle off — delete the log
+      if (hasExtras) {
+        // Check if any provided field is actually different
+        const updates: Record<string, unknown> = {};
+        if (value !== undefined && value !== existing.value) updates.value = value;
+        if (skipped !== undefined && skipped !== existing.skipped) {
+          updates.skipped = skipped;
+          updates.completed = !skipped;
+        }
+        if (note !== undefined && note !== existing.note) updates.note = note;
+
+        if (Object.keys(updates).length > 0) {
+          const updated = await prisma.habitLog.update({
+            where: { id: existing.id },
+            data: updates,
+          });
+          return NextResponse.json({ toggled: true, log: updated });
+        }
+
+        // All fields same — treat as no-op, return current
+        return NextResponse.json({ toggled: true, log: existing });
+      }
+
+      // No extras — simple toggle off (delete)
       await prisma.habitLog.delete({ where: { id: existing.id } });
       return NextResponse.json({ toggled: false });
-    } else {
-      // Toggle on — create the log
-      const log = await prisma.habitLog.create({
-        data: {
-          habitId: id,
-          date: logDate,
-          completed: true,
-        },
-      });
-      return NextResponse.json({ toggled: true, log });
     }
+
+    // No existing log — create one
+    const completed = skipped ? false : true;
+    const log = await prisma.habitLog.create({
+      data: {
+        habitId: id,
+        date: logDate,
+        completed,
+        value: value ?? 1,
+        skipped: skipped ?? false,
+        ...(note ? { note } : {}),
+      },
+    });
+
+    return NextResponse.json({ toggled: true, log });
   } catch (err) {
     console.error("[habits] Toggle log error:", err);
     return NextResponse.json(
