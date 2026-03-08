@@ -22,6 +22,7 @@ export const MODULES = [
   { label: "Creative", href: "/dashboard/creative", icon: "芸" },
   { label: "Reading", href: "/dashboard/reading", icon: "読" },
   { label: "People", href: "/dashboard/people", icon: "人" },
+  { label: "Knowledge", href: "/dashboard/knowledge", icon: "脳" },
   { label: "Blueprint", href: "/dashboard/blueprint", icon: "図" },
 ];
 
