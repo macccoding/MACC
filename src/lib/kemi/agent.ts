@@ -1,43 +1,85 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { selectModel } from "./router";
-import { getSystemPromptParts } from "./system-prompt";
-import { buildContext } from "./context";
-import {
-  MAX_CONVERSATION_HISTORY,
-  MAX_OUTPUT_TOKENS,
-  MAX_TOOL_ITERATIONS,
-} from "./config";
-import type { KemiMessage, KemiResponse } from "./types";
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { routeModel } from "@/lib/kemi/model-router";
+import { getRelevantContext } from "@/lib/kemi/context-manager";
+import { buildSystemPrompt } from "@/lib/kemi/system-prompt-builder";
+import { KEMI_TOOLS } from "@/lib/kemi/tools";
+import { executeTool } from "@/lib/kemi/tool-executor";
+import { truncateToolResult } from "@/lib/kemi/utils";
+import { remember } from "@/lib/kemi/memory";
+import type { KemiMessage } from "@/lib/kemi/types";
 
 const anthropic = new Anthropic();
 
+const MAX_TOOL_ROUNDS = 10;
+const MAX_HISTORY = 20;
+const MAX_OUTPUT_TOKENS = 4096;
+
 /**
- * Process a user message through the Kemi agent.
+ * Multi-channel entry point for Kemi.
+ * Used by the web chat route, Telegram webhook, and future channels.
  *
- * 1. Selects model via router (Haiku for simple, Sonnet otherwise)
- * 2. Builds dynamic context (timestamp, task/memory keywords)
- * 3. Assembles system prompt with cache control on the static personality block
- * 4. Trims conversation history to MAX_CONVERSATION_HISTORY
- * 5. Calls Claude with tool-use loop (tools not yet implemented)
- * 6. Returns text response with model and usage info
+ * 1. Routes model via message complexity
+ * 2. Fetches relevant context (habits, health, portfolio, etc.)
+ * 3. Builds system prompt from soul files + context
+ * 4. Loads conversation history (web: passed in, other channels: from DB)
+ * 5. Runs Claude with tool loop (max 10 rounds)
+ * 6. Saves messages to ConversationMessage table (fire-and-forget)
+ * 7. Embeds conversation to memory if substantial (fire-and-forget)
+ * 8. Returns response text
  */
-export async function processMessage(
-  userMessage: string,
-  history: KemiMessage[] = []
-): Promise<KemiResponse> {
-  // 1. Select model based on message complexity
-  const model = selectModel(userMessage);
+export async function processKemiMessage(
+  message: string,
+  channel: string = "web",
+  isVoiceNote: boolean = false,
+  originalVoiceText?: string,
+  history?: Array<{ role: string; content: string }>,
+  conversationId?: string,
+): Promise<string> {
+  // Build the user message, prepending voice note context if applicable
+  const prefix =
+    isVoiceNote && originalVoiceText
+      ? `[Voice note transcription]: ${originalVoiceText}\n\n`
+      : "";
+  const userMessage = (prefix ? prefix + message : message).trim();
 
-  // 2. Build dynamic context
-  const dynamicContext = await buildContext(userMessage);
+  // 1. Route model
+  const { model, tier } = routeModel(userMessage);
 
-  // 3. Get system prompt parts
-  const [personality, context] = getSystemPromptParts(dynamicContext);
+  // 2. Get relevant context
+  const contextBlocks = await getRelevantContext(userMessage);
 
-  // 4. Trim history to limit
-  const trimmedHistory = history.slice(-MAX_CONVERSATION_HISTORY);
+  // 3. Build system prompt
+  const systemPrompt = buildSystemPrompt(contextBlocks);
+
+  // 4. Load conversation history
+  let conversationHistory: KemiMessage[];
+
+  if (channel === "web" && history) {
+    // Web channel: use passed-in history
+    conversationHistory = history.map((msg) => ({
+      role: msg.role as "user" | "assistant",
+      content: msg.content,
+    }));
+  } else if (channel !== "web") {
+    // Other channels (telegram, etc.): load from DB
+    const dbMessages = await prisma.conversationMessage.findMany({
+      where: { channel },
+      orderBy: { createdAt: "desc" },
+      take: MAX_HISTORY,
+    });
+    // Reverse to chronological order
+    conversationHistory = dbMessages.reverse().map((msg) => ({
+      role: msg.role as "user" | "assistant",
+      content: msg.content,
+    }));
+  } else {
+    conversationHistory = [];
+  }
 
   // 5. Build messages array
+  const trimmedHistory = conversationHistory.slice(-MAX_HISTORY);
   const messages: Anthropic.MessageParam[] = [
     ...trimmedHistory.map((msg) => ({
       role: msg.role as "user" | "assistant",
@@ -46,44 +88,60 @@ export async function processMessage(
     { role: "user" as const, content: userMessage },
   ];
 
-  // 6. Call Claude
+  // 6. Initial Claude call with tools
   let response = await anthropic.messages.create({
     model,
     max_tokens: MAX_OUTPUT_TOKENS,
     system: [
       {
         type: "text" as const,
-        text: personality,
+        text: systemPrompt,
         cache_control: { type: "ephemeral" as const },
       },
-      { type: "text" as const, text: context },
     ],
+    tools: KEMI_TOOLS,
     messages,
   });
 
-  // 7. Tool use loop
-  let iterations = 0;
-  while (
-    response.stop_reason === "tool_use" &&
-    iterations < MAX_TOOL_ITERATIONS
-  ) {
-    iterations++;
+  // 7. Tool use loop (max 10 rounds)
+  let rounds = 0;
+  while (response.stop_reason === "tool_use" && rounds < MAX_TOOL_ROUNDS) {
+    rounds++;
 
-    // Extract tool use blocks
+    // Extract tool_use blocks
     const toolUseBlocks = response.content.filter(
-      (block): block is Anthropic.ToolUseBlock => block.type === "tool_use"
+      (block): block is Anthropic.ToolUseBlock => block.type === "tool_use",
     );
 
-    // Build tool results (not yet implemented)
-    const toolResults: Anthropic.ToolResultBlockParam[] = toolUseBlocks.map(
-      (block) => ({
-        type: "tool_result" as const,
-        tool_use_id: block.id,
-        content: "Tool not yet implemented",
-      })
+    // Execute each tool
+    const toolResults: Anthropic.ToolResultBlockParam[] = await Promise.all(
+      toolUseBlocks.map(async (block) => {
+        try {
+          const result = await executeTool(
+            block.name,
+            block.input as Record<string, unknown>,
+          );
+          const resultStr = JSON.stringify(result);
+          return {
+            type: "tool_result" as const,
+            tool_use_id: block.id,
+            content: truncateToolResult(resultStr),
+          };
+        } catch (err) {
+          console.error(`[kemi] Tool error (${block.name}):`, err);
+          return {
+            type: "tool_result" as const,
+            tool_use_id: block.id,
+            content: JSON.stringify({
+              error: `Tool execution failed: ${err instanceof Error ? err.message : "Unknown error"}`,
+            }),
+            is_error: true,
+          };
+        }
+      }),
     );
 
-    // Continue conversation with tool results
+    // Feed results back
     messages.push({ role: "assistant" as const, content: response.content });
     messages.push({ role: "user" as const, content: toolResults });
 
@@ -93,48 +151,82 @@ export async function processMessage(
       system: [
         {
           type: "text" as const,
-          text: personality,
+          text: systemPrompt,
           cache_control: { type: "ephemeral" as const },
         },
-        { type: "text" as const, text: context },
       ],
+      tools: KEMI_TOOLS,
       messages,
     });
   }
 
-  // 8. Extract text content
+  // 8. Extract final text response
   const textBlock = response.content.find(
-    (block): block is Anthropic.TextBlock => block.type === "text"
+    (block): block is Anthropic.TextBlock => block.type === "text",
   );
-
   const content = textBlock?.text ?? "I couldn't generate a response.";
 
-  return {
-    content,
-    model: response.model,
-    usage: {
-      inputTokens: response.usage.input_tokens,
-      outputTokens: response.usage.output_tokens,
-    },
-  };
-}
+  // 9. Save to KemiConversation (fire-and-forget, for web channel backward compat)
+  if (channel === "web") {
+    const conversationMessages = [
+      ...trimmedHistory,
+      { role: "user" as const, content: userMessage },
+      { role: "assistant" as const, content },
+    ] as unknown as Prisma.InputJsonValue;
 
-/**
- * Multi-channel entry point for Kemi.
- * Used by Telegram webhook and future channels.
- * Will be fully implemented in Task 16.
- */
-export async function processKemiMessage(
-  message: string,
-  channel: string = "web",
-  isVoiceNote: boolean = false,
-  originalVoiceText?: string,
-): Promise<string> {
-  const prefix = isVoiceNote && originalVoiceText
-    ? `[Voice note transcription]: ${originalVoiceText}\n\n`
-    : "";
-  const fullMessage = prefix ? prefix + message : message;
+    if (conversationId) {
+      prisma.kemiConversation
+        .update({
+          where: { id: conversationId },
+          data: { messages: conversationMessages },
+        })
+        .catch((err: unknown) =>
+          console.error("[kemi] Failed to update conversation:", err),
+        );
+    } else {
+      prisma.kemiConversation
+        .create({
+          data: {
+            messages: conversationMessages,
+            context: tier,
+          },
+        })
+        .catch((err: unknown) =>
+          console.error("[kemi] Failed to save conversation:", err),
+        );
+    }
+  }
 
-  const result = await processMessage(fullMessage);
-  return result.content;
+  // 10. Save to ConversationMessage table (fire-and-forget, all channels)
+  Promise.all([
+    prisma.conversationMessage.create({
+      data: {
+        channel,
+        role: "user",
+        content: userMessage,
+        isVoiceNote,
+        originalVoiceText: originalVoiceText ?? null,
+      },
+    }),
+    prisma.conversationMessage.create({
+      data: {
+        channel,
+        role: "assistant",
+        content,
+      },
+    }),
+  ]).catch((err: unknown) =>
+    console.error("[kemi] Failed to save conversation messages:", err),
+  );
+
+  // 11. Fire-and-forget memory embedding if message is substantial
+  if (userMessage.length >= 50) {
+    const memoryContent = `User (${channel}): ${userMessage}\nKemi: ${content}`;
+    remember(memoryContent, "conversation", { channel, tier }, channel).catch(
+      (err: unknown) =>
+        console.error("[kemi] Failed to embed conversation memory:", err),
+    );
+  }
+
+  return content;
 }
