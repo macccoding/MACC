@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { slugify } from "./extract";
-import type { ExtractedEntity, KiokuNode } from "./types";
+import type { ExtractedEntity } from "./types";
 
 // ---------------------------------------------------------------------------
 // Node operations
@@ -13,7 +13,7 @@ import type { ExtractedEntity, KiokuNode } from "./types";
 export async function upsertNode(
   name: string,
   tags: string[] = []
-): Promise<KiokuNode> {
+): Promise<{ id: string; name: string; slug: string; tags: string[]; notes: string }> {
   const slug = slugify(name);
 
   const existing = await prisma.node.findUnique({ where: { slug } });
