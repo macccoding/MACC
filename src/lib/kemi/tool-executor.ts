@@ -886,20 +886,26 @@ export async function executeTool(
       }
 
       const cal = await getCalendarModule();
-      const result = await cal.createEvent(
-        summary,
-        start,
-        end,
-        description,
-        location,
-        attendees,
-      );
-      await logAction(
-        "calendar_event_created",
-        `Created event: ${summary}`,
-        { eventId: result.id, attendees },
-      );
-      return { success: true, event: result };
+      try {
+        const result = await cal.createEvent(
+          summary,
+          start,
+          end,
+          description,
+          location,
+          attendees,
+        );
+        await logAction(
+          "calendar_event_created",
+          `Created event: ${summary}`,
+          { eventId: result.id, attendees },
+        );
+        return { success: true, event: result };
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error("[create_calendar_event] Error:", msg, { summary, start, end });
+        return { error: `Failed to create event: ${msg}`, summary, start, end };
+      }
     }
 
     case "update_calendar_event": {

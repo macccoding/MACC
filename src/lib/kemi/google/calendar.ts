@@ -43,12 +43,13 @@ export async function createEvent(
   attendees?: string[],
 ) {
   const calendar = getCalendarClient();
+  const timeZone = process.env.GOOGLE_CALENDAR_TIMEZONE || "America/Jamaica";
   const res = await calendar.events.insert({
     calendarId: CALENDAR_ID,
     requestBody: {
       summary,
-      start: { dateTime: new Date(start).toISOString() },
-      end: { dateTime: new Date(end).toISOString() },
+      start: { dateTime: new Date(start).toISOString(), timeZone },
+      end: { dateTime: new Date(end).toISOString(), timeZone },
       description,
       location,
       attendees: attendees?.map((email) => ({ email })),
