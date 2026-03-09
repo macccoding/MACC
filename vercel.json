@@ -1,0 +1,11 @@
+{
+  "crons": [
+    { "path": "/api/cron/morning", "schedule": "0 11 * * *" },
+    { "path": "/api/cron/midday", "schedule": "0 16 * * *" },
+    { "path": "/api/cron/evening", "schedule": "0 1 * * *" },
+    { "path": "/api/cron/night", "schedule": "30 3 * * *" },
+    { "path": "/api/cron/hourly", "schedule": "0 13-23,0-1 * * *" },
+    { "path": "/api/cron/weekly", "schedule": "0 22 * * 5" },
+    { "path": "/api/cron/predictions", "schedule": "0 13,17,21,1 * * *" }
+  ]
+}
