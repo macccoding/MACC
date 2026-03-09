@@ -123,6 +123,15 @@ export async function POST(request: NextRequest) {
       console.error("[health/ingest] Auto-populate habits error:", err);
     }
 
+    // Store raw metric names for debugging (temporary)
+    const metricNames = Array.isArray(metricsArr)
+      ? metricsArr.map((m: Record<string, unknown>) => m.name)
+      : Object.keys(body);
+    await prisma.healthSnapshot.update({
+      where: { id: snapshot.id },
+      data: { data: { ...(extraData as Record<string, unknown>), _debug_metrics: metricNames, _debug_raw: Array.isArray(metricsArr) ? metricsArr.slice(0, 5) : body } as Prisma.InputJsonValue },
+    });
+
     return NextResponse.json({ ingested: true, id: snapshot.id });
   } catch (err) {
     console.error("[health/ingest] Upsert error:", err);
