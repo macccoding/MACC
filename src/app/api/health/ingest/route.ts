@@ -59,8 +59,18 @@ export async function POST(request: NextRequest) {
   const normalized = new Date(dateStr);
   normalized.setUTCHours(0, 0, 0, 0);
 
+  // Log raw payload for debugging
+  const metricsArr = (body.data as Record<string, unknown>)?.metrics;
+  if (Array.isArray(metricsArr)) {
+    console.log("[health/ingest] Metric names received:", metricsArr.map((m: Record<string, unknown>) => m.name));
+    console.log("[health/ingest] Raw payload sample:", JSON.stringify(metricsArr.slice(0, 3), null, 2));
+  } else {
+    console.log("[health/ingest] Non-metrics payload keys:", Object.keys(body));
+  }
+
   // Use the field mapper to handle Health Auto Export's structured format
   const mapped = mapHealthPayload(body as Parameters<typeof mapHealthPayload>[0]);
+  console.log("[health/ingest] Mapped result:", JSON.stringify(mapped));
   const { steps, calories, heartRate, sleep, data: extraData } = mapped;
 
   try {
