@@ -1,6 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { logAction, getActionLog } from "./action-log";
+import { checkEscalation } from "./escalation";
 import { todayJamaica, startOfWeek } from "./utils";
+import {
+  getUnreadEmails,
+  getEmailBody,
+  sendEmail,
+  searchEmails,
+  getEmailSummary,
+} from "./google/gmail";
+import { getEvents, createEvent, updateEvent, deleteEvent } from "./google/calendar";
+import { getSheetValues, updateSheetValues, appendRows } from "./google/sheets";
+import type { GoogleAccount } from "./google/auth";
 import type { Prisma } from "@/generated/prisma/client";
 
 /**
@@ -774,6 +785,196 @@ export async function executeTool(
         ruleId: rule.id,
       });
       return { success: true, deleted: rule };
+    }
+
+    // ─── Google Integration ──────────────────────────────────────
+
+    case "check_email": {
+      const account = input.account as GoogleAccount | undefined;
+      const maxResults = (input.max_results as number) || 10;
+      if (account) {
+        return await getUnreadEmails(account, maxResults);
+      }
+      // No account specified — return summary across accounts
+      const [business, personal] = await Promise.all([
+        getEmailSummary("business"),
+        getEmailSummary("personal"),
+      ]);
+      return { accounts: [business, personal] };
+    }
+
+    case "read_email": {
+      const account = input.account as GoogleAccount;
+      const messageId = input.message_id as string;
+      return await getEmailBody(account, messageId);
+    }
+
+    case "send_email": {
+      const account = input.account as GoogleAccount;
+      const to = input.to as string;
+      const subject = input.subject as string;
+      const body = input.body as string;
+      const threadId = input.thread_id as string | undefined;
+      const confirmed = (input.confirmed as boolean) || false;
+
+      const escalation = await checkEscalation("email_sent", {
+        to,
+        confirmed,
+        subject,
+        body,
+      });
+      if (!escalation.allowed) {
+        return { error: escalation.reason, requiresApproval: true };
+      }
+
+      const result = await sendEmail(account, to, subject, body, threadId);
+      await logAction("email_sent", `Sent email to ${to}: ${subject}`, {
+        account,
+        to,
+        subject,
+        messageId: result.id,
+      });
+
+      // Try to find contact by email and log interaction
+      try {
+        const contact = await prisma.contact.findFirst({
+          where: { email: to },
+        });
+        if (contact) {
+          await prisma.contactInteraction.create({
+            data: {
+              contactId: contact.id,
+              notes: `Sent email: ${subject}`,
+            },
+          });
+          await prisma.contact.update({
+            where: { id: contact.id },
+            data: { lastInteraction: new Date() },
+          });
+        }
+      } catch {
+        // Non-critical — don't fail the send
+      }
+
+      return { success: true, messageId: result.id };
+    }
+
+    case "search_email": {
+      const account = input.account as GoogleAccount;
+      const query = input.query as string;
+      const maxResults = (input.max_results as number) || 10;
+      return await searchEmails(account, query, maxResults);
+    }
+
+    case "get_calendar_events": {
+      const startDate = input.start_date as string;
+      const endDate = input.end_date as string;
+      return await getEvents(startDate, endDate);
+    }
+
+    case "create_calendar_event": {
+      const summary = input.summary as string;
+      const start = input.start as string;
+      const end = input.end as string;
+      const description = input.description as string | undefined;
+      const location = input.location as string | undefined;
+      const attendees = input.attendees as string[] | undefined;
+      const confirmed = (input.confirmed as boolean) || false;
+
+      const escalation = await checkEscalation("calendar_event_created", {
+        attendees,
+        confirmed,
+      });
+      if (!escalation.allowed) {
+        return { error: escalation.reason, requiresApproval: true };
+      }
+
+      const result = await createEvent(
+        summary,
+        start,
+        end,
+        description,
+        location,
+        attendees,
+      );
+      await logAction(
+        "calendar_event_created",
+        `Created event: ${summary}`,
+        { eventId: result.id, attendees },
+      );
+      return { success: true, event: result };
+    }
+
+    case "update_calendar_event": {
+      const eventId = input.event_id as string;
+      const updates: Record<string, string | undefined> = {};
+      if (input.summary !== undefined) updates.summary = input.summary as string;
+      if (input.start !== undefined) updates.start = input.start as string;
+      if (input.end !== undefined) updates.end = input.end as string;
+      if (input.description !== undefined) updates.description = input.description as string;
+      if (input.location !== undefined) updates.location = input.location as string;
+
+      const result = await updateEvent(eventId, updates);
+      await logAction(
+        "calendar_event_updated",
+        `Updated event: ${result.summary}`,
+        { eventId: result.id, changes: Object.keys(updates) },
+      );
+      return { success: true, event: result };
+    }
+
+    case "delete_calendar_event": {
+      const eventId = input.event_id as string;
+      const confirmed = (input.confirmed as boolean) || false;
+
+      const escalation = await checkEscalation("calendar_event_deleted", {
+        confirmed,
+      });
+      if (!escalation.allowed) {
+        return { error: escalation.reason, requiresApproval: true };
+      }
+
+      const result = await deleteEvent(eventId);
+      await logAction(
+        "calendar_event_deleted",
+        `Deleted calendar event: ${eventId}`,
+        { eventId },
+      );
+      return { success: true, ...result };
+    }
+
+    case "read_sheet": {
+      const spreadsheetId = input.spreadsheet_id as string;
+      const range = input.range as string;
+      return await getSheetValues(spreadsheetId, range);
+    }
+
+    case "update_sheet": {
+      const spreadsheetId = input.spreadsheet_id as string;
+      const range = input.range as string;
+      const values = input.values as unknown[][];
+
+      const result = await updateSheetValues(spreadsheetId, range, values);
+      await logAction("sheet_updated", `Updated sheet ${spreadsheetId} range ${range}`, {
+        spreadsheetId,
+        range,
+        updatedCells: result.updatedCells,
+      });
+      return { success: true, ...result };
+    }
+
+    case "append_sheet": {
+      const spreadsheetId = input.spreadsheet_id as string;
+      const range = input.range as string;
+      const rows = input.rows as unknown[][];
+
+      const result = await appendRows(spreadsheetId, range, rows);
+      await logAction("sheet_appended", `Appended ${rows.length} rows to ${spreadsheetId}`, {
+        spreadsheetId,
+        range,
+        updatedRows: result.updatedRows,
+      });
+      return { success: true, ...result };
     }
 
     // ─── Action Log + Personal Entries ──────────────────────────

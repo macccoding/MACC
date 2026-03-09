@@ -873,6 +873,295 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
     },
   },
 
+  // ─── Google Integration (11) ────────────────────────────────
+
+  {
+    name: "check_email",
+    description:
+      "Check unread emails from Gmail. If no account specified, returns a summary across business and personal accounts.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        account: {
+          type: "string",
+          description:
+            'Which account to check: "business", "personal", or "tools". Omit for a summary across accounts.',
+        },
+        max_results: {
+          type: "number",
+          description: "Max emails to return. Default 10.",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "read_email",
+    description:
+      "Read the full body of a specific email by message ID.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        account: {
+          type: "string",
+          description:
+            'Which account: "business", "personal", or "tools" (required).',
+        },
+        message_id: {
+          type: "string",
+          description: "Gmail message ID (required).",
+        },
+      },
+      required: ["account", "message_id"],
+    },
+  },
+  {
+    name: "send_email",
+    description:
+      "Send an email via Gmail. Requires escalation check (unknown contacts, sensitive content).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        account: {
+          type: "string",
+          description:
+            'Which account to send from: "business", "personal", or "tools" (required).',
+        },
+        to: {
+          type: "string",
+          description: "Recipient email address (required).",
+        },
+        subject: {
+          type: "string",
+          description: "Email subject line (required).",
+        },
+        body: {
+          type: "string",
+          description: "Email body text (required).",
+        },
+        thread_id: {
+          type: "string",
+          description: "Gmail thread ID to reply in (optional).",
+        },
+        confirmed: {
+          type: "boolean",
+          description:
+            "Set to true to confirm sending after escalation check.",
+        },
+      },
+      required: ["account", "to", "subject", "body"],
+    },
+  },
+  {
+    name: "search_email",
+    description:
+      "Search emails using Gmail query syntax (e.g. from:, subject:, has:attachment).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        account: {
+          type: "string",
+          description:
+            'Which account to search: "business", "personal", or "tools" (required).',
+        },
+        query: {
+          type: "string",
+          description: "Gmail search query (required).",
+        },
+        max_results: {
+          type: "number",
+          description: "Max results to return. Default 10.",
+        },
+      },
+      required: ["account", "query"],
+    },
+  },
+  {
+    name: "get_calendar_events",
+    description:
+      "Get calendar events in a date range from Google Calendar.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        start_date: {
+          type: "string",
+          description: "Start date in ISO format (required).",
+        },
+        end_date: {
+          type: "string",
+          description: "End date in ISO format (required).",
+        },
+      },
+      required: ["start_date", "end_date"],
+    },
+  },
+  {
+    name: "create_calendar_event",
+    description:
+      "Create a Google Calendar event. Escalates if attendees are present and not confirmed.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        summary: {
+          type: "string",
+          description: "Event title (required).",
+        },
+        start: {
+          type: "string",
+          description: "Start datetime in ISO format (required).",
+        },
+        end: {
+          type: "string",
+          description: "End datetime in ISO format (required).",
+        },
+        description: {
+          type: "string",
+          description: "Event description.",
+        },
+        location: {
+          type: "string",
+          description: "Event location.",
+        },
+        attendees: {
+          type: "array",
+          items: { type: "string" },
+          description: "List of attendee email addresses.",
+        },
+        confirmed: {
+          type: "boolean",
+          description:
+            "Set to true to confirm creation with attendees.",
+        },
+      },
+      required: ["summary", "start", "end"],
+    },
+  },
+  {
+    name: "update_calendar_event",
+    description: "Update a Google Calendar event by event ID.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        event_id: {
+          type: "string",
+          description: "Google Calendar event ID (required).",
+        },
+        summary: {
+          type: "string",
+          description: "New event title.",
+        },
+        start: {
+          type: "string",
+          description: "New start datetime in ISO format.",
+        },
+        end: {
+          type: "string",
+          description: "New end datetime in ISO format.",
+        },
+        description: {
+          type: "string",
+          description: "New event description.",
+        },
+        location: {
+          type: "string",
+          description: "New event location.",
+        },
+      },
+      required: ["event_id"],
+    },
+  },
+  {
+    name: "delete_calendar_event",
+    description:
+      "Delete a Google Calendar event. Requires confirmed=true.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        event_id: {
+          type: "string",
+          description: "Google Calendar event ID (required).",
+        },
+        confirmed: {
+          type: "boolean",
+          description: "Must be true to confirm deletion (required).",
+        },
+      },
+      required: ["event_id", "confirmed"],
+    },
+  },
+  {
+    name: "read_sheet",
+    description:
+      "Read values from a Google Sheet by spreadsheet ID and range.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        spreadsheet_id: {
+          type: "string",
+          description: "Google Sheets spreadsheet ID (required).",
+        },
+        range: {
+          type: "string",
+          description:
+            'Sheet range in A1 notation, e.g. "Sheet1!A1:D10" (required).',
+        },
+      },
+      required: ["spreadsheet_id", "range"],
+    },
+  },
+  {
+    name: "update_sheet",
+    description: "Update cells in a Google Sheet.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        spreadsheet_id: {
+          type: "string",
+          description: "Google Sheets spreadsheet ID (required).",
+        },
+        range: {
+          type: "string",
+          description: 'Sheet range in A1 notation (required).',
+        },
+        values: {
+          type: "array",
+          items: {
+            type: "array",
+            items: { type: "string" },
+          },
+          description: "2D array of values to write (required).",
+        },
+      },
+      required: ["spreadsheet_id", "range", "values"],
+    },
+  },
+  {
+    name: "append_sheet",
+    description: "Append rows to a Google Sheet.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        spreadsheet_id: {
+          type: "string",
+          description: "Google Sheets spreadsheet ID (required).",
+        },
+        range: {
+          type: "string",
+          description: 'Sheet range in A1 notation (required).',
+        },
+        rows: {
+          type: "array",
+          items: {
+            type: "array",
+            items: { type: "string" },
+          },
+          description: "2D array of rows to append (required).",
+        },
+      },
+      required: ["spreadsheet_id", "range", "rows"],
+    },
+  },
+
   // ─── Budget / Reading / Journal (8) ─────────────────────────
 
   {
