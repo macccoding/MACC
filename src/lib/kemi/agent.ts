@@ -63,14 +63,14 @@ export async function processKemiMessage(
   // 4. Load conversation history
   let conversationHistory: KemiMessage[];
 
-  if (channel === "web" && history) {
-    // Web channel: use passed-in history
+  if (channel === "web" && history && history.length > 0) {
+    // Web channel with client-side history: use it
     conversationHistory = history.map((msg) => ({
       role: msg.role as "user" | "assistant",
       content: msg.content,
     }));
-  } else if (channel !== "web") {
-    // Other channels (telegram, etc.): load from DB
+  } else {
+    // All channels (including web with no history): load from DB
     const dbMessages = await prisma.conversationMessage.findMany({
       where: { channel },
       orderBy: { createdAt: "desc" },
@@ -81,8 +81,6 @@ export async function processKemiMessage(
       role: msg.role as "user" | "assistant",
       content: msg.content,
     }));
-  } else {
-    conversationHistory = [];
   }
 
   // 5. Build messages array

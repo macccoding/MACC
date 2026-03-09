@@ -20,17 +20,48 @@ interface ChatPanelProps {
 const getTime = () =>
   new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
+const STORAGE_KEY = "kemi-chat-messages";
+const MAX_STORED = 50;
+
+function loadStoredMessages(): Message[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored) as Message[];
+      if (parsed.length > 0) return parsed;
+    }
+  } catch {}
+  return [];
+}
+
+function saveMessages(messages: Message[]) {
+  try {
+    // Only store the last MAX_STORED messages
+    const toStore = messages.filter((m) => m.id !== "welcome").slice(-MAX_STORED);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+  } catch {}
+}
+
 export function ChatPanel({ open, onClose }: ChatPanelProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "kemi",
-      content: "Hey Mike. What's on your mind?",
-      timestamp: getTime(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const stored = loadStoredMessages();
+    if (stored.length > 0) return stored;
+    return [
+      {
+        id: "welcome",
+        role: "kemi",
+        content: "Hey Mike. What's on your mind?",
+        timestamp: getTime(),
+      },
+    ];
+  });
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Persist messages whenever they change
+  useEffect(() => {
+    saveMessages(messages);
+  }, [messages]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -134,13 +165,32 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500/60" />
               </div>
-              <button
-                onClick={onClose}
-                aria-label="Close chat"
-                className="text-sumi-gray hover:text-parchment transition-colors text-sm sm:text-sm text-lg w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center"
-              >
-                &times;
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    setMessages([
+                      {
+                        id: "welcome",
+                        role: "kemi",
+                        content: "Hey Mike. What's on your mind?",
+                        timestamp: getTime(),
+                      },
+                    ]);
+                    localStorage.removeItem(STORAGE_KEY);
+                  }}
+                  aria-label="Clear chat"
+                  className="text-sumi-gray hover:text-parchment transition-colors text-[10px] font-mono tracking-wide px-2 py-1 rounded hover:bg-sumi-gray-dark/20"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={onClose}
+                  aria-label="Close chat"
+                  className="text-sumi-gray hover:text-parchment transition-colors text-sm sm:text-sm text-lg w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center"
+                >
+                  &times;
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
