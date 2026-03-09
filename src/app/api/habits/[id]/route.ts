@@ -45,6 +45,7 @@ export async function PATCH(
         ...(typeof body.streakProtection === "boolean"
           ? { streakProtection: body.streakProtection }
           : {}),
+        ...(typeof body.healthKey === "string" ? { healthKey: body.healthKey } : {}),
       },
     });
 

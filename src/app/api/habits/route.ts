@@ -231,7 +231,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { title, type, targetValue, frequencyPerPeriod, period, color, icon, sortOrder } = body as {
+  const { title, type, targetValue, frequencyPerPeriod, period, color, icon, sortOrder, healthKey } = body as {
     title?: string;
     type?: string;
     targetValue?: number;
@@ -240,6 +240,7 @@ export async function POST(request: NextRequest) {
     color?: string;
     icon?: string;
     sortOrder?: number;
+    healthKey?: string;
   };
 
   // Validate title
@@ -269,6 +270,7 @@ export async function POST(request: NextRequest) {
         ...(color ? { color } : {}),
         ...(icon ? { icon } : {}),
         ...(typeof sortOrder === "number" ? { sortOrder } : {}),
+        ...(healthKey ? { healthKey } : {}),
       },
     });
 
