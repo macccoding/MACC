@@ -69,7 +69,33 @@ export function mapHealthPayload(payload: HealthAutoExportPayload): MappedHealth
     for (const metric of payload.data.metrics) {
       const target = FIELD_MAP[metric.name];
       if (!target) continue;
-      const value = metric.data?.[0]?.qty ?? null;
+      const entry = metric.data?.[0];
+      if (!entry) continue;
+
+      // sleep_analysis sends { asleep, totalSleep, inBed, ... } instead of qty
+      if (metric.name === "sleep_analysis") {
+        const sleepVal =
+          (entry as Record<string, unknown>).asleep ??
+          (entry as Record<string, unknown>).totalSleep ??
+          entry.qty ??
+          null;
+        if (sleepVal !== null && typeof sleepVal === "number") {
+          setMappedValue(result, target, sleepVal);
+        }
+        continue;
+      }
+
+      // heart_rate sends { Min, Avg, Max } — use Avg (resting)
+      if (metric.name === "resting_heart_rate" || metric.name === "heart_rate") {
+        const hrVal =
+          (entry as Record<string, unknown>).Avg ?? entry.qty ?? null;
+        if (hrVal !== null && typeof hrVal === "number") {
+          setMappedValue(result, target, hrVal);
+        }
+        continue;
+      }
+
+      const value = entry.qty ?? null;
       if (value === null) continue;
       setMappedValue(result, target, value);
     }
