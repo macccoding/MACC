@@ -1,4 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { logAction, getActionLog } from "./action-log";
+import { todayJamaica, startOfWeek } from "./utils";
+import type { Prisma } from "@/generated/prisma/client";
 
 /**
  * Execute a Kemi tool by name with the given input.
@@ -346,6 +349,771 @@ export async function executeTool(
         data: { status: newStatus },
       });
       return { success: true, goal: updatedGoal };
+    }
+
+    // ─── Task Management ──────────────────────────────────────
+
+    case "create_task": {
+      const task = await prisma.kemiTask.create({
+        data: {
+          title: input.title as string,
+          description: (input.description as string) || "",
+          priority: (input.priority as string) || "medium",
+          category: (input.category as string) || null,
+          dueDate: input.due_date
+            ? new Date(input.due_date as string)
+            : null,
+          tags: (input.tags as string[]) || [],
+        },
+      });
+      await logAction("task_created", `Created task: ${task.title}`, {
+        taskId: task.id,
+      });
+      return { success: true, task };
+    }
+
+    case "update_task": {
+      const taskId = input.task_id as string;
+      const data: Record<string, unknown> = {};
+      if (input.title !== undefined) data.title = input.title;
+      if (input.description !== undefined) data.description = input.description;
+      if (input.status !== undefined) {
+        data.status = input.status;
+        if (input.status === "done") data.completedAt = new Date();
+      }
+      if (input.priority !== undefined) data.priority = input.priority;
+      if (input.due_date !== undefined)
+        data.dueDate = new Date(input.due_date as string);
+      if (input.notes !== undefined) data.notes = input.notes;
+
+      const task = await prisma.kemiTask.update({
+        where: { id: taskId },
+        data,
+      });
+      await logAction("task_updated", `Updated task: ${task.title}`, {
+        taskId: task.id,
+        changes: Object.keys(data),
+      });
+      return { success: true, task };
+    }
+
+    case "complete_task": {
+      const task = await prisma.kemiTask.update({
+        where: { id: input.task_id as string },
+        data: { status: "done", completedAt: new Date() },
+      });
+      await logAction("task_completed", `Completed task: ${task.title}`, {
+        taskId: task.id,
+      });
+      return { success: true, task };
+    }
+
+    case "query_tasks": {
+      const statuses = (input.status as string[]) || [
+        "open",
+        "in_progress",
+      ];
+      const taskCategory = input.category as string | undefined;
+      const taskSearch = input.search as string | undefined;
+      const taskLimit = (input.limit as number) || 20;
+
+      const where: Prisma.KemiTaskWhereInput = {
+        AND: [
+          { status: { in: statuses } },
+          ...(taskCategory ? [{ category: taskCategory }] : []),
+          ...(taskSearch
+            ? [
+                {
+                  OR: [
+                    {
+                      title: {
+                        contains: taskSearch,
+                        mode: "insensitive" as const,
+                      },
+                    },
+                    {
+                      description: {
+                        contains: taskSearch,
+                        mode: "insensitive" as const,
+                      },
+                    },
+                  ],
+                },
+              ]
+            : []),
+        ],
+      };
+
+      const tasks = await prisma.kemiTask.findMany({
+        where,
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        take: taskLimit,
+      });
+      return tasks;
+    }
+
+    // ─── Contact CRM ────────────────────────────────────────────
+
+    case "create_contact": {
+      const contact = await prisma.contact.create({
+        data: {
+          name: input.name as string,
+          email: (input.email as string) || null,
+          phone: (input.phone as string) || null,
+          company: (input.company as string) || null,
+          relationship: (input.relationship as string) || null,
+          context: (input.context as string) || "",
+          birthday: input.birthday
+            ? new Date(input.birthday as string)
+            : null,
+          importance: (input.importance as string) || null,
+          contactFrequency: (input.contact_frequency as string) || null,
+        },
+      });
+      await logAction("contact_created", `Created contact: ${contact.name}`, {
+        contactId: contact.id,
+      });
+      return { success: true, contact };
+    }
+
+    case "update_contact": {
+      const contactId = input.contact_id as string;
+      const contactData: Record<string, unknown> = {};
+      if (input.name !== undefined) contactData.name = input.name;
+      if (input.email !== undefined) contactData.email = input.email;
+      if (input.phone !== undefined) contactData.phone = input.phone;
+      if (input.company !== undefined) contactData.company = input.company;
+      if (input.relationship !== undefined)
+        contactData.relationship = input.relationship;
+      if (input.importance !== undefined)
+        contactData.importance = input.importance;
+      if (input.contact_frequency !== undefined)
+        contactData.contactFrequency = input.contact_frequency;
+      if (input.notes !== undefined) contactData.context = input.notes;
+
+      const contact = await prisma.contact.update({
+        where: { id: contactId },
+        data: contactData,
+      });
+      await logAction(
+        "contact_updated",
+        `Updated contact: ${contact.name}`,
+        { contactId: contact.id, changes: Object.keys(contactData) }
+      );
+      return { success: true, contact };
+    }
+
+    case "search_contacts": {
+      const q = input.query as string;
+      const contactLimit = (input.limit as number) || 20;
+
+      const contacts = await prisma.contact.findMany({
+        where: {
+          OR: [
+            { name: { contains: q, mode: "insensitive" as const } },
+            { email: { contains: q, mode: "insensitive" as const } },
+            { company: { contains: q, mode: "insensitive" as const } },
+          ],
+        },
+        include: {
+          interactions: {
+            orderBy: { date: "desc" },
+            take: 3,
+          },
+        },
+        orderBy: { lastInteraction: { sort: "desc", nulls: "last" } },
+        take: contactLimit,
+      });
+      return contacts;
+    }
+
+    case "set_contact_frequency": {
+      const freqContactId = input.contact_id as string;
+      const frequency = input.frequency as string;
+
+      const freqDays: Record<string, number> = {
+        daily: 1,
+        weekly: 7,
+        biweekly: 14,
+        monthly: 30,
+        quarterly: 90,
+      };
+      const daysUntilNext = freqDays[frequency] || 30;
+      const nextReachOut = new Date(todayJamaica());
+      nextReachOut.setDate(nextReachOut.getDate() + daysUntilNext);
+
+      const contact = await prisma.contact.update({
+        where: { id: freqContactId },
+        data: {
+          contactFrequency: frequency,
+          nextReachOut,
+        },
+      });
+      await logAction(
+        "contact_frequency_set",
+        `Set ${contact.name} frequency to ${frequency}`,
+        { contactId: contact.id, frequency, nextReachOut }
+      );
+      return { success: true, contact };
+    }
+
+    case "get_relationship_summary": {
+      const todayDate = todayJamaica();
+
+      // Overdue reachouts
+      const overdue = await prisma.contact.findMany({
+        where: {
+          nextReachOut: { not: null, lt: todayDate },
+        },
+        orderBy: { nextReachOut: "asc" },
+      });
+
+      // Upcoming birthdays (within 7 days)
+      const sevenDaysOut = new Date(todayDate);
+      sevenDaysOut.setDate(sevenDaysOut.getDate() + 7);
+
+      const allContactsWithBirthday = await prisma.contact.findMany({
+        where: { birthday: { not: null } },
+      });
+
+      const todayMonth = todayDate.getMonth();
+      const todayDay = todayDate.getDate();
+      const upcomingBirthdays = allContactsWithBirthday.filter((c) => {
+        if (!c.birthday) return false;
+        const bMonth = c.birthday.getMonth();
+        const bDay = c.birthday.getDate();
+        // Check if birthday falls within the next 7 days
+        for (let i = 0; i <= 7; i++) {
+          const checkDate = new Date(todayDate);
+          checkDate.setDate(todayDay + i);
+          if (
+            checkDate.getMonth() === bMonth &&
+            checkDate.getDate() === bDay
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
+
+      return {
+        overdueReachouts: overdue.map((c) => ({
+          id: c.id,
+          name: c.name,
+          nextReachOut: c.nextReachOut,
+          frequency: c.contactFrequency,
+          daysPastDue: Math.floor(
+            (todayDate.getTime() - (c.nextReachOut?.getTime() || 0)) /
+              (1000 * 60 * 60 * 24)
+          ),
+        })),
+        upcomingBirthdays: upcomingBirthdays.map((c) => ({
+          id: c.id,
+          name: c.name,
+          birthday: c.birthday,
+        })),
+        totalContacts: await prisma.contact.count(),
+        withFrequency: await prisma.contact.count({
+          where: { contactFrequency: { not: null } },
+        }),
+      };
+    }
+
+    // ─── Strategy ───────────────────────────────────────────────
+
+    case "set_goal": {
+      const goal = await prisma.strategicGoal.create({
+        data: {
+          title: input.title as string,
+          description: (input.description as string) || "",
+          type: "goal",
+          category: (input.category as string) || null,
+          targetDate: input.target_date
+            ? new Date(input.target_date as string)
+            : null,
+        },
+      });
+      await logAction("goal_created", `Created goal: ${goal.title}`, {
+        goalId: goal.id,
+      });
+      return { success: true, goal };
+    }
+
+    case "set_priority": {
+      const priority = await prisma.strategicGoal.create({
+        data: {
+          title: input.title as string,
+          description: (input.description as string) || "",
+          type: "priority",
+          category: (input.category as string) || null,
+        },
+      });
+      await logAction(
+        "priority_created",
+        `Created priority: ${priority.title}`,
+        { goalId: priority.id }
+      );
+      return { success: true, priority };
+    }
+
+    case "set_okr": {
+      const okr = await prisma.strategicGoal.create({
+        data: {
+          title: input.title as string,
+          description: (input.description as string) || "",
+          type: "okr",
+          category: (input.category as string) || null,
+          targetDate: input.target_date
+            ? new Date(input.target_date as string)
+            : null,
+        },
+      });
+      await logAction("okr_created", `Created OKR: ${okr.title}`, {
+        goalId: okr.id,
+      });
+      return { success: true, okr };
+    }
+
+    case "review_goals": {
+      const contextType = (input.context_type as string) || "all";
+      const where: Prisma.StrategicGoalWhereInput = {
+        status: "active",
+        ...(contextType !== "all" ? { type: contextType } : {}),
+      };
+      const goals = await prisma.strategicGoal.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+      });
+      return goals;
+    }
+
+    case "update_goal_progress": {
+      const goalId = input.goal_id as string;
+      const progressData: Record<string, unknown> = {};
+      if (input.progress !== undefined) progressData.progress = input.progress;
+      if (input.status !== undefined) progressData.status = input.status;
+
+      const goal = await prisma.strategicGoal.update({
+        where: { id: goalId },
+        data: progressData,
+      });
+      await logAction(
+        "goal_progress_updated",
+        `Updated goal progress: ${goal.title}`,
+        { goalId: goal.id, ...progressData }
+      );
+      return { success: true, goal };
+    }
+
+    // ─── Calendar Rules ─────────────────────────────────────────
+
+    case "create_calendar_rule": {
+      const rule = await prisma.calendarRule.create({
+        data: {
+          ruleType: input.rule_type as string,
+          title: input.title as string,
+          description: (input.description as string) || "",
+          dayOfWeek: (input.day_of_week as string[]) || [],
+          startTime: (input.start_time as string) || null,
+          endTime: (input.end_time as string) || null,
+          calendarId: (input.calendar_id as string) || null,
+          metadata: (input.metadata as Prisma.InputJsonValue) || {},
+        },
+      });
+      await logAction("calendar_rule_created", `Created rule: ${rule.title}`, {
+        ruleId: rule.id,
+        ruleType: rule.ruleType,
+      });
+      return { success: true, rule };
+    }
+
+    case "update_calendar_rule": {
+      const ruleId = input.rule_id as string;
+      const ruleData: Record<string, unknown> = {};
+      if (input.title !== undefined) ruleData.title = input.title;
+      if (input.description !== undefined)
+        ruleData.description = input.description;
+      if (input.day_of_week !== undefined)
+        ruleData.dayOfWeek = input.day_of_week;
+      if (input.start_time !== undefined) ruleData.startTime = input.start_time;
+      if (input.end_time !== undefined) ruleData.endTime = input.end_time;
+      if (input.active !== undefined) ruleData.active = input.active;
+      if (input.metadata !== undefined) ruleData.metadata = input.metadata;
+
+      const rule = await prisma.calendarRule.update({
+        where: { id: ruleId },
+        data: ruleData,
+      });
+      await logAction("calendar_rule_updated", `Updated rule: ${rule.title}`, {
+        ruleId: rule.id,
+        changes: Object.keys(ruleData),
+      });
+      return { success: true, rule };
+    }
+
+    case "get_calendar_rules": {
+      const activeOnly = input.active_only !== false;
+      const rules = await prisma.calendarRule.findMany({
+        where: activeOnly ? { active: true } : undefined,
+        orderBy: { createdAt: "desc" },
+      });
+      return rules;
+    }
+
+    case "delete_calendar_rule": {
+      if (!input.confirmed) {
+        return {
+          error:
+            "Deletion not confirmed. Set confirmed=true to delete this rule.",
+        };
+      }
+      const rule = await prisma.calendarRule.delete({
+        where: { id: input.rule_id as string },
+      });
+      await logAction("calendar_rule_deleted", `Deleted rule: ${rule.title}`, {
+        ruleId: rule.id,
+      });
+      return { success: true, deleted: rule };
+    }
+
+    // ─── Action Log + Personal Entries ──────────────────────────
+
+    case "log_action": {
+      await logAction(
+        input.action_type as string,
+        input.description as string,
+        (input.details as Record<string, unknown>) || {},
+        (input.triggered_by as string) || "user_request"
+      );
+      return { success: true };
+    }
+
+    case "get_action_log": {
+      const hoursAgo = (input.hours_ago as number) || 24;
+      const logLimit = (input.limit as number) || 20;
+      const logs = await getActionLog(hoursAgo, logLimit);
+      return logs;
+    }
+
+    case "log_entry": {
+      const entryCategory = input.category as string;
+      const entryTitle = input.title as string;
+      let entryAmount = (input.amount as number) || 0;
+      const entryCurrency = (input.currency as string) || "JMD";
+      const entryDate = input.date
+        ? new Date(input.date as string)
+        : todayJamaica();
+
+      // For expenses, ensure amount is negative
+      if (entryCategory === "expense" && entryAmount > 0) {
+        entryAmount = -entryAmount;
+      }
+
+      const externalId = `kemi_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+      const transaction = await prisma.transaction.create({
+        data: {
+          externalId,
+          date: entryDate,
+          name: entryTitle,
+          amount: entryAmount,
+          category: entryCategory,
+          account: "manual",
+          reviewed: false,
+        },
+      });
+      await logAction("entry_logged", `Logged ${entryCategory}: ${entryTitle}`, {
+        transactionId: transaction.id,
+        amount: entryAmount,
+        currency: entryCurrency,
+      });
+      return { success: true, transaction };
+    }
+
+    case "query_entries": {
+      const qCategory = input.category as string | undefined;
+      const dateFrom = input.date_from
+        ? new Date(input.date_from as string)
+        : undefined;
+      const dateTo = input.date_to
+        ? new Date(input.date_to as string)
+        : undefined;
+      const qLimit = (input.limit as number) || 50;
+
+      const entries = await prisma.transaction.findMany({
+        where: {
+          ...(qCategory
+            ? { category: { contains: qCategory, mode: "insensitive" as const } }
+            : {}),
+          ...(dateFrom || dateTo
+            ? {
+                date: {
+                  ...(dateFrom ? { gte: dateFrom } : {}),
+                  ...(dateTo ? { lte: dateTo } : {}),
+                },
+              }
+            : {}),
+        },
+        orderBy: { date: "desc" },
+        take: qLimit,
+      });
+      return entries;
+    }
+
+    case "get_summary": {
+      const summaryCategory = input.category as string | undefined;
+      const period = (input.period as string) || "month";
+
+      let periodStart: Date;
+      const periodEnd = new Date();
+
+      if (period === "week") {
+        periodStart = startOfWeek();
+      } else if (period === "year") {
+        periodStart = new Date(todayJamaica());
+        periodStart.setMonth(0, 1);
+      } else {
+        // month
+        periodStart = new Date(todayJamaica());
+        periodStart.setDate(1);
+      }
+
+      const where: Prisma.TransactionWhereInput = {
+        date: { gte: periodStart, lte: periodEnd },
+        ...(summaryCategory
+          ? { category: { contains: summaryCategory, mode: "insensitive" as const } }
+          : {}),
+      };
+
+      const transactions = await prisma.transaction.findMany({ where });
+
+      // Group by category
+      const breakdown: Record<string, { total: number; count: number }> = {};
+      let totalIncome = 0;
+      let totalExpenses = 0;
+
+      for (const tx of transactions) {
+        const cat = tx.category || "uncategorized";
+        if (!breakdown[cat]) breakdown[cat] = { total: 0, count: 0 };
+        breakdown[cat].total += tx.amount;
+        breakdown[cat].count += 1;
+        if (tx.amount >= 0) totalIncome += tx.amount;
+        else totalExpenses += tx.amount;
+      }
+
+      return {
+        period,
+        periodStart,
+        periodEnd,
+        totalIncome,
+        totalExpenses,
+        net: totalIncome + totalExpenses,
+        breakdown,
+        transactionCount: transactions.length,
+      };
+    }
+
+    // ─── Budget / Reading / Journal ─────────────────────────────
+
+    case "get_budget_overview": {
+      // Get latest allocation per category
+      const allocations = await prisma.budgetAllocation.findMany({
+        orderBy: { effectiveFrom: "desc" },
+      });
+      // Deduplicate: keep latest per category
+      const latestAllocations = new Map<
+        string,
+        { category: string; amount: number; percentage: number | null }
+      >();
+      for (const a of allocations) {
+        if (!latestAllocations.has(a.category)) {
+          latestAllocations.set(a.category, {
+            category: a.category,
+            amount: a.amount,
+            percentage: a.percentage,
+          });
+        }
+      }
+
+      // Current month spending
+      const monthStart = new Date(todayJamaica());
+      monthStart.setDate(1);
+      const transactions = await prisma.transaction.findMany({
+        where: { date: { gte: monthStart } },
+      });
+
+      const spentByCategory: Record<string, number> = {};
+      for (const tx of transactions) {
+        const cat = tx.category || "uncategorized";
+        spentByCategory[cat] = (spentByCategory[cat] || 0) + tx.amount;
+      }
+
+      const overview = Array.from(latestAllocations.values()).map((a) => ({
+        category: a.category,
+        allocated: a.amount,
+        spent: Math.abs(spentByCategory[a.category] || 0),
+        remaining: a.amount - Math.abs(spentByCategory[a.category] || 0),
+        percentUsed:
+          a.amount > 0
+            ? Math.round(
+                (Math.abs(spentByCategory[a.category] || 0) / a.amount) * 100
+              )
+            : 0,
+      }));
+
+      return { month: monthStart, allocations: overview };
+    }
+
+    case "get_subscriptions": {
+      const subs = await prisma.recurringTransaction.findMany({
+        where: { active: true },
+        orderBy: { nextDate: "asc" },
+      });
+      return subs;
+    }
+
+    case "add_subscription": {
+      const sub = await prisma.recurringTransaction.create({
+        data: {
+          name: input.name as string,
+          amount: input.amount as number,
+          currency: (input.currency as string) || "USD",
+          category: (input.category as string) || null,
+          frequency: (input.frequency as string) || "monthly",
+          nextDate: input.next_date
+            ? new Date(input.next_date as string)
+            : null,
+        },
+      });
+      await logAction(
+        "subscription_added",
+        `Added subscription: ${sub.name}`,
+        { subscriptionId: sub.id, amount: sub.amount }
+      );
+      return { success: true, subscription: sub };
+    }
+
+    case "cancel_subscription": {
+      const sub = await prisma.recurringTransaction.update({
+        where: { id: input.subscription_id as string },
+        data: { active: false },
+      });
+      await logAction(
+        "subscription_cancelled",
+        `Cancelled subscription: ${sub.name}`,
+        { subscriptionId: sub.id }
+      );
+      return { success: true, subscription: sub };
+    }
+
+    case "log_reading_session": {
+      const readingLog = await prisma.readingLog.create({
+        data: {
+          readingItemId: input.reading_item_id as string,
+          date: todayJamaica(),
+          minutesRead: (input.minutes_read as number) || null,
+          pagesRead: (input.pages_read as number) || null,
+          note: (input.note as string) || null,
+        },
+      });
+      await logAction("reading_session_logged", "Logged reading session", {
+        readingLogId: readingLog.id,
+        readingItemId: input.reading_item_id,
+      });
+      return { success: true, readingLog };
+    }
+
+    case "update_reading_progress": {
+      const readingItemId = input.reading_item_id as string;
+
+      // Fetch current state to handle status transitions
+      const currentItem = await prisma.readingItem.findUniqueOrThrow({
+        where: { id: readingItemId },
+      });
+
+      const readingData: Record<string, unknown> = {};
+      if (input.progress !== undefined) readingData.progress = input.progress;
+      if (input.rating !== undefined) readingData.rating = input.rating;
+      if (input.takeaway !== undefined) readingData.takeaway = input.takeaway;
+      if (input.status !== undefined) {
+        readingData.status = input.status;
+        const newStatus = input.status as string;
+        if (newStatus === "reading" && !currentItem.startedAt) {
+          readingData.startedAt = new Date();
+        }
+        if (newStatus === "completed") {
+          readingData.finishedAt = new Date();
+        }
+      }
+
+      const item = await prisma.readingItem.update({
+        where: { id: readingItemId },
+        data: readingData,
+      });
+      await logAction(
+        "reading_progress_updated",
+        `Updated reading: ${item.title}`,
+        { readingItemId: item.id, changes: Object.keys(readingData) }
+      );
+      return { success: true, item };
+    }
+
+    case "create_journal_entry": {
+      const entry = await prisma.journalEntry.create({
+        data: {
+          body: input.body as string,
+          type: (input.type as string) || "reflection",
+          title: (input.title as string) || null,
+          prompt: (input.prompt as string) || null,
+          tags: (input.tags as string[]) || [],
+          date: todayJamaica(),
+        },
+      });
+      await logAction("journal_entry_created", "Created journal entry", {
+        entryId: entry.id,
+        type: entry.type,
+      });
+      return { success: true, entry };
+    }
+
+    case "query_journal": {
+      const journalType = input.type as string | undefined;
+      const journalSearch = input.search as string | undefined;
+      const journalDaysBack = (input.days as number) || 7;
+      const journalLimit = (input.limit as number) || 20;
+
+      const journalSince = new Date(todayJamaica());
+      journalSince.setDate(journalSince.getDate() - journalDaysBack);
+
+      const journalWhere: Prisma.JournalEntryWhereInput = {
+        date: { gte: journalSince },
+        ...(journalType ? { type: journalType } : {}),
+        ...(journalSearch
+          ? {
+              OR: [
+                {
+                  body: {
+                    contains: journalSearch,
+                    mode: "insensitive" as const,
+                  },
+                },
+                {
+                  title: {
+                    contains: journalSearch,
+                    mode: "insensitive" as const,
+                  },
+                },
+              ],
+            }
+          : {}),
+      };
+
+      const journalEntries = await prisma.journalEntry.findMany({
+        where: journalWhere,
+        orderBy: { date: "desc" },
+        take: journalLimit,
+      });
+      return journalEntries;
     }
 
     default:

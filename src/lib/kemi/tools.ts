@@ -343,4 +343,714 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
       required: ["goal_id", "status"],
     },
   },
+
+  // ─── Task Management (4) ─────────────────────────────────────
+
+  {
+    name: "create_task",
+    description:
+      "Create a new task with optional priority, category, due date, and tags.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        title: { type: "string", description: "Task title (required)." },
+        description: { type: "string", description: "Task description." },
+        priority: {
+          type: "string",
+          description:
+            'Priority level: "urgent", "high", "medium", "low". Default "medium".',
+        },
+        category: { type: "string", description: "Task category." },
+        due_date: {
+          type: "string",
+          description: "Due date in YYYY-MM-DD format.",
+        },
+        tags: {
+          type: "array",
+          items: { type: "string" },
+          description: "Tags for the task.",
+        },
+      },
+      required: ["title"],
+    },
+  },
+  {
+    name: "update_task",
+    description: "Update fields on an existing task.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        task_id: { type: "string", description: "The task ID (required)." },
+        title: { type: "string", description: "New title." },
+        description: { type: "string", description: "New description." },
+        status: {
+          type: "string",
+          description:
+            'New status: "open", "in_progress", "done", "cancelled", "parked".',
+        },
+        priority: {
+          type: "string",
+          description:
+            'New priority: "urgent", "high", "medium", "low".',
+        },
+        due_date: {
+          type: "string",
+          description: "New due date in YYYY-MM-DD format.",
+        },
+        notes: { type: "string", description: "Notes to set on the task." },
+      },
+      required: ["task_id"],
+    },
+  },
+  {
+    name: "complete_task",
+    description: "Mark a task as done.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        task_id: { type: "string", description: "The task ID (required)." },
+      },
+      required: ["task_id"],
+    },
+  },
+  {
+    name: "query_tasks",
+    description:
+      "Search and filter tasks by status, category, or search term.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        status: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            'Filter by statuses. Default ["open", "in_progress"].',
+        },
+        category: { type: "string", description: "Filter by category." },
+        search: {
+          type: "string",
+          description: "Search term (matches title or description).",
+        },
+        limit: {
+          type: "number",
+          description: "Max results to return. Default 20.",
+        },
+      },
+      required: [],
+    },
+  },
+
+  // ─── Contact CRM (5) ────────────────────────────────────────
+
+  {
+    name: "create_contact",
+    description: "Create a new contact with CRM fields.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        name: { type: "string", description: "Contact name (required)." },
+        email: { type: "string", description: "Email address." },
+        phone: { type: "string", description: "Phone number." },
+        company: { type: "string", description: "Company name." },
+        relationship: {
+          type: "string",
+          description: "Relationship type (e.g. friend, colleague, mentor).",
+        },
+        context: {
+          type: "string",
+          description: "How you know this person / context.",
+        },
+        birthday: {
+          type: "string",
+          description: "Birthday in YYYY-MM-DD format.",
+        },
+        importance: {
+          type: "string",
+          description: 'Importance: "high", "medium", "low".',
+        },
+        contact_frequency: {
+          type: "string",
+          description:
+            'How often to reach out: "daily", "weekly", "biweekly", "monthly", "quarterly".',
+        },
+        notes: { type: "string", description: "Additional notes." },
+      },
+      required: ["name"],
+    },
+  },
+  {
+    name: "update_contact",
+    description: "Update fields on an existing contact.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        contact_id: {
+          type: "string",
+          description: "The contact ID (required).",
+        },
+        name: { type: "string", description: "New name." },
+        email: { type: "string", description: "New email." },
+        phone: { type: "string", description: "New phone." },
+        company: { type: "string", description: "New company." },
+        relationship: { type: "string", description: "New relationship." },
+        importance: {
+          type: "string",
+          description: 'New importance: "high", "medium", "low".',
+        },
+        contact_frequency: {
+          type: "string",
+          description:
+            'New frequency: "daily", "weekly", "biweekly", "monthly", "quarterly".',
+        },
+        notes: { type: "string", description: "New notes." },
+      },
+      required: ["contact_id"],
+    },
+  },
+  {
+    name: "search_contacts",
+    description: "Search contacts by name, email, or company.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        query: {
+          type: "string",
+          description: "Search query (required). Matches name, email, or company.",
+        },
+        limit: {
+          type: "number",
+          description: "Max results to return. Default 20.",
+        },
+      },
+      required: ["query"],
+    },
+  },
+  {
+    name: "set_contact_frequency",
+    description:
+      "Set how often to reach out to a contact, and calculate the next reachout date.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        contact_id: {
+          type: "string",
+          description: "The contact ID (required).",
+        },
+        frequency: {
+          type: "string",
+          description:
+            'Frequency: "daily", "weekly", "biweekly", "monthly", "quarterly" (required).',
+        },
+      },
+      required: ["contact_id", "frequency"],
+    },
+  },
+  {
+    name: "get_relationship_summary",
+    description:
+      "Overview of relationship health: overdue reachouts, upcoming birthdays.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+
+  // ─── Strategy (5) ───────────────────────────────────────────
+
+  {
+    name: "set_goal",
+    description: "Create a strategic goal.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        title: { type: "string", description: "Goal title (required)." },
+        description: { type: "string", description: "Goal description." },
+        category: { type: "string", description: "Category." },
+        target_date: {
+          type: "string",
+          description: "Target date in YYYY-MM-DD format.",
+        },
+      },
+      required: ["title"],
+    },
+  },
+  {
+    name: "set_priority",
+    description: "Create a strategic priority.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        title: { type: "string", description: "Priority title (required)." },
+        description: { type: "string", description: "Priority description." },
+        category: { type: "string", description: "Category." },
+      },
+      required: ["title"],
+    },
+  },
+  {
+    name: "set_okr",
+    description: "Create an OKR (Objective and Key Result).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        title: { type: "string", description: "OKR title (required)." },
+        description: { type: "string", description: "OKR description." },
+        category: { type: "string", description: "Category." },
+        target_date: {
+          type: "string",
+          description: "Target date in YYYY-MM-DD format.",
+        },
+      },
+      required: ["title"],
+    },
+  },
+  {
+    name: "review_goals",
+    description:
+      "Review active strategic goals, priorities, and/or OKRs.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        context_type: {
+          type: "string",
+          description:
+            'Filter by type: "all", "goal", "priority", "okr". Default "all".',
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "update_goal_progress",
+    description: "Update progress and/or status on a strategic goal.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        goal_id: { type: "string", description: "The goal ID (required)." },
+        progress: {
+          type: "number",
+          description: "Progress percentage (0-100).",
+        },
+        status: {
+          type: "string",
+          description:
+            'New status: "active", "completed", "paused", "abandoned".',
+        },
+      },
+      required: ["goal_id"],
+    },
+  },
+
+  // ─── Calendar Rules (4) ─────────────────────────────────────
+
+  {
+    name: "create_calendar_rule",
+    description:
+      "Create a calendar rule (block recurring time, auto-decline, focus time, or reminder).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        rule_type: {
+          type: "string",
+          description:
+            'Rule type (required): "block_recurring", "auto_decline", "focus_time", "reminder".',
+        },
+        title: { type: "string", description: "Rule title (required)." },
+        description: { type: "string", description: "Rule description." },
+        day_of_week: {
+          type: "array",
+          items: { type: "string" },
+          description:
+            'Days of week this rule applies (e.g. ["Monday", "Wednesday"]).',
+        },
+        start_time: {
+          type: "string",
+          description: "Start time in HH:MM format.",
+        },
+        end_time: {
+          type: "string",
+          description: "End time in HH:MM format.",
+        },
+        calendar_id: {
+          type: "string",
+          description: "Calendar ID this rule applies to.",
+        },
+        metadata: {
+          type: "object",
+          description: "Additional metadata for the rule.",
+        },
+      },
+      required: ["rule_type", "title"],
+    },
+  },
+  {
+    name: "update_calendar_rule",
+    description: "Update an existing calendar rule.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        rule_id: {
+          type: "string",
+          description: "The rule ID (required).",
+        },
+        title: { type: "string", description: "New title." },
+        description: { type: "string", description: "New description." },
+        day_of_week: {
+          type: "array",
+          items: { type: "string" },
+          description: "New days of week.",
+        },
+        start_time: { type: "string", description: "New start time." },
+        end_time: { type: "string", description: "New end time." },
+        active: { type: "boolean", description: "Whether the rule is active." },
+        metadata: { type: "object", description: "New metadata." },
+      },
+      required: ["rule_id"],
+    },
+  },
+  {
+    name: "get_calendar_rules",
+    description: "List calendar rules, optionally filtered to active only.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        active_only: {
+          type: "boolean",
+          description: "If true, only return active rules. Default true.",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "delete_calendar_rule",
+    description: "Delete a calendar rule (requires confirmation).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        rule_id: {
+          type: "string",
+          description: "The rule ID (required).",
+        },
+        confirmed: {
+          type: "boolean",
+          description: "Must be true to confirm deletion (required).",
+        },
+      },
+      required: ["rule_id", "confirmed"],
+    },
+  },
+
+  // ─── Action Log + Personal Entries (5) ──────────────────────
+
+  {
+    name: "log_action",
+    description: "Log an autonomous action taken by Kemi.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        action_type: {
+          type: "string",
+          description: "Type of action (required).",
+        },
+        description: {
+          type: "string",
+          description: "Description of the action (required).",
+        },
+        details: {
+          type: "object",
+          description: "Additional details as key-value pairs.",
+        },
+        triggered_by: {
+          type: "string",
+          description: 'What triggered this action. Default "user_request".',
+        },
+        status: {
+          type: "string",
+          description: "Status of the action.",
+        },
+      },
+      required: ["action_type", "description"],
+    },
+  },
+  {
+    name: "get_action_log",
+    description: "Get recent actions from the action log.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        hours_ago: {
+          type: "number",
+          description: "How many hours back to look. Default 24.",
+        },
+        limit: {
+          type: "number",
+          description: "Max entries to return. Default 20.",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "log_entry",
+    description:
+      "Log a personal entry: expense, income, health event, learning note, or general note.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        category: {
+          type: "string",
+          description:
+            'Category (required): "expense", "income", "health", "learning", "note".',
+        },
+        title: {
+          type: "string",
+          description: "Title/name for the entry (required).",
+        },
+        amount: {
+          type: "number",
+          description: "Amount (for expense/income entries).",
+        },
+        currency: {
+          type: "string",
+          description: 'Currency code. Default "JMD".',
+        },
+        tags: {
+          type: "array",
+          items: { type: "string" },
+          description: "Tags for the entry.",
+        },
+        notes: { type: "string", description: "Additional notes." },
+        date: {
+          type: "string",
+          description: "Date in YYYY-MM-DD format. Default today.",
+        },
+      },
+      required: ["category", "title"],
+    },
+  },
+  {
+    name: "query_entries",
+    description: "Search transactions/entries by category and date range.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        category: { type: "string", description: "Filter by category." },
+        date_from: {
+          type: "string",
+          description: "Start date in YYYY-MM-DD format.",
+        },
+        date_to: {
+          type: "string",
+          description: "End date in YYYY-MM-DD format.",
+        },
+        limit: {
+          type: "number",
+          description: "Max entries to return. Default 50.",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "get_summary",
+    description:
+      "Get spending/income summary grouped by category for a given period.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        category: {
+          type: "string",
+          description: "Filter to a specific category.",
+        },
+        period: {
+          type: "string",
+          description: 'Period: "week", "month", "year". Default "month".',
+        },
+      },
+      required: [],
+    },
+  },
+
+  // ─── Budget / Reading / Journal (8) ─────────────────────────
+
+  {
+    name: "get_budget_overview",
+    description:
+      "Get budget allocations vs actual spending for the current month.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "get_subscriptions",
+    description: "List all active recurring subscriptions.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "add_subscription",
+    description: "Add a new recurring subscription/transaction.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        name: {
+          type: "string",
+          description: "Subscription name (required).",
+        },
+        amount: {
+          type: "number",
+          description: "Recurring amount (required).",
+        },
+        currency: {
+          type: "string",
+          description: 'Currency code. Default "USD".',
+        },
+        category: { type: "string", description: "Category." },
+        frequency: {
+          type: "string",
+          description:
+            'Billing frequency: "monthly", "weekly", "yearly". Default "monthly".',
+        },
+        next_date: {
+          type: "string",
+          description: "Next billing date in YYYY-MM-DD format.",
+        },
+      },
+      required: ["name", "amount"],
+    },
+  },
+  {
+    name: "cancel_subscription",
+    description: "Cancel (deactivate) a recurring subscription.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        subscription_id: {
+          type: "string",
+          description: "The subscription ID (required).",
+        },
+      },
+      required: ["subscription_id"],
+    },
+  },
+  {
+    name: "log_reading_session",
+    description: "Log a reading session for a reading item.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        reading_item_id: {
+          type: "string",
+          description: "The reading item ID (required).",
+        },
+        minutes_read: {
+          type: "number",
+          description: "Minutes spent reading.",
+        },
+        pages_read: {
+          type: "number",
+          description: "Pages read.",
+        },
+        note: {
+          type: "string",
+          description: "Notes about this reading session.",
+        },
+      },
+      required: ["reading_item_id"],
+    },
+  },
+  {
+    name: "update_reading_progress",
+    description:
+      "Update reading item progress, status, rating, or takeaway.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        reading_item_id: {
+          type: "string",
+          description: "The reading item ID (required).",
+        },
+        progress: {
+          type: "number",
+          description: "Progress percentage (0-100).",
+        },
+        status: {
+          type: "string",
+          description:
+            'New status: "to_read", "reading", "completed".',
+        },
+        rating: {
+          type: "number",
+          description: "Rating (1-5).",
+        },
+        takeaway: {
+          type: "string",
+          description: "Key takeaway or summary.",
+        },
+      },
+      required: ["reading_item_id"],
+    },
+  },
+  {
+    name: "create_journal_entry",
+    description: "Create a structured journal entry.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        body: {
+          type: "string",
+          description: "Journal entry body text (required).",
+        },
+        type: {
+          type: "string",
+          description:
+            'Entry type: "reflection", "capture", "note". Default "reflection".',
+        },
+        title: { type: "string", description: "Entry title." },
+        prompt: {
+          type: "string",
+          description: "The prompt that inspired this entry.",
+        },
+        tags: {
+          type: "array",
+          items: { type: "string" },
+          description: "Tags for the entry.",
+        },
+      },
+      required: ["body"],
+    },
+  },
+  {
+    name: "query_journal",
+    description: "Query journal entries by type, search term, and time range.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        type: {
+          type: "string",
+          description: 'Filter by type: "reflection", "capture", "note".',
+        },
+        search: {
+          type: "string",
+          description: "Search term (matches body and title).",
+        },
+        days: {
+          type: "number",
+          description: "Number of days to look back. Default 7.",
+        },
+        limit: {
+          type: "number",
+          description: "Max entries to return. Default 20.",
+        },
+      },
+      required: [],
+    },
+  },
 ];
