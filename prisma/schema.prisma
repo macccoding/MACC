@@ -425,3 +425,105 @@ model Passkey {
 
   @@map("passkeys")
 }
+
+// ─── Kemi Migration Models ──────────────────────────────────────
+
+model KemiTask {
+  id            String    @id @default(cuid())
+  title         String
+  description   String    @default("")
+  status        String    @default("open")
+  priority      String    @default("medium")
+  category      String?
+  dueDate       DateTime? @db.Date
+  completedAt   DateTime?
+  tags          String[]  @default([])
+  notes         String    @default("")
+  sortOrder     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("kemi_tasks")
+}
+
+model ActionLog {
+  id          String   @id @default(cuid())
+  actionType  String
+  description String
+  details     Json     @default("{}")
+  triggeredBy String   @default("user_request")
+  channel     String?
+  status      String   @default("completed")
+  createdAt   DateTime @default(now())
+
+  @@map("action_logs")
+}
+
+model MemoryEntry {
+  id             String    @id @default(cuid())
+  content        String
+  embedding      Unsupported("vector(1536)")?
+  memoryType     String    @default("conversation")
+  metadata       Json      @default("{}")
+  sourceChannel  String?
+  importance     Float     @default(0.5)
+  accessCount    Int       @default(0)
+  lastAccessedAt DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@map("memory_entries")
+}
+
+model KemiPreference {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("kemi_preferences")
+}
+
+model CalendarRule {
+  id          String   @id @default(cuid())
+  ruleType    String
+  title       String
+  description String   @default("")
+  dayOfWeek   String[] @default([])
+  startTime   String?
+  endTime     String?
+  calendarId  String?
+  metadata    Json     @default("{}")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("calendar_rules")
+}
+
+model StrategicGoal {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @default("")
+  type        String    @default("goal")
+  category    String?
+  targetDate  DateTime? @db.Date
+  progress    Float     @default(0)
+  status      String    @default("active")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("strategic_goals")
+}
+
+model ConversationMessage {
+  id                String   @id @default(cuid())
+  channel           String   @default("web")
+  role              String
+  content           String
+  isVoiceNote       Boolean  @default(false)
+  originalVoiceText String?
+  metadata          Json     @default("{}")
+  createdAt         DateTime @default(now())
+
+  @@map("conversation_messages")
+}
