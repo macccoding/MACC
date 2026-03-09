@@ -82,10 +82,11 @@ export async function POST(request: NextRequest) {
     await sendTelegramMessage(response);
     return NextResponse.json({ ok: true, responded: true });
   } catch (e) {
-    const errMsg = e instanceof Error ? e.message : String(e);
+    const errMsg = e instanceof Error ? `${e.message}\n${e.stack}` : String(e);
     console.error("Telegram processing error:", errMsg);
+    // Send error details to Mike for debugging
     await sendTelegramMessage(
-      "Something went wrong processing that. Try again?",
+      `Error: ${e instanceof Error ? e.message : String(e)}`,
     );
     return NextResponse.json({ ok: false, error: errMsg });
   }
