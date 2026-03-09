@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ALL_COMMANDS, type Command } from "@/lib/command-palette/registry";
 import { fuzzyScore } from "@/lib/command-palette/fuzzy-search";
 import { recordUsage, getFrecencyScore } from "@/lib/command-palette/frecency";
+import { VoiceButton } from "@/components/dashboard/VoiceButton";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -234,6 +235,10 @@ export function CommandPalette() {
                   style={{ fontSize: "var(--text-body)" }}
                   autoComplete="off"
                   spellCheck={false}
+                />
+                <VoiceButton
+                  onTranscript={(text) => setQuery(text)}
+                  className="mr-1"
                 />
                 {loading && (
                   <span className="text-sumi-gray text-xs animate-pulse">

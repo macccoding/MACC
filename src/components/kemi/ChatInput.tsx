@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { VoiceButton } from "@/components/dashboard/VoiceButton";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -46,6 +47,9 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
         disabled={disabled}
         rows={1}
         className="flex-1 resize-none bg-transparent text-parchment placeholder:text-sumi-gray text-[13px] outline-none py-2 px-1 font-serif"
+      />
+      <VoiceButton
+        onTranscript={(text) => setValue((prev) => (prev ? prev + " " + text : text))}
       />
       <button
         onClick={handleSubmit}

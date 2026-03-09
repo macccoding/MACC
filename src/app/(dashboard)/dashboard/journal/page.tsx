@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { VoiceButton } from "@/components/dashboard/VoiceButton";
 
 /* ─── Types ─────────────────────────────────────────────────────── */
 
@@ -440,7 +441,12 @@ export default function JournalPage() {
               className="w-full bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30"
               style={{ fontSize: "var(--text-small)" }}
             />
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 items-center">
+              <VoiceButton
+                onTranscript={(text) =>
+                  setNoteBody((prev) => (prev ? prev + " " + text : text))
+                }
+              />
               <button
                 onClick={() => setShowNewNote(false)}
                 className="border border-sumi-gray/20 text-sumi-gray-light rounded-xl px-4 py-2 font-mono tracking-[0.08em] hover:border-sumi-gray/30 transition-all duration-300"
@@ -546,7 +552,12 @@ export default function JournalPage() {
                     minHeight: 120,
                   }}
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2 items-center">
+                  <VoiceButton
+                    onTranscript={(text) =>
+                      setReflectionBody((prev) => (prev ? prev + " " + text : text))
+                    }
+                  />
                   <button
                     onClick={saveReflection}
                     disabled={!reflectionBody.trim() || reflectionSaving}

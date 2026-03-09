@@ -1492,6 +1492,52 @@ export async function executeTool(
       };
     }
 
+    case "get_weekly_review": {
+      const now = new Date();
+      const dayOfWeek = now.getDay();
+      const monday = new Date(now);
+      monday.setDate(now.getDate() - ((dayOfWeek + 6) % 7));
+      monday.setHours(0, 0, 0, 0);
+
+      const review = await prisma.weeklyReview.findUnique({
+        where: { weekOf: monday },
+      });
+
+      if (!review) {
+        return { message: "No weekly review generated yet for this week. The user can generate one from the Review page." };
+      }
+
+      return {
+        weekOf: review.weekOf.toISOString().split("T")[0],
+        status: review.status,
+        stats: review.stats,
+        aiPrompts: review.aiPrompts,
+        reflections: review.reflections,
+        highlights: review.highlights,
+      };
+    }
+
+    case "get_insights": {
+      const insights = await prisma.insight.findMany({
+        where: { dismissed: false },
+        orderBy: { score: "desc" },
+        take: 5,
+      });
+
+      if (insights.length === 0) {
+        return { message: "No active insights. Insights are generated periodically from cross-module data." };
+      }
+
+      return insights.map((i) => ({
+        type: i.type,
+        title: i.title,
+        body: i.body,
+        modules: i.modules,
+        score: i.score,
+        weekOf: i.weekOf.toISOString().split("T")[0],
+      }));
+    }
+
     default:
       return { error: `Unknown tool: ${name}` };
   }

@@ -1434,4 +1434,24 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
       required: [],
     },
   },
+  {
+    name: "get_weekly_review",
+    description:
+      "Get the current week's review with stats, reflection prompts, and user reflections.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "get_insights",
+    description:
+      "Get recent AI-generated insights and cross-module patterns (mood correlations, focus trends, etc.).",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
 ];

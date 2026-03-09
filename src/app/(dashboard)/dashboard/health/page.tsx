@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MoodCheckIn } from "@/components/dashboard/MoodCheckIn";
 
 /* ─── Types ─────────────────────────────────────────────────────── */
 
@@ -30,7 +31,7 @@ type ParsedData = {
   caloriesConsumed: number | null;
 };
 
-type TabKey = "overview" | "sleep" | "nutrition" | "body";
+type TabKey = "overview" | "sleep" | "nutrition" | "body" | "mood";
 
 type MetricDef = {
   key: string;
@@ -139,6 +140,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: "sleep", label: "Sleep" },
   { key: "nutrition", label: "Nutrition" },
   { key: "body", label: "Body" },
+  { key: "mood", label: "Mood" },
 ];
 
 const primaryMetrics: MetricDef[] = [
@@ -927,6 +929,120 @@ function BodyTab({ snapshots }: { snapshots: HealthSnapshot[] }) {
   );
 }
 
+/* ─── Mood Tab ─────────────────────────────────────────────────── */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+const MOOD_LABELS = ["", "怒", "憂", "平", "楽", "喜"];
+const MOOD_COLORS = ["", "#ef4444", "#f97316", "#a3a3a3", "#22c55e", "#3b82f6"];
+
+function MoodTab() {
+  const [entries, setEntries] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/mood?days=30")
+      .then((r) => r.json())
+      .then((data) => {
+        setEntries(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <p className="text-sumi-gray-light text-sm py-4">Loading mood data...</p>;
+  }
+
+  const avgMood = entries.length > 0
+    ? entries.reduce((s: number, e: any) => s + e.mood, 0) / entries.length
+    : 0;
+  const avgEnergy = entries.length > 0
+    ? entries.reduce((s: number, e: any) => s + e.energy, 0) / entries.length
+    : 0;
+
+  return (
+    <div className="space-y-4">
+      <MoodCheckIn onComplete={() => {
+        fetch("/api/mood?days=30")
+          .then((r) => r.json())
+          .then(setEntries)
+          .catch(() => {});
+      }} />
+
+      {entries.length > 0 && (
+        <>
+          {/* Averages */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 text-center">
+              <p className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light text-[10px]">Avg Mood (30d)</p>
+              <p className="text-2xl font-light text-ink-black mt-1">{avgMood.toFixed(1)}/5</p>
+            </div>
+            <div className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 text-center">
+              <p className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light text-[10px]">Avg Energy (30d)</p>
+              <p className="text-2xl font-light text-ink-black mt-1">{avgEnergy.toFixed(1)}/5</p>
+            </div>
+          </div>
+
+          {/* Dot Chart */}
+          <div className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4">
+            <p className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light text-[10px] mb-3">
+              Mood History
+            </p>
+            <div className="flex gap-1 items-end h-24">
+              {entries.slice(0, 30).reverse().map((e: any, i: number) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                  <div
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: MOOD_COLORS[e.mood] || "#a3a3a3" }}
+                    title={`${e.createdAt?.split("T")[0]}: ${MOOD_LABELS[e.mood]} (${e.mood}/5)`}
+                  />
+                  <div
+                    className="w-1.5 rounded-full bg-vermillion/30"
+                    style={{ height: `${(e.energy / 5) * 60}px` }}
+                    title={`Energy: ${e.energy}/5`}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between mt-2">
+              <span className="text-[9px] text-sumi-gray-light font-mono">30d ago</span>
+              <span className="text-[9px] text-sumi-gray-light font-mono">Today</span>
+            </div>
+          </div>
+
+          {/* Recent entries */}
+          <div className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4">
+            <p className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light text-[10px] mb-3">
+              Recent Entries
+            </p>
+            <div className="space-y-2">
+              {entries.slice(0, 7).map((e: any) => (
+                <div key={e.id} className="flex items-center justify-between py-1.5 border-b border-sumi-gray/10 last:border-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{MOOD_LABELS[e.mood]}</span>
+                    <div>
+                      <p className="text-sm text-ink-black/80">
+                        Mood {e.mood}/5 · Energy {e.energy}/5
+                      </p>
+                      <p className="text-xs text-sumi-gray-light">
+                        {new Date(e.createdAt).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                      </p>
+                    </div>
+                  </div>
+                  {e.note && (
+                    <p className="text-xs text-sumi-gray-light max-w-[140px] truncate">{e.note}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ─── Page ──────────────────────────────────────────────────────── */
 
 export default function HealthPage() {
@@ -1072,6 +1188,7 @@ export default function HealthPage() {
                 <NutritionTab last7={last7} snapshots={snapshots} />
               )}
               {tab === "body" && <BodyTab snapshots={snapshots} />}
+              {tab === "mood" && <MoodTab />}
             </motion.div>
           </AnimatePresence>
         </>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { KnowledgeGraph } from "@/components/dashboard/KnowledgeGraph";
 
 type NodeRecall = {
   id: string;
@@ -61,6 +62,8 @@ function truncate(text: string, max: number) {
   return text.slice(0, max).trimEnd() + "...";
 }
 
+type ViewMode = "list" | "graph";
+
 export default function KnowledgePage() {
   const [nodes, setNodes] = useState<KnowledgeNode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,6 +71,7 @@ export default function KnowledgePage() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [newName, setNewName] = useState("");
   const [newTags, setNewTags] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
 
   const fetchNodes = useCallback(async () => {
     setLoading(true);
@@ -143,12 +147,29 @@ export default function KnowledgePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease }}
       >
-        <h1
-          className="text-ink-black font-light"
-          style={{ fontSize: "var(--text-heading)" }}
-        >
-          Knowledge
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1
+            className="text-ink-black font-light"
+            style={{ fontSize: "var(--text-heading)" }}
+          >
+            Knowledge
+          </h1>
+          <div className="flex gap-1 bg-parchment-warm/40 border border-sumi-gray/20 rounded-lg p-0.5">
+            {(["list", "graph"] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className={`px-3 py-1.5 rounded-md text-xs font-mono tracking-wide uppercase transition-colors ${
+                  viewMode === mode
+                    ? "bg-vermillion/15 text-vermillion"
+                    : "text-sumi-gray-light hover:text-ink-black"
+                }`}
+              >
+                {mode === "list" ? "List" : "Graph"}
+              </button>
+            ))}
+          </div>
+        </div>
         <p className="text-sumi-gray-light text-sm mt-1">
           People, ideas, and connections.
         </p>
@@ -236,8 +257,19 @@ export default function KnowledgePage() {
         </button>
       </motion.form>
 
+      {/* Graph View */}
+      {viewMode === "graph" && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5, ease }}
+        >
+          <KnowledgeGraph />
+        </motion.div>
+      )}
+
       {/* Node Cards */}
-      <div className="space-y-3">
+      {viewMode === "list" && <div className="space-y-3">
         <AnimatePresence mode="popLayout">
           {loading ? (
             <motion.div
@@ -351,7 +383,7 @@ export default function KnowledgePage() {
             })
           )}
         </AnimatePresence>
-      </div>
+      </div>}
     </div>
   );
 }
