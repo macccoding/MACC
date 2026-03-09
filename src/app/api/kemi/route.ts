@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { processKemiMessage } from "@/lib/kemi/agent";
 
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   const authError = requireAuth(request);
   if (authError) return authError;

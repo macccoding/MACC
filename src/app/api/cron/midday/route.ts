@@ -4,6 +4,8 @@ import { sendTelegramMessage } from "@/lib/kemi/telegram";
 import { generateBriefing } from "@/lib/kemi/briefing";
 import { todayJamaica } from "@/lib/kemi/utils";
 
+export const maxDuration = 60;
+
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

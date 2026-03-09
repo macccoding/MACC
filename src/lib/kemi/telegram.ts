@@ -9,7 +9,8 @@ export async function sendTelegramMessage(
   chatId: string = MIKE_CHAT_ID,
 ) {
   if (!BOT_TOKEN) return;
-  await fetch(`${API_BASE}/sendMessage`, {
+  // Try Markdown first, fall back to plain text if it fails
+  const res = await fetch(`${API_BASE}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -18,6 +19,14 @@ export async function sendTelegramMessage(
       parse_mode: "Markdown",
     }),
   });
+  if (!res.ok) {
+    // Retry without parse_mode (Markdown special chars cause failures)
+    await fetch(`${API_BASE}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text }),
+    });
+  }
 }
 
 export async function downloadTelegramFile(fileId: string): Promise<Buffer> {

@@ -6,6 +6,8 @@ import {
 } from "@/lib/kemi/telegram";
 import { setPreference } from "@/lib/kemi/preferences";
 
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   const update = await request.json();
   const message = update.message;
