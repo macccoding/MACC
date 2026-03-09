@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   sendTelegramMessage,
   downloadTelegramFile,
-  MIKE_CHAT_ID,
 } from "@/lib/kemi/telegram";
 import { setPreference } from "@/lib/kemi/preferences";
 
@@ -14,8 +13,12 @@ export async function POST(request: NextRequest) {
   if (!message) return NextResponse.json({ ok: true });
 
   // Auth: only process Mike's messages
-  const chatId = String(message.chat.id);
-  if (chatId !== MIKE_CHAT_ID) return NextResponse.json({ ok: true });
+  const chatId = String(message.chat.id).trim();
+  const expectedId = (process.env.MIKE_TELEGRAM_CHAT_ID || "").trim();
+  if (!expectedId || chatId !== expectedId) {
+    console.log(`[telegram] Auth rejected: chat=${chatId} expected=${expectedId}`);
+    return NextResponse.json({ ok: true });
+  }
 
   let text = message.text || "";
   let isVoiceNote = false;
