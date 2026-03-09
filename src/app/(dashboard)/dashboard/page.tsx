@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MoodCheckIn } from "@/components/dashboard/MoodCheckIn";
+import { Markdown } from "@/components/ui/Markdown";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -248,9 +249,9 @@ export default function DashboardHome() {
                 Generating your briefing...
               </p>
             ) : briefing ? (
-              <p className="text-ink-black/80 text-sm leading-relaxed whitespace-pre-line">
-                {briefing}
-              </p>
+              <div className="text-ink-black/80 text-sm leading-relaxed">
+                <Markdown content={briefing} />
+              </div>
             ) : (
               <p className="text-sumi-gray-light text-sm italic">
                 Could not load briefing.

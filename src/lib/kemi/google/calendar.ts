@@ -27,10 +27,15 @@ export async function getEvents(
 }
 
 export async function getTodayEvents() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const end = new Date(start);
-  end.setDate(end.getDate() + 1);
+  // Use Jamaica timezone so "today" is correct on Vercel (UTC servers)
+  const jamaicaNow = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "America/Jamaica" })
+  );
+  const yyyy = jamaicaNow.getFullYear();
+  const mm = String(jamaicaNow.getMonth() + 1).padStart(2, "0");
+  const dd = String(jamaicaNow.getDate()).padStart(2, "0");
+  const start = new Date(`${yyyy}-${mm}-${dd}T00:00:00.000-05:00`);
+  const end = new Date(`${yyyy}-${mm}-${dd}T23:59:59.999-05:00`);
   return getEvents(start.toISOString(), end.toISOString());
 }
 

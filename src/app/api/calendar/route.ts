@@ -4,10 +4,12 @@ import { requireAuth } from "@/lib/auth";
 
 type AgendaItem = {
   time: string | null;
-  type: "birthday" | "reachout" | "goal" | "habit" | "health";
+  type: "birthday" | "reachout" | "goal" | "habit" | "health" | "event";
   title: string;
   module: string;
   done?: boolean;
+  location?: string;
+  endTime?: string | null;
 };
 
 export async function GET(request: NextRequest) {
@@ -17,17 +19,52 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const dateParam = searchParams.get("date");
 
-  // Parse date or default to today
+  // Parse date — interpret as Jamaica time (UTC-5)
+  const JAMAICA_OFFSET = "-05:00";
   const targetDate = dateParam ? new Date(dateParam + "T00:00:00") : new Date();
   const yyyy = targetDate.getFullYear();
   const mm = String(targetDate.getMonth() + 1).padStart(2, "0");
   const dd = String(targetDate.getDate()).padStart(2, "0");
   const dateStr = `${yyyy}-${mm}-${dd}`;
-  const dateStart = new Date(`${dateStr}T00:00:00.000Z`);
-  const dateEnd = new Date(`${dateStr}T23:59:59.999Z`);
+  // Jamaica midnight → UTC (e.g. March 9 00:00 JA = March 9 05:00 UTC)
+  const dateStart = new Date(`${dateStr}T00:00:00.000${JAMAICA_OFFSET}`);
+  const dateEnd = new Date(`${dateStr}T23:59:59.999${JAMAICA_OFFSET}`);
 
   try {
     const items: AgendaItem[] = [];
+
+    // 0. Google Calendar events
+    try {
+      const { getEvents } = await import("@/lib/kemi/google/calendar");
+      const events = await getEvents(dateStart.toISOString(), dateEnd.toISOString());
+      for (const event of events) {
+        const startTime = event.start
+          ? new Date(event.start).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              timeZone: "America/Jamaica",
+            })
+          : null;
+        const endTime = event.end
+          ? new Date(event.end).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              timeZone: "America/Jamaica",
+            })
+          : null;
+        items.push({
+          time: startTime,
+          type: "event",
+          title: event.summary || "Untitled event",
+          module: "calendar",
+          location: event.location || undefined,
+          endTime,
+        });
+      }
+    } catch (err) {
+      console.error("[calendar] Google Calendar fetch failed:", err);
+      // Graceful degradation — continue without Google events
+    }
 
     // 1. Goals with deadline on this date
     const goals = await prisma.goal.findMany({
@@ -115,15 +152,22 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Sort: birthdays first, then reachouts, goals, habits, health
+    // Sort: events by time first, then birthdays, reachouts, goals, habits, health
     const typeOrder: Record<string, number> = {
-      birthday: 0,
-      reachout: 1,
-      goal: 2,
-      habit: 3,
-      health: 4,
+      event: 0,
+      birthday: 1,
+      reachout: 2,
+      goal: 3,
+      habit: 4,
+      health: 5,
     };
-    items.sort((a, b) => (typeOrder[a.type] ?? 9) - (typeOrder[b.type] ?? 9));
+    items.sort((a, b) => {
+      const orderDiff = (typeOrder[a.type] ?? 9) - (typeOrder[b.type] ?? 9);
+      if (orderDiff !== 0) return orderDiff;
+      // Within events, sort by time
+      if (a.time && b.time) return a.time.localeCompare(b.time);
+      return 0;
+    });
 
     return NextResponse.json(
       { date: dateStr, items },

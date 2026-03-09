@@ -5,10 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type AgendaItem = {
   time: string | null;
-  type: "birthday" | "reachout" | "goal" | "habit" | "health";
+  type: "birthday" | "reachout" | "goal" | "habit" | "health" | "event";
   title: string;
   module: string;
   done?: boolean;
+  location?: string;
+  endTime?: string | null;
 };
 
 type AgendaResponse = {
@@ -44,14 +46,16 @@ function isToday(d: Date): boolean {
 }
 
 const DOT_COLORS: Record<string, string> = {
+  event: "bg-vermillion",
   birthday: "bg-gold-seal",
-  reachout: "bg-vermillion",
+  reachout: "bg-vermillion/60",
   goal: "bg-emerald",
   habit: "bg-ink-black",
   health: "bg-sumi-gray",
 };
 
 const DOT_LABELS: Record<string, string> = {
+  event: "Event",
   birthday: "Birthday",
   reachout: "Reach Out",
   goal: "Goal Due",
@@ -104,6 +108,8 @@ export default function CalendarPage() {
   function goToToday() {
     setCurrentDate(new Date());
   }
+
+  const eventCount = agenda?.items.filter((i) => i.type === "event").length ?? 0;
 
   return (
     <div className="space-y-8">
@@ -201,50 +207,43 @@ export default function CalendarPage() {
         )}
       </motion.div>
 
-      {/* Google Calendar Placeholder */}
+      {/* Google Calendar Status */}
       <motion.div
-        className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-5"
+        className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.14, duration: 0.5, ease }}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-sumi-gray/10 flex items-center justify-center">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                className="text-sumi-gray"
-              >
-                <rect x="2" y="3" width="14" height="13" rx="2" />
-                <path d="M2 7H16" />
-                <path d="M6 1V5" />
-                <path d="M12 1V5" />
-              </svg>
-            </div>
-            <div>
-              <p
-                className="text-ink-black font-light"
-                style={{ fontSize: "var(--text-body)" }}
-              >
-                Connect Google Calendar
-              </p>
-              <p className="text-sumi-gray-light text-sm mt-0.5">
-                Sync your events and meetings for a unified daily view.
-              </p>
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-vermillion/10 flex items-center justify-center">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              className="text-vermillion"
+            >
+              <rect x="2" y="3" width="14" height="13" rx="2" />
+              <path d="M2 7H16" />
+              <path d="M6 1V5" />
+              <path d="M12 1V5" />
+            </svg>
           </div>
-          <button
-            disabled
-            className="bg-sumi-gray/10 border border-sumi-gray/20 text-sumi-gray-light rounded-xl px-4 py-2 font-mono tracking-[0.12em] uppercase cursor-not-allowed opacity-50"
-            style={{ fontSize: "var(--text-micro)" }}
-          >
-            Coming Soon
-          </button>
+          <div className="flex-1">
+            <p className="text-ink-black/80 text-sm font-light">
+              Google Calendar
+            </p>
+            <p className="text-sumi-gray-light text-xs mt-0.5">
+              {loading
+                ? "Loading events..."
+                : eventCount > 0
+                  ? `${eventCount} event${eventCount !== 1 ? "s" : ""} today`
+                  : "No events for this day"}
+            </p>
+          </div>
+          <span className="w-2 h-2 rounded-full bg-green-500/60" />
         </div>
       </motion.div>
 
@@ -321,18 +320,34 @@ export default function CalendarPage() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0 pt-px">
-                      <p
-                        className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
-                        style={{ fontSize: "var(--text-micro)" }}
-                      >
-                        {DOT_LABELS[item.type] ?? item.type}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p
+                          className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
+                          style={{ fontSize: "var(--text-micro)" }}
+                        >
+                          {DOT_LABELS[item.type] ?? item.type}
+                        </p>
+                        {item.time && (
+                          <p
+                            className="font-mono text-vermillion/70"
+                            style={{ fontSize: "var(--text-micro)" }}
+                          >
+                            {item.time}
+                            {item.endTime ? ` – ${item.endTime}` : ""}
+                          </p>
+                        )}
+                      </div>
                       <p
                         className="text-ink-black font-light mt-0.5 leading-snug"
                         style={{ fontSize: "var(--text-body)" }}
                       >
                         {item.title}
                       </p>
+                      {item.location && (
+                        <p className="text-sumi-gray-light text-xs mt-0.5">
+                          {item.location}
+                        </p>
+                      )}
                     </div>
                   </motion.div>
                 ))}
