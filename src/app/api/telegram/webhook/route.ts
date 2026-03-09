@@ -80,12 +80,13 @@ export async function POST(request: NextRequest) {
       originalVoiceText,
     );
     await sendTelegramMessage(response);
+    return NextResponse.json({ ok: true, responded: true });
   } catch (e) {
-    console.error("Telegram processing error:", e);
+    const errMsg = e instanceof Error ? e.message : String(e);
+    console.error("Telegram processing error:", errMsg);
     await sendTelegramMessage(
       "Something went wrong processing that. Try again?",
     );
+    return NextResponse.json({ ok: false, error: errMsg });
   }
-
-  return NextResponse.json({ ok: true });
 }
