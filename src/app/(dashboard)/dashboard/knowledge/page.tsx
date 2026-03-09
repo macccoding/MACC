@@ -1,389 +1,193 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { KnowledgeGraph } from "@/components/dashboard/KnowledgeGraph";
+// Google Fonts loaded via CSS @import in globals.css or dynamically
+// Yuji Syuku for headings, Zen Kaku Gothic New for body
 
-type NodeRecall = {
-  id: string;
-  nodeId: string;
-  lastSurfaced: string;
-  surfaceCount: number;
-};
+import { useState, useEffect, useCallback, useRef } from "react";
+import Garden from "@/components/kioku/Garden";
+import ChatPanel from "@/components/kioku/ChatPanel";
+import NodeDetail from "@/components/kioku/NodeDetail";
+import InsightCards from "@/components/kioku/InsightCards";
+import InkTransition from "@/components/kioku/InkTransition";
+import { useKiokuTheme } from "@/hooks/useKiokuTheme";
 
-type LinkedNode = {
-  id: string;
-  name: string;
-  slug: string;
-};
+type Tab = "garden" | "chat";
 
-type SourceLink = {
-  id: string;
-  relation: string;
-  targetNode: LinkedNode;
-};
-
-type KnowledgeNode = {
-  id: string;
-  name: string;
-  slug: string;
-  tags: string[];
-  status: string;
-  notes: string;
-  createdAt: string;
-  updatedAt: string;
-  recalls: NodeRecall[];
-  sourceLinks: SourceLink[];
-};
-
-type TypeFilter = "all" | "person" | "topic" | "concept" | "place" | "project";
-
-const TYPE_FILTERS: { label: string; value: TypeFilter }[] = [
-  { label: "All", value: "all" },
-  { label: "Person", value: "person" },
-  { label: "Topic", value: "topic" },
-  { label: "Concept", value: "concept" },
-  { label: "Place", value: "place" },
-  { label: "Project", value: "project" },
-];
-
-const TAG_COLORS: Record<string, string> = {
-  person: "text-blue-400 bg-blue-400/10",
-  topic: "text-green-400 bg-green-400/10",
-  concept: "text-purple-400 bg-purple-400/10",
-  place: "text-amber-400 bg-amber-400/10",
-  project: "text-vermillion bg-vermillion/10",
-};
-
-const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
-function truncate(text: string, max: number) {
-  if (text.length <= max) return text;
-  return text.slice(0, max).trimEnd() + "...";
+interface InsightData {
+  kind: string;
+  description: string;
+  relatedNodes: string[];
 }
 
-type ViewMode = "list" | "graph";
-
 export default function KnowledgePage() {
-  const [nodes, setNodes] = useState<KnowledgeNode[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
-  const [newName, setNewName] = useState("");
-  const [newTags, setNewTags] = useState("");
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const { colors } = useKiokuTheme();
+  const [tab, setTab] = useState<Tab>("garden");
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [insights, setInsights] = useState<InsightData[]>([]);
+  const [showInk, setShowInk] = useState(true);
+  const [inkDirection, setInkDirection] = useState<"in" | "out">("in");
+  const [contentReady, setContentReady] = useState(false);
+  const gardenRefreshRef = useRef(0);
 
-  const fetchNodes = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (search) params.set("search", search);
-      if (typeFilter !== "all") params.set("type", typeFilter);
-      const qs = params.toString();
-      const res = await fetch(`/api/kioku/nodes${qs ? `?${qs}` : ""}`);
-      if (res.ok) {
-        const data = await res.json();
-        setNodes(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch nodes:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [search, typeFilter]);
-
+  // Fetch insights
   useEffect(() => {
-    fetchNodes();
-  }, [fetchNodes]);
+    fetch("/api/kioku/insights")
+      .then((r) => r.json())
+      .then((data) => setInsights(data.insights || []))
+      .catch(() => {});
+  }, []);
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    fetchNodes();
-  }
+  // Ink transition on mount
+  useEffect(() => {
+    // Small delay so the canvas has time to mount
+    const timer = setTimeout(() => setShowInk(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
-  async function addNode(e: React.FormEvent) {
-    e.preventDefault();
-    if (!newName.trim()) return;
-
-    const tags = newTags
-      .split(",")
-      .map((t) => t.trim().toLowerCase())
-      .filter((t) => t.length > 0);
-
-    try {
-      const res = await fetch("/api/kioku/nodes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newName.trim(), tags }),
-      });
-      if (res.ok) {
-        setNewName("");
-        setNewTags("");
-        fetchNodes();
-      }
-    } catch (err) {
-      console.error("Failed to add node:", err);
+  const handleInkComplete = useCallback(() => {
+    if (inkDirection === "in") {
+      setContentReady(true);
+      setShowInk(false);
     }
-  }
+  }, [inkDirection]);
 
-  function getTagColor(tag: string): string {
-    return TAG_COLORS[tag] || "text-sumi-gray-light bg-sumi-gray/10";
-  }
+  const handleNodeClick = useCallback((slug: string) => {
+    setSelectedNode(slug);
+  }, []);
 
-  function getSurfaceCount(node: KnowledgeNode): number {
-    if (node.recalls.length === 0) return 0;
-    return node.recalls[0].surfaceCount;
-  }
+  const handleNodesChanged = useCallback(() => {
+    gardenRefreshRef.current += 1;
+  }, []);
 
-  function getConnectedNodes(node: KnowledgeNode): string[] {
-    return node.sourceLinks.map((link) => link.targetNode.name);
-  }
+  const handleCloseDetail = useCallback(() => {
+    setSelectedNode(null);
+  }, []);
+
+  // Determine if desktop
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease }}
-      >
-        <div className="flex items-center justify-between">
-          <h1
-            className="text-ink-black font-light"
-            style={{ fontSize: "var(--text-heading)" }}
-          >
-            Knowledge
-          </h1>
-          <div className="flex gap-1 bg-parchment-warm/40 border border-sumi-gray/20 rounded-lg p-0.5">
-            {(["list", "graph"] as const).map((mode) => (
-              <button
-                key={mode}
-                onClick={() => setViewMode(mode)}
-                className={`px-3 py-1.5 rounded-md text-xs font-mono tracking-wide uppercase transition-colors ${
-                  viewMode === mode
-                    ? "bg-vermillion/15 text-vermillion"
-                    : "text-sumi-gray-light hover:text-ink-black"
-                }`}
-              >
-                {mode === "list" ? "List" : "Graph"}
-              </button>
-            ))}
-          </div>
-        </div>
-        <p className="text-sumi-gray-light text-sm mt-1">
-          People, ideas, and connections.
-        </p>
-      </motion.div>
+    <div
+      className="fixed inset-0 md:relative md:inset-auto flex flex-col h-screen md:h-[calc(100vh-2rem)]"
+      style={{
+        backgroundColor: colors.bg,
+        color: colors.text,
+        fontFamily: "'Zen Kaku Gothic New', sans-serif",
+      }}
+    >
+      {/* Ink transition overlay */}
+      <InkTransition
+        active={showInk}
+        direction={inkDirection}
+        onComplete={handleInkComplete}
+      />
 
-      {/* Search Bar */}
-      <motion.form
-        onSubmit={handleSearch}
-        className="flex gap-3"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05, duration: 0.5, ease }}
+      {/* Tab bar */}
+      <nav
+        className="flex items-center px-4 pt-3 pb-2 shrink-0"
+        style={{ borderBottom: `1px solid ${colors.border}` }}
       >
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search knowledge..."
-          className="flex-1 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
-          style={{ fontSize: "var(--text-body)" }}
-        />
-        <button
-          type="submit"
-          className="bg-vermillion/15 border border-vermillion/20 text-vermillion rounded-xl px-5 py-2.5 font-mono tracking-[0.12em] uppercase hover:bg-vermillion/25 hover:border-vermillion/40 transition-all duration-300"
-          style={{ fontSize: "var(--text-micro)" }}
-        >
-          Search
-        </button>
-      </motion.form>
-
-      {/* Type Filter Pills */}
-      <motion.div
-        className="flex gap-2 flex-wrap"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.5, ease }}
-      >
-        {TYPE_FILTERS.map((f) => (
+        {(
+          [
+            { key: "garden" as Tab, label: "庭 Garden" },
+            { key: "chat" as Tab, label: "話 Chat" },
+          ] as const
+        ).map(({ key, label }) => (
           <button
-            key={f.value}
-            onClick={() => setTypeFilter(f.value)}
-            className={`font-mono tracking-[0.12em] uppercase px-4 py-1.5 rounded-full border transition-all duration-300 ${
-              typeFilter === f.value
-                ? "bg-vermillion/15 border-vermillion/30 text-vermillion"
-                : "bg-parchment-warm/20 border-sumi-gray/20 text-sumi-gray-light hover:border-sumi-gray/20 hover:text-sumi-gray"
-            }`}
-            style={{ fontSize: "var(--text-micro)" }}
+            key={key}
+            onClick={() => setTab(key)}
+            className="px-4 py-2 text-sm transition-all duration-200 relative"
+            style={{
+              color: tab === key ? colors.accent : colors.muted,
+              fontFamily: "'Yuji Syuku', serif",
+            }}
           >
-            {f.label}
+            {label}
+            {tab === key && (
+              <span
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full"
+                style={{
+                  width: "60%",
+                  backgroundColor: colors.accent,
+                }}
+              />
+            )}
           </button>
         ))}
-      </motion.div>
+      </nav>
 
-      {/* Add Node Form */}
-      <motion.form
-        onSubmit={addNode}
-        className="flex gap-3 flex-wrap"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15, duration: 0.5, ease }}
-      >
-        <input
-          type="text"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          placeholder="Node name..."
-          className="flex-1 min-w-[200px] bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
-          style={{ fontSize: "var(--text-body)" }}
-        />
-        <input
-          type="text"
-          value={newTags}
-          onChange={(e) => setNewTags(e.target.value)}
-          placeholder="Tags (comma-separated)..."
-          className="w-full sm:w-56 bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl px-4 py-2.5 text-ink-black placeholder:text-sumi-gray-light/50 focus:outline-none focus:border-vermillion/30 transition-colors duration-300"
-          style={{ fontSize: "var(--text-body)" }}
-        />
-        <button
-          type="submit"
-          disabled={!newName.trim()}
-          className="bg-vermillion/15 border border-vermillion/20 text-vermillion rounded-xl px-5 py-2.5 font-mono tracking-[0.12em] uppercase hover:bg-vermillion/25 hover:border-vermillion/40 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
-          style={{ fontSize: "var(--text-micro)" }}
-        >
-          Add
-        </button>
-      </motion.form>
+      {/* Content area */}
+      <div className="flex-1 relative overflow-hidden">
+        {/* Garden tab */}
+        {tab === "garden" && (
+          <div className="w-full h-full relative">
+            <Garden
+              onSelectNode={handleNodeClick}
+              className="w-full h-full"
+            />
+            <InsightCards insights={insights} />
+          </div>
+        )}
 
-      {/* Graph View */}
-      {viewMode === "graph" && (
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5, ease }}
-        >
-          <KnowledgeGraph />
-        </motion.div>
-      )}
-
-      {/* Node Cards */}
-      {viewMode === "list" && <div className="space-y-3">
-        <AnimatePresence mode="popLayout">
-          {loading ? (
-            <motion.div
-              key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-sumi-gray-light text-sm py-8 text-center"
-            >
-              Loading...
-            </motion.div>
-          ) : nodes.length === 0 ? (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-sumi-gray-light text-sm py-8 text-center"
-            >
-              {search
-                ? "No nodes match your search."
-                : "No knowledge nodes yet."}
-            </motion.div>
-          ) : (
-            nodes.map((node, i) => {
-              const connected = getConnectedNodes(node);
-              const surfaceCount = getSurfaceCount(node);
-
-              return (
-                <motion.div
-                  key={node.id}
-                  layout
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
-                  transition={{
-                    delay: i * 0.04,
-                    duration: 0.4,
-                    ease,
-                  }}
-                  className="group bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-4 hover:border-sumi-gray/20 transition-colors duration-300"
+        {/* Chat tab */}
+        {tab === "chat" && (
+          <>
+            {isDesktop ? (
+              // Desktop: split layout
+              <div className="flex h-full">
+                <div className="w-[60%] relative">
+                  <Garden
+                    onSelectNode={handleNodeClick}
+                    className="w-full h-full"
+                  />
+                </div>
+                <div
+                  className="w-[40%] h-full"
+                  style={{ borderLeft: `1px solid ${colors.border}` }}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      {/* Name + Tag Badges */}
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <h3
-                          className="text-ink-black font-medium leading-snug"
-                          style={{ fontSize: "var(--text-body)" }}
-                        >
-                          {node.name}
-                        </h3>
-                        {node.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className={`inline-flex px-2 py-0.5 rounded-full font-mono tracking-[0.08em] uppercase shrink-0 ${getTagColor(tag)}`}
-                            style={{ fontSize: "var(--text-micro)" }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                  <ChatPanel
+                    onNodeClick={handleNodeClick}
+                    onNodesChanged={handleNodesChanged}
+                  />
+                </div>
+              </div>
+            ) : (
+              // Mobile: full-screen chat
+              <div className="h-full flex flex-col">
+                <button
+                  onClick={() => setTab("garden")}
+                  className="px-4 py-2 text-sm self-start"
+                  style={{
+                    color: colors.muted,
+                    fontFamily: "'Yuji Syuku', serif",
+                  }}
+                >
+                  ← 庭
+                </button>
+                <div className="flex-1">
+                  <ChatPanel
+                    onNodeClick={handleNodeClick}
+                    onNodesChanged={handleNodesChanged}
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
-                      {/* Notes preview */}
-                      {node.notes && (
-                        <p
-                          className="text-sumi-gray-light mt-2 leading-relaxed"
-                          style={{ fontSize: "var(--text-body)" }}
-                        >
-                          {truncate(node.notes, 150)}
-                        </p>
-                      )}
-
-                      {/* Connected nodes */}
-                      {connected.length > 0 && (
-                        <div className="mt-2 flex items-center gap-1.5 flex-wrap">
-                          <span
-                            className="text-sumi-gray font-mono tracking-[0.08em] uppercase"
-                            style={{ fontSize: "var(--text-micro)" }}
-                          >
-                            Connected:
-                          </span>
-                          {connected.map((name) => (
-                            <span
-                              key={name}
-                              className="text-sumi-gray-light bg-sumi-gray/5 px-2 py-0.5 rounded-full"
-                              style={{ fontSize: "var(--text-micro)" }}
-                            >
-                              {name}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Surface count */}
-                      {surfaceCount > 0 && (
-                        <div className="mt-2">
-                          <span
-                            className="text-sumi-gray font-mono tracking-[0.08em]"
-                            style={{ fontSize: "var(--text-micro)" }}
-                          >
-                            Surfaced {surfaceCount}{" "}
-                            {surfaceCount === 1 ? "time" : "times"}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })
-          )}
-        </AnimatePresence>
-      </div>}
+      {/* Node detail overlay */}
+      <NodeDetail
+        slug={selectedNode}
+        onClose={handleCloseDetail}
+        onNodeClick={handleNodeClick}
+      />
     </div>
   );
 }

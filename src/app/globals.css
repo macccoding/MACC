@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 /* ========================================
@@ -262,3 +263,75 @@ body::before {
 .brush-underline:hover::after {
   transform: scaleX(1);
 }
+
+/* ========================================
+   KIOKU THEME — Knowledge Graph
+   Dark sumi-e overrides when data-theme="kioku"
+   ======================================== */
+
+[data-theme="kioku"] {
+  --kioku-bg: #1A1A1E;
+  --kioku-bg-raised: #222226;
+  --kioku-text: #E8E0D4;
+  --kioku-muted: #6B6B73;
+  --kioku-accent: #E04D2E;
+  --kioku-border: rgba(232, 224, 212, 0.10);
+  --kioku-overlay: rgba(26, 26, 30, 0.85);
+}
+
+/* Sidebar darkening when in Kioku */
+[data-theme="kioku"] [data-sidebar] {
+  background-color: #151518 !important;
+  border-color: rgba(232, 224, 212, 0.05) !important;
+}
+
+[data-theme="kioku"] [data-sidebar] * {
+  color: #E8E0D4 !important;
+}
+
+[data-theme="kioku"] [data-sidebar] svg {
+  color: #6B6B73 !important;
+}
+
+/* Kioku animations */
+@keyframes sumi-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sumi-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+.sumi-fade-in {
+  animation: sumi-fade-in 0.3s ease-out forwards;
+}
+
+.sumi-fade-out {
+  animation: sumi-fade-out 0.3s ease-out forwards;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slide-up 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* Kioku scrollbar */
+[data-theme="kioku"] ::-webkit-scrollbar {
+  width: 5px;
+}
+
+[data-theme="kioku"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-theme="kioku"] ::-webkit-scrollbar-thumb {
+  background: rgba(232, 224, 212, 0.15);
+  border-radius: 3px;
+}
+
