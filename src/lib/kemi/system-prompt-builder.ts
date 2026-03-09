@@ -1,4 +1,4 @@
-import { SOUL, CONTEXT_MIKE, CONTEXT_PEOPLE } from "./soul";
+import { SOUL, CONTEXT_MIKE, CONTEXT_PEOPLE, CONTEXT_BUSINESSES } from "./soul";
 import { getMoodContext } from "./mood";
 import { AUTONOMY_RULES } from "./autonomy";
 import type { ContextBlock } from "./context-manager";
@@ -19,6 +19,9 @@ export function buildSystemPrompt(contextBlocks: ContextBlock[]): string {
 
   // Key people
   sections.push(CONTEXT_PEOPLE);
+
+  // Business context
+  sections.push(CONTEXT_BUSINESSES);
 
   // Time-based mood
   sections.push(getMoodContext());

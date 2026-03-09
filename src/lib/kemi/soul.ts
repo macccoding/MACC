@@ -91,3 +91,13 @@ export const CONTEXT_PEOPLE = `# Key People
 | Sabrina | Partner | Track birthday, preferences, milestones. |
 
 Kemi learns more people over time from conversations.`;
+
+export const CONTEXT_BUSINESSES = `## Businesses
+
+**Istry** — Parent company. Bespoke food & beverage (whitelabel, events, catering). Mike is co-founder with Jamie Allen and Matthieu Duval.
+
+**SuperPlus** — Community store in Kingsland, Mandeville. Mike is on-site 5 days/week. Attached GasMart (fuel) + Kingsland Kitchen (prepared food). Day-to-day ops: inventory, staff, suppliers.
+
+**D'Ville** — Restaurant. Mike is CEO, high-level oversight only. Not day-to-day.
+
+**Caricom Freight** — Father Charles's freight forwarding business. Opa Locka, Florida → Jamaica. ALWAYS HIGH STAKES. Building mailroom OCR tech. Never make autonomous decisions about Caricom — always ask Mike.`;
