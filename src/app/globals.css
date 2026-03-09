@@ -279,7 +279,43 @@ body::before {
   --kioku-overlay: rgba(26, 26, 30, 0.85);
 }
 
-/* Sidebar darkening when in Kioku */
+/* Dashboard shell darkening when in Kioku */
+[data-theme="kioku"] {
+  background-color: #1A1A1E !important;
+}
+
+[data-theme="kioku"] main {
+  background-color: #1A1A1E !important;
+}
+
+[data-theme="kioku"] main > div:first-child {
+  background-color: #1A1A1E !important;
+  border-color: rgba(232, 224, 212, 0.08) !important;
+  color: #E8E0D4 !important;
+}
+
+[data-theme="kioku"] main > div:first-child * {
+  color: #E8E0D4 !important;
+}
+
+/* Content wrapper — remove padding for full-bleed Kioku */
+[data-theme="kioku"] main > div:last-child {
+  padding: 0 !important;
+  max-width: none !important;
+}
+
+/* Mobile bottom bar */
+[data-theme="kioku"] nav[aria-label="Main navigation"],
+[data-theme="kioku"] [role="navigation"] {
+  background-color: rgba(26, 26, 30, 0.95) !important;
+  border-color: rgba(232, 224, 212, 0.08) !important;
+}
+
+[data-theme="kioku"] [role="navigation"] * {
+  color: #6B6B73 !important;
+}
+
+/* Sidebar darkening */
 [data-theme="kioku"] [data-sidebar] {
   background-color: #151518 !important;
   border-color: rgba(232, 224, 212, 0.05) !important;

@@ -9,7 +9,7 @@ interface InkTransitionProps {
 }
 
 const FILL_COLOR = "#1A1A1E";
-const TOTAL_DURATION = 800;
+const TOTAL_DURATION = 1200;
 const REDUCED_MOTION_DURATION = 200;
 const TENDRIL_COUNT = 10;
 
