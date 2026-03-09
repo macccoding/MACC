@@ -118,3 +118,23 @@ export async function processMessage(
     },
   };
 }
+
+/**
+ * Multi-channel entry point for Kemi.
+ * Used by Telegram webhook and future channels.
+ * Will be fully implemented in Task 16.
+ */
+export async function processKemiMessage(
+  message: string,
+  channel: string = "web",
+  isVoiceNote: boolean = false,
+  originalVoiceText?: string,
+): Promise<string> {
+  const prefix = isVoiceNote && originalVoiceText
+    ? `[Voice note transcription]: ${originalVoiceText}\n\n`
+    : "";
+  const fullMessage = prefix ? prefix + message : message;
+
+  const result = await processMessage(fullMessage);
+  return result.content;
+}
