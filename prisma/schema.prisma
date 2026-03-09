@@ -117,6 +117,7 @@ model Habit {
   period           String   @default("day")
   color            String   @default("#e04835")
   icon             String?
+  healthKey        String?
   sortOrder        Int      @default(0)
   archived         Boolean  @default(false)
   frequency        String   @default("daily")
