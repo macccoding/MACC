@@ -12,10 +12,23 @@ export async function GET(request: NextRequest) {
 
   try {
     if (center) {
+      // Resolve slug to node ID
+      const centerNode = await prisma.node.findUnique({
+        where: { slug: center },
+        select: { id: true },
+      });
+
+      if (!centerNode) {
+        return NextResponse.json(
+          { error: "Center node not found" },
+          { status: 404 }
+        );
+      }
+
       // BFS subgraph from center node
       const visited = new Set<string>();
-      let frontier = [center];
-      visited.add(center);
+      let frontier = [centerNode.id];
+      visited.add(centerNode.id);
 
       for (let d = 0; d < depth && frontier.length > 0; d++) {
         const links = await prisma.link.findMany({
@@ -46,7 +59,10 @@ export async function GET(request: NextRequest) {
       const [nodes, links] = await Promise.all([
         prisma.node.findMany({
           where: { id: { in: nodeIds } },
-          include: { recalls: true },
+          include: {
+            recalls: true,
+            _count: { select: { sourceLinks: true, targetLinks: true } },
+          },
         }),
         prisma.link.findMany({
           where: {
@@ -58,14 +74,22 @@ export async function GET(request: NextRequest) {
         }),
       ]);
 
-      return NextResponse.json({ nodes, links });
+      const enrichedNodes = nodes.map(({ _count, ...node }) => ({
+        ...node,
+        linkCount: _count.sourceLinks + _count.targetLinks,
+      }));
+
+      return NextResponse.json({ nodes: enrichedNodes, links });
     }
 
     // Default: 50 most recent nodes with their inter-links
     const nodes = await prisma.node.findMany({
       orderBy: { updatedAt: "desc" },
       take: 50,
-      include: { recalls: true },
+      include: {
+        recalls: true,
+        _count: { select: { sourceLinks: true, targetLinks: true } },
+      },
     });
 
     const nodeIds = nodes.map((n) => n.id);
@@ -79,7 +103,12 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ nodes, links });
+    const enrichedNodes = nodes.map(({ _count, ...node }) => ({
+      ...node,
+      linkCount: _count.sourceLinks + _count.targetLinks,
+    }));
+
+    return NextResponse.json({ nodes: enrichedNodes, links });
   } catch (err) {
     console.error("[kioku/graph] Error:", err);
     return NextResponse.json(
