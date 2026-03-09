@@ -11,6 +11,7 @@ import {
 } from "./google/gmail";
 import { getEvents, createEvent, updateEvent, deleteEvent } from "./google/calendar";
 import { getSheetValues, updateSheetValues, appendRows } from "./google/sheets";
+import { remember, recall } from "./memory";
 import type { GoogleAccount } from "./google/auth";
 import type { Prisma } from "@/generated/prisma/client";
 
@@ -1315,6 +1316,38 @@ export async function executeTool(
         take: journalLimit,
       });
       return journalEntries;
+    }
+
+    // ─── Memory ──────────────────────────────────────────────
+
+    case "search_memories": {
+      const query = input.query as string;
+      const limit = (input.limit as number) || 5;
+      const memoryType = input.memory_type as string | undefined;
+      const threshold = (input.threshold as number) || 0.7;
+
+      const results = await recall(query, limit, memoryType, threshold);
+      if (results.length === 0) {
+        return { message: "No relevant memories found." };
+      }
+      return results;
+    }
+
+    case "store_memory": {
+      const content = input.content as string;
+      const memoryType = (input.memory_type as string) || "note";
+      const metadata = (input.metadata as Record<string, unknown>) || {};
+      const importance = (input.importance as number) || 0.5;
+
+      const id = await remember(content, memoryType, metadata, undefined, importance);
+      if (!id) {
+        return { error: "Failed to store memory." };
+      }
+      await logAction("store_memory", `Stored ${memoryType} memory`, {
+        memoryId: id,
+        contentPreview: content.slice(0, 100),
+      });
+      return { stored: true, id };
     }
 
     default:

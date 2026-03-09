@@ -1342,4 +1342,64 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
       required: [],
     },
   },
+
+  // ─── Memory (2) ──────────────────────────────────────────────
+
+  {
+    name: "search_memories",
+    description:
+      "Search long-term semantic memory using natural language. Returns relevant memories ranked by similarity.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        query: {
+          type: "string",
+          description: "Natural language query to search memories (required).",
+        },
+        limit: {
+          type: "number",
+          description: "Max memories to return. Default 5.",
+        },
+        memory_type: {
+          type: "string",
+          description:
+            'Filter by memory type: "conversation", "task", "receipt", "preference", "fact", "note". Omit for all types.',
+        },
+        threshold: {
+          type: "number",
+          description:
+            "Minimum similarity threshold (0-1). Default 0.7. Lower = more results but less relevant.",
+        },
+      },
+      required: ["query"],
+    },
+  },
+  {
+    name: "store_memory",
+    description:
+      "Store information in long-term semantic memory for future recall. Use for preferences, facts, and important notes.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        content: {
+          type: "string",
+          description: "The content to remember (required).",
+        },
+        memory_type: {
+          type: "string",
+          description:
+            'Memory type: "preference", "fact", "note". Default "note".',
+        },
+        metadata: {
+          type: "object",
+          description: "Additional metadata as key-value pairs.",
+        },
+        importance: {
+          type: "number",
+          description: "Importance score (0-1). Default 0.5. Higher = more likely to surface.",
+        },
+      },
+      required: ["content"],
+    },
+  },
 ];
