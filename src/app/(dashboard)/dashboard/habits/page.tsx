@@ -27,6 +27,7 @@ type Habit = {
   archived: boolean;
   streak: number;
   logs: HabitLog[];
+  healthKey: string | null;
 };
 
 type HabitFormData = {
@@ -71,13 +72,13 @@ function fmtDate(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function getLast30Days(): { dateStr: string; dayLetter: string; dayNum: number }[] {
+function getDays(count: number): { dateStr: string; dayLetter: string; dayNum: number }[] {
   const days: { dateStr: string; dayLetter: string; dayNum: number }[] = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const letters = ["S", "M", "T", "W", "T", "F", "S"];
 
-  for (let i = 29; i >= 0; i--) {
+  for (let i = count - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
     days.push({
@@ -340,6 +341,7 @@ export default function HabitsPage() {
     habitId: string;
     dateStr: string;
   } | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -603,7 +605,7 @@ export default function HabitsPage() {
   }
 
   // ─── Derived state ────────────────────────────────────────────
-  const last30Days = getLast30Days();
+  const days = getDays(expanded ? 30 : 7);
   const weekPercent = getWeekCompletionPercent(habits);
   const perfectDay = isPerfectDay(habits);
   const todayStr = fmtDate(new Date());
@@ -927,14 +929,24 @@ export default function HabitsPage() {
                     <tr>
                       {/* Sticky habit name column header */}
                       <th className="sticky left-0 z-10 bg-parchment-warm/90 backdrop-blur-sm px-4 py-3 text-left min-w-[160px]">
-                        <span
-                          className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
-                          style={{ fontSize: "var(--text-micro)" }}
-                        >
-                          Habit
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light"
+                            style={{ fontSize: "var(--text-micro)" }}
+                          >
+                            Habit
+                          </span>
+                          <button
+                            onClick={() => setExpanded(!expanded)}
+                            className="text-sumi-gray-light/60 hover:text-ink-black transition-colors duration-200 font-mono"
+                            style={{ fontSize: "10px" }}
+                            title={expanded ? "Show 7 days" : "Show 30 days"}
+                          >
+                            {expanded ? "7d" : "30d"}
+                          </button>
+                        </div>
                       </th>
-                      {last30Days.map((day) => (
+                      {days.map((day) => (
                         <th
                           key={day.dateStr}
                           className={`px-0.5 py-2 text-center min-w-[36px] ${
@@ -999,6 +1011,14 @@ export default function HabitsPage() {
                                   {"\uD83D\uDD25"} {habit.streak}
                                 </span>
                               )}
+                              {habit.healthKey && (
+                                <span
+                                  className="text-sumi-gray-light/50 font-mono shrink-0 uppercase"
+                                  style={{ fontSize: "9px" }}
+                                >
+                                  auto
+                                </span>
+                              )}
                             </div>
 
                             <AnimatePresence>
@@ -1014,7 +1034,7 @@ export default function HabitsPage() {
                         </td>
 
                         {/* Dot cells */}
-                        {last30Days.map((day) => {
+                        {days.map((day) => {
                           const log = getLogForDate(habit.logs, day.dateStr);
                           const habitColor = habit.color || "#D03A2C";
 
