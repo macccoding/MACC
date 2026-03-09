@@ -25,7 +25,7 @@ export const MODULES = [
   { label: "Reading", href: "/dashboard/reading", icon: "読" },
   { label: "People", href: "/dashboard/people", icon: "人" },
   { label: "Focus", href: "/dashboard/focus", icon: "集" },
-  { label: "Knowledge", href: "/dashboard/knowledge", icon: "脳" },
+  { label: "Kioku", href: "/dashboard/knowledge", icon: "脳" },
   { label: "Review", href: "/dashboard/review", icon: "省" },
   { label: "Blueprint", href: "/dashboard/blueprint", icon: "図" },
 ];

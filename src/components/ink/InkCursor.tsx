@@ -23,6 +23,17 @@ export function InkCursor() {
   const velocityRef = useRef(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  // Watch for Kioku dark theme
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkTheme(document.documentElement.dataset.theme === "kioku");
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    setIsDarkTheme(document.documentElement.dataset.theme === "kioku");
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const check = () =>
@@ -125,7 +136,8 @@ export function InkCursor() {
 
       const { x, y } = mouseRef.current;
 
-      // Draw cursor dot
+      // Draw cursor dot — cream on dark, ink on light
+      const inkColor = isDarkTheme ? "232, 224, 212" : "26, 24, 20";
       const cursorSize = isHovering ? 16 : 5;
       const cursorOpacity = isHovering ? 0.15 : 0.75;
 
@@ -144,7 +156,7 @@ export function InkCursor() {
       } else {
         ctx.beginPath();
         ctx.arc(x, y, cursorSize, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(26, 24, 20, ${cursorOpacity})`;
+        ctx.fillStyle = `rgba(${inkColor}, ${cursorOpacity})`;
         ctx.fill();
       }
 
@@ -167,14 +179,15 @@ export function InkCursor() {
         const alpha = d.opacity * d.life * d.life; // ease out
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(26, 24, 20, ${alpha})`;
+        ctx.fillStyle = `rgba(${inkColor}, ${alpha})`;
         ctx.fill();
 
         // Tiny highlight on top of drop
         if (d.size > 1.2) {
+          const hlColor = isDarkTheme ? "26, 24, 20" : "245, 237, 224";
           ctx.beginPath();
           ctx.arc(d.x - d.size * 0.2, d.y - d.size * 0.2, d.size * 0.3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(245, 237, 224, ${alpha * 0.15})`;
+          ctx.fillStyle = `rgba(${hlColor}, ${alpha * 0.15})`;
           ctx.fill();
         }
       }
@@ -195,7 +208,7 @@ export function InkCursor() {
       window.removeEventListener("mousemove", onMouseMove);
       cancelAnimationFrame(frameRef.current);
     };
-  }, [isMobile, isHovering, spawnDrop]);
+  }, [isMobile, isHovering, isDarkTheme, spawnDrop]);
 
   if (isMobile) return null;
 
