@@ -37,6 +37,7 @@ export async function processKemiMessage(
   originalVoiceText?: string,
   history?: Array<{ role: string; content: string }>,
   conversationId?: string,
+  onToolUse?: (toolName: string) => void,
 ): Promise<string> {
   // Kill switch — highest priority check
   const killSwitch = await getPreference<boolean>("kill_switch", false);
@@ -117,6 +118,11 @@ export async function processKemiMessage(
     const toolUseBlocks = response.content.filter(
       (block): block is Anthropic.ToolUseBlock => block.type === "tool_use",
     );
+
+    // Notify caller about tool usage
+    for (const block of toolUseBlocks) {
+      onToolUse?.(block.name);
+    }
 
     // Execute each tool
     const toolResults: Anthropic.ToolResultBlockParam[] = await Promise.all(
@@ -231,6 +237,14 @@ export async function processKemiMessage(
       (err: unknown) =>
         console.error("[kemi] Failed to embed conversation memory:", err),
     );
+
+    // 12. Fire-and-forget knowledge graph extraction
+    import("@/lib/kioku/pipeline").then(({ processExtractOnly }) => {
+      const text = `User: ${userMessage}\nAssistant: ${content}`;
+      processExtractOnly(text).catch((err: unknown) =>
+        console.error("[kemi] Failed to extract to knowledge graph:", err),
+      );
+    });
   }
 
   return content;
