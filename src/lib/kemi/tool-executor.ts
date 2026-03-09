@@ -773,12 +773,13 @@ export async function executeTool(
     }
 
     case "delete_calendar_rule": {
-      if (!input.confirmed) {
-        return {
-          error:
-            "Deletion not confirmed. Set confirmed=true to delete this rule.",
-        };
+      const escalation = await checkEscalation("calendar_rule_deleted", {
+        confirmed: (input.confirmed as boolean) || false,
+      });
+      if (!escalation.allowed) {
+        return { error: escalation.reason, requiresApproval: escalation.requiresApproval };
       }
+
       const rule = await prisma.calendarRule.delete({
         where: { id: input.rule_id as string },
       });
@@ -907,6 +908,14 @@ export async function executeTool(
     }
 
     case "update_calendar_event": {
+      const confirmed = (input.confirmed as boolean) || false;
+      const escalation = await checkEscalation("calendar_event_updated", {
+        confirmed,
+      });
+      if (!escalation.allowed) {
+        return { error: escalation.reason, requiresApproval: escalation.requiresApproval };
+      }
+
       const eventId = input.event_id as string;
       const updates: Record<string, string | undefined> = {};
       if (input.summary !== undefined) updates.summary = input.summary as string;
@@ -1002,6 +1011,18 @@ export async function executeTool(
       const entryTitle = input.title as string;
       let entryAmount = (input.amount as number) || 0;
       const entryCurrency = (input.currency as string) || "JMD";
+
+      // Escalation check for expense entries (spending threshold)
+      if (entryCategory === "expense" && entryAmount) {
+        const escalation = await checkEscalation("personal_entry_logged", {
+          amount: Math.abs(entryAmount),
+          currency: entryCurrency,
+        });
+        if (!escalation.allowed) {
+          return { error: escalation.reason, requiresApproval: escalation.requiresApproval };
+        }
+      }
+
       const entryDate = input.date
         ? new Date(input.date as string)
         : todayJamaica();
@@ -1196,6 +1217,13 @@ export async function executeTool(
     }
 
     case "cancel_subscription": {
+      const escalation = await checkEscalation("subscription_cancelled", {
+        confirmed: (input.confirmed as boolean) || false,
+      });
+      if (!escalation.allowed) {
+        return { error: escalation.reason, requiresApproval: escalation.requiresApproval };
+      }
+
       const sub = await prisma.recurringTransaction.update({
         where: { id: input.subscription_id as string },
         data: { active: false },

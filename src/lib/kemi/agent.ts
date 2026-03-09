@@ -8,6 +8,7 @@ import { KEMI_TOOLS } from "@/lib/kemi/tools";
 import { executeTool } from "@/lib/kemi/tool-executor";
 import { truncateToolResult } from "@/lib/kemi/utils";
 import { remember } from "@/lib/kemi/memory";
+import { getPreference } from "@/lib/kemi/preferences";
 import type { KemiMessage } from "@/lib/kemi/types";
 
 const anthropic = new Anthropic();
@@ -37,6 +38,12 @@ export async function processKemiMessage(
   history?: Array<{ role: string; content: string }>,
   conversationId?: string,
 ): Promise<string> {
+  // Kill switch — highest priority check
+  const killSwitch = await getPreference<boolean>("kill_switch", false);
+  if (killSwitch) {
+    return "I'm currently paused by the kill switch. All autonomous actions are suspended until Mike re-enables me.";
+  }
+
   // Build the user message, prepending voice note context if applicable
   const prefix =
     isVoiceNote && originalVoiceText
