@@ -25,8 +25,7 @@ export async function executeTool(
   name: string,
   input: Record<string, unknown>
 ): Promise<unknown> {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = todayJamaica();
 
   switch (name) {
     // ─── Read Tools ───────────────────────────────────────────

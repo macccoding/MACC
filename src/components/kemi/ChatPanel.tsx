@@ -56,6 +56,7 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
     ];
   });
   const [loading, setLoading] = useState(false);
+  const [toolActivity, setToolActivity] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Persist messages whenever they change
@@ -70,7 +71,7 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
         behavior: "smooth",
       });
     }
-  }, [messages]);
+  }, [messages, toolActivity]);
 
   const handleSend = useCallback(
     async (content: string) => {
@@ -82,6 +83,7 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
       };
       setMessages((prev) => [...prev, userMsg]);
       setLoading(true);
+      setToolActivity(null);
 
       try {
         // Build API history — exclude welcome message, map "kemi" → "assistant"
@@ -100,18 +102,53 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
 
         if (!res.ok) throw new Error(`API ${res.status}`);
 
-        const data = await res.json();
+        // Read SSE stream
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error("No stream");
 
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let finalContent = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+
+          // Parse SSE events from buffer
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || ""; // Keep incomplete line in buffer
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            try {
+              const event = JSON.parse(line.slice(6));
+              if (event.type === "tool") {
+                setToolActivity(event.label);
+              } else if (event.type === "done") {
+                finalContent = event.content;
+              } else if (event.type === "error") {
+                finalContent = event.content;
+              }
+            } catch {
+              // Skip malformed events
+            }
+          }
+        }
+
+        setToolActivity(null);
         setMessages((prev) => [
           ...prev,
           {
             id: (Date.now() + 1).toString(),
             role: "kemi",
-            content: data.content,
+            content: finalContent || "I couldn't generate a response.",
             timestamp: getTime(),
           },
         ]);
       } catch {
+        setToolActivity(null);
         setMessages((prev) => [
           ...prev,
           {
@@ -215,20 +252,31 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
                     </span>
                   </div>
                   <div className="bg-ink-dark/70 px-3.5 py-3 rounded-2xl rounded-tl-sm">
-                    <div className="flex gap-1">
-                      {[0, 1, 2].map((i) => (
-                        <motion.div
-                          key={i}
-                          className="w-1 h-1 rounded-full bg-sumi-gray"
-                          animate={{ opacity: [0.2, 0.8, 0.2] }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            delay: i * 0.2,
-                          }}
-                        />
-                      ))}
-                    </div>
+                    {toolActivity ? (
+                      <motion.p
+                        key={toolActivity}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-[11px] text-vermillion/70 font-mono tracking-wide"
+                      >
+                        {toolActivity}
+                      </motion.p>
+                    ) : (
+                      <div className="flex gap-1">
+                        {[0, 1, 2].map((i) => (
+                          <motion.div
+                            key={i}
+                            className="w-1 h-1 rounded-full bg-sumi-gray"
+                            animate={{ opacity: [0.2, 0.8, 0.2] }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              delay: i * 0.2,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

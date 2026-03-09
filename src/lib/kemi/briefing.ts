@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
+import { todayJamaica } from "./utils";
 
 const anthropic = new Anthropic();
 
@@ -20,9 +21,8 @@ export async function generateBriefing(): Promise<string> {
     return cachedBriefing.text;
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const sevenDaysAgo = new Date();
+  const today = todayJamaica();
+  const sevenDaysAgo = new Date(today);
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   // Fetch all data sources in parallel

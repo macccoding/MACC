@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getActionLog } from "./action-log";
 import { recall } from "./memory";
+import { todayJamaica } from "./utils";
 
 export interface ContextBlock {
   label: string;
@@ -34,8 +35,7 @@ const KEYWORD_TRIGGERS: KeywordTrigger[] = [
   {
     keywords: ["habit", "habits", "routine", "streak"],
     fetch: async () => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const today = todayJamaica();
       const habits = await prisma.habit.findMany({
         include: { logs: { where: { date: today }, take: 1 } },
         orderBy: { createdAt: "asc" },
@@ -189,8 +189,7 @@ const KEYWORD_TRIGGERS: KeywordTrigger[] = [
   {
     keywords: ["task", "todo", "overdue", "deadline", "action item", "remind"],
     fetch: async () => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const today = todayJamaica();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -304,8 +303,7 @@ const KEYWORD_TRIGGERS: KeywordTrigger[] = [
   {
     keywords: ["journal", "reflect", "reflection", "capture", "thought", "diary"],
     fetch: async () => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const today = todayJamaica();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
 

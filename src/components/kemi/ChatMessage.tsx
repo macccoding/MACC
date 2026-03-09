@@ -1,10 +1,13 @@
+import { Markdown } from "@/components/ui/Markdown";
+
 interface ChatMessageProps {
   role: "user" | "kemi";
   content: string;
   timestamp?: string;
+  toolActivity?: string | null;
 }
 
-export function ChatMessage({ role, content, timestamp }: ChatMessageProps) {
+export function ChatMessage({ role, content, timestamp, toolActivity }: ChatMessageProps) {
   const isKemi = role === "kemi";
 
   return (
@@ -22,7 +25,18 @@ export function ChatMessage({ role, content, timestamp }: ChatMessageProps) {
             : "bg-vermillion/8 text-parchment rounded-tr-sm"
         }`}
       >
-        <p className="whitespace-pre-wrap">{content}</p>
+        {isKemi ? (
+          <div className="kemi-message">
+            <Markdown content={content} className="text-parchment" />
+          </div>
+        ) : (
+          <p className="whitespace-pre-wrap">{content}</p>
+        )}
+        {toolActivity && (
+          <span className="block mt-1 text-[10px] text-vermillion/60 font-mono tracking-wide italic">
+            {toolActivity}
+          </span>
+        )}
         {timestamp && (
           <span className="block mt-1.5 text-[9px] text-sumi-gray font-mono tracking-wider">
             {timestamp}
