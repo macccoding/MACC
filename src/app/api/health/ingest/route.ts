@@ -3,6 +3,21 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { mapHealthPayload } from "@/lib/health/ingest-mapper";
 
+function getHealthValue(
+  healthKey: string,
+  snapshot: { steps: number | null; calories: number | null; heartRate: number | null; sleep: number | null },
+  extraData: Record<string, unknown>
+): number | null {
+  switch (healthKey) {
+    case "steps": return snapshot.steps;
+    case "calories": return snapshot.calories;
+    case "sleep": return snapshot.sleep;
+    case "exerciseMinutes": return typeof extraData.exerciseMinutes === "number" ? extraData.exerciseMinutes : null;
+    case "standHours": return typeof extraData.standHours === "number" ? extraData.standHours : null;
+    default: return null;
+  }
+}
+
 export async function POST(request: NextRequest) {
   // API key auth (not cookie-based — used by Health Auto Export webhook)
   const apiKey = request.headers.get("x-api-key");
@@ -67,6 +82,36 @@ export async function POST(request: NextRequest) {
         data: extraData as Prisma.InputJsonValue,
       },
     });
+
+    // Auto-populate health-linked habit logs
+    try {
+      const healthHabits = await prisma.habit.findMany({
+        where: { healthKey: { not: null }, archived: false },
+      });
+
+      for (const habit of healthHabits) {
+        const value = getHealthValue(habit.healthKey!, snapshot, extraData as Record<string, unknown>);
+        if (value === null) continue;
+
+        await prisma.habitLog.upsert({
+          where: {
+            habitId_date: { habitId: habit.id, date: normalized },
+          },
+          create: {
+            habitId: habit.id,
+            date: normalized,
+            completed: value >= habit.targetValue,
+            value,
+          },
+          update: {
+            completed: value >= habit.targetValue,
+            value,
+          },
+        });
+      }
+    } catch (err) {
+      console.error("[health/ingest] Auto-populate habits error:", err);
+    }
 
     return NextResponse.json({ ingested: true, id: snapshot.id });
   } catch (err) {
