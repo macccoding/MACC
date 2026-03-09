@@ -40,12 +40,22 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     creator: "@macccoding",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "MikeOS",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
   themeColor: "#F5EDE0",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

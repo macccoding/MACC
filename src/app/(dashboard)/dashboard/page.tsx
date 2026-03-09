@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { MoodCheckIn } from "@/components/dashboard/MoodCheckIn";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -156,6 +157,8 @@ export default function DashboardHome() {
   const [briefing, setBriefing] = useState<string | null>(null);
   const [briefingLoading, setBriefingLoading] = useState(true);
   const [briefingOpen, setBriefingOpen] = useState(true);
+  const [hasMoodToday, setHasMoodToday] = useState(true);
+  const [insights, setInsights] = useState<any[]>([]);
 
   useEffect(() => {
     fetch("/api/dashboard/brief")
@@ -173,6 +176,22 @@ export default function DashboardHome() {
         setBriefing(null);
         setBriefingLoading(false);
       });
+
+    // Check mood today
+    const today = new Date().toISOString().split("T")[0];
+    fetch("/api/mood?days=1")
+      .then((r) => r.json())
+      .then((entries: any[]) => {
+        const todayEntry = entries.find((e: any) => e.createdAt?.startsWith(today));
+        setHasMoodToday(!!todayEntry);
+      })
+      .catch(() => {});
+
+    // Load insights
+    fetch("/api/insights")
+      .then((r) => r.json())
+      .then((data: any[]) => setInsights(data?.slice(0, 3) || []))
+      .catch(() => {});
   }, []);
 
   return (
@@ -240,6 +259,57 @@ export default function DashboardHome() {
           </motion.div>
         )}
       </motion.div>
+
+      {/* Mood Check-in (if not done today) */}
+      {!hasMoodToday && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <MoodCheckIn compact onComplete={() => setHasMoodToday(true)} />
+        </motion.div>
+      )}
+
+      {/* Insights */}
+      {insights.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.18, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="space-y-2"
+        >
+          <p className="font-mono tracking-[0.12em] uppercase text-sumi-gray-light text-[10px]">
+            Insights
+          </p>
+          {insights.map((insight: any) => (
+            <div
+              key={insight.id}
+              className="bg-parchment-warm/40 border border-sumi-gray/20 rounded-xl p-3 flex items-start gap-3"
+            >
+              <div className="flex-1">
+                <p className="text-sm font-medium text-ink-black/80">{insight.title}</p>
+                <p className="text-xs text-sumi-gray-light mt-1">{insight.body}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setInsights((prev: any[]) => prev.filter((i: any) => i.id !== insight.id));
+                  fetch("/api/insights/dismiss", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: insight.id }),
+                  });
+                }}
+                className="text-sumi-gray-light hover:text-ink-black shrink-0 mt-0.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))}
+        </motion.div>
+      )}
 
       {/* Module Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">

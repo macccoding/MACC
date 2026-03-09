@@ -29,6 +29,18 @@ export async function sendTelegramMessage(
   }
 }
 
+/**
+ * Send "typing..." indicator. Lasts ~5s; call repeatedly for long operations.
+ */
+export async function sendTypingIndicator(chatId: string = MIKE_CHAT_ID) {
+  if (!BOT_TOKEN) return;
+  await fetch(`${API_BASE}/sendChatAction`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, action: "typing" }),
+  }).catch(() => {});
+}
+
 export async function downloadTelegramFile(fileId: string): Promise<Buffer> {
   const fileRes = await fetch(`${API_BASE}/getFile?file_id=${fileId}`);
   const fileData = await fileRes.json();

@@ -42,6 +42,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
         }}
         onKeyDown={handleKeyDown}
         placeholder="Talk to Kemi..."
+        aria-label="Message to Kemi"
         disabled={disabled}
         rows={1}
         className="flex-1 resize-none bg-transparent text-parchment placeholder:text-sumi-gray text-[13px] outline-none py-2 px-1 font-serif"
@@ -49,6 +50,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
       <button
         onClick={handleSubmit}
         disabled={!value.trim() || disabled}
+        aria-label="Send message"
         className="shrink-0 w-7 h-7 rounded-full bg-vermillion/70 hover:bg-vermillion text-parchment flex items-center justify-center transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
       >
         <svg viewBox="0 0 12 12" className="w-3 h-3" fill="currentColor">

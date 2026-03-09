@@ -278,7 +278,7 @@ export default function LearningPage() {
                     </div>
 
                     {/* Hover actions */}
-                    <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0">
+                    <div className="flex items-center gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200 shrink-0">
                       <button
                         onClick={() => {
                           if (isLogging) {

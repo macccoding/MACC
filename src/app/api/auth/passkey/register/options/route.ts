@@ -4,9 +4,7 @@ import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { rpName, rpID } from "@/lib/webauthn";
 import type { AuthenticatorTransportFuture } from "@simplewebauthn/server";
-
-// Module-level challenge store (single-user app)
-export const challengeStore = new Map<string, string>();
+import { registerChallengeStore as challengeStore } from "@/lib/auth-challenge-store";
 
 export async function POST(request: NextRequest) {
   const authError = requireAuth(request);

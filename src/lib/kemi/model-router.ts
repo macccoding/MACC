@@ -34,5 +34,5 @@ export function routeModel(message: string): { model: string; tier: ModelTier } 
     return { model: "claude-haiku-4-5-20251001", tier: "haiku" };
   }
 
-  return { model: "claude-sonnet-4-5-20250514", tier: "sonnet" };
+  return { model: "claude-sonnet-4-6", tier: "sonnet" };
 }

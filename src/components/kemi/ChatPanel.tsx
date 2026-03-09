@@ -108,9 +108,13 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            aria-hidden="true"
           />
 
           <motion.div
+            role="dialog"
+            aria-label="Chat with Kemi"
+            aria-modal="true"
             className="fixed top-0 right-0 bottom-0 w-full sm:w-[360px] z-[100] bg-ink-deep border-l border-sumi-gray-dark/15 flex flex-col"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
@@ -132,7 +136,8 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
               </div>
               <button
                 onClick={onClose}
-                className="text-sumi-gray hover:text-parchment transition-colors text-sm w-6 h-6 flex items-center justify-center"
+                aria-label="Close chat"
+                className="text-sumi-gray hover:text-parchment transition-colors text-sm sm:text-sm text-lg w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center"
               >
                 &times;
               </button>

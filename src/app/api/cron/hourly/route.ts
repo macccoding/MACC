@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   try {
     const { getUnreadEmails } = await import("@/lib/kemi/google/gmail");
 
-    const emails = await getUnreadEmails("business", 20);
+    const emails = await getUnreadEmails(20);
 
     if (emails.length > 0) {
       // Cache new emails

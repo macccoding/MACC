@@ -21,7 +21,11 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(goals);
+    return NextResponse.json(goals, {
+      headers: {
+        "Cache-Control": "s-maxage=30, stale-while-revalidate=120",
+      },
+    });
   } catch (err) {
     console.error("[goals] List error:", err);
     return NextResponse.json(

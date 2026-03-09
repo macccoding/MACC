@@ -1,11 +1,10 @@
-import { getSheetsClient, type GoogleAccount } from "./auth";
+import { getSheetsClient } from "./auth";
 
 export async function getSheetValues(
   spreadsheetId: string,
   range: string,
-  account: GoogleAccount = "business",
 ) {
-  const sheets = getSheetsClient(account);
+  const sheets = getSheetsClient();
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range,
@@ -20,9 +19,8 @@ export async function updateSheetValues(
   spreadsheetId: string,
   range: string,
   values: unknown[][],
-  account: GoogleAccount = "business",
 ) {
-  const sheets = getSheetsClient(account);
+  const sheets = getSheetsClient();
   const res = await sheets.spreadsheets.values.update({
     spreadsheetId,
     range,
@@ -39,9 +37,8 @@ export async function appendRows(
   spreadsheetId: string,
   range: string,
   rows: unknown[][],
-  account: GoogleAccount = "business",
 ) {
-  const sheets = getSheetsClient(account);
+  const sheets = getSheetsClient();
   const res = await sheets.spreadsheets.values.append({
     spreadsheetId,
     range,

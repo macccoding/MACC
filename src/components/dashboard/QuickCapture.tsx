@@ -18,8 +18,13 @@ export function QuickCapture() {
         setOpen(false);
       }
     };
+    const customHandler = () => setOpen(true);
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("open-quickcapture", customHandler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      window.removeEventListener("open-quickcapture", customHandler);
+    };
   }, [open]);
 
   useEffect(() => {
@@ -51,6 +56,7 @@ export function QuickCapture() {
     <>
       <button
         onClick={() => setOpen(true)}
+        aria-label="Quick capture"
         className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-parchment-warm/40 border border-sumi-gray/20 text-sumi-gray text-xs hover:border-sumi-gray/40 transition-colors"
       >
         <span className="font-mono tracking-wider">Capture</span>
@@ -62,16 +68,22 @@ export function QuickCapture() {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[300] flex items-start justify-center pt-[18vh]"
+            className="fixed inset-0 z-[300] flex items-start justify-center pt-[12vh] sm:pt-[18vh]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
+            role="dialog"
+            aria-label="Quick capture"
+            aria-modal="true"
             onClick={(e) => {
               if (e.target === e.currentTarget) setOpen(false);
             }}
           >
-            <div className="absolute inset-0 bg-parchment/50 backdrop-blur-sm" />
+            <div
+              className="absolute inset-0 bg-parchment/50 backdrop-blur-sm"
+              onClick={() => setOpen(false)}
+            />
 
             <motion.form
               onSubmit={handleSubmit}
@@ -90,7 +102,15 @@ export function QuickCapture() {
                 className="w-full px-5 py-4 bg-parchment-warm border border-sumi-gray/20 rounded-xl text-ink-black placeholder:text-sumi-gray font-serif outline-none focus:border-vermillion/30 transition-colors"
                 style={{ fontSize: "var(--text-body)" }}
               />
-              <p className="text-center mt-3 text-sumi-gray font-mono" style={{ fontSize: "var(--text-micro)" }}>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="mt-4 w-full py-2.5 text-sumi-gray font-mono rounded-lg bg-parchment-warm/60 border border-sumi-gray/20 active:bg-parchment-warm transition-colors sm:hidden"
+                style={{ fontSize: "var(--text-micro)" }}
+              >
+                Close
+              </button>
+              <p className="hidden sm:block text-center mt-3 text-sumi-gray font-mono" style={{ fontSize: "var(--text-micro)" }}>
                 Enter to capture &middot; Esc to close
               </p>
             </motion.form>

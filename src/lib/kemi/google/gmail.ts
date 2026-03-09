@@ -1,7 +1,7 @@
-import { getGmail, type GoogleAccount } from "./auth";
+import { getGmail } from "./auth";
 
-export async function getUnreadEmails(account: GoogleAccount = "business", maxResults = 10) {
-  const gmail = getGmail(account);
+export async function getUnreadEmails(maxResults = 10) {
+  const gmail = getGmail();
   const res = await gmail.users.messages.list({
     userId: "me",
     q: "is:unread",
@@ -24,8 +24,8 @@ export async function getUnreadEmails(account: GoogleAccount = "business", maxRe
   return emails;
 }
 
-export async function getEmailBody(account: GoogleAccount, messageId: string) {
-  const gmail = getGmail(account);
+export async function getEmailBody(messageId: string) {
+  const gmail = getGmail();
   const msg = await gmail.users.messages.get({
     userId: "me",
     id: messageId,
@@ -49,13 +49,12 @@ export async function getEmailBody(account: GoogleAccount, messageId: string) {
 }
 
 export async function sendEmail(
-  account: GoogleAccount,
   to: string,
   subject: string,
   body: string,
   threadId?: string,
 ) {
-  const gmail = getGmail(account);
+  const gmail = getGmail();
   const raw = Buffer.from(
     `To: ${to}\r\nSubject: ${subject}\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n${body}`,
   ).toString("base64url");
@@ -67,11 +66,10 @@ export async function sendEmail(
 }
 
 export async function searchEmails(
-  account: GoogleAccount,
   query: string,
   maxResults = 10,
 ) {
-  const gmail = getGmail(account);
+  const gmail = getGmail();
   const res = await gmail.users.messages.list({
     userId: "me",
     q: query,
@@ -94,15 +92,14 @@ export async function searchEmails(
   return emails;
 }
 
-export async function getEmailSummary(account: GoogleAccount) {
-  const gmail = getGmail(account);
+export async function getEmailSummary() {
+  const gmail = getGmail();
   const res = await gmail.users.messages.list({
     userId: "me",
     q: "is:unread",
     maxResults: 1,
   });
   return {
-    account,
     unreadCount: res.data.resultSizeEstimate || 0,
   };
 }

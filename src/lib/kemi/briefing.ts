@@ -127,7 +127,7 @@ export async function generateBriefing(): Promise<string> {
 
   // Generate briefing via Claude Sonnet
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-5-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 1024,
     system:
       "You are Kemi, Mike Chen's AI executive assistant. Generate Mike's daily briefing. Be concise and direct — no fluff. Lead with the most important thing. Use 3-5 bullet points. Speak in your natural voice (sharp, warm Jamaican professional).",

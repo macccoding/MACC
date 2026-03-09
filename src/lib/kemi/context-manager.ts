@@ -1,6 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { getTodayEvents } from "./google/calendar";
-import { getEmailSummary } from "./google/gmail";
 import { getActionLog } from "./action-log";
 import { recall } from "./memory";
 
@@ -150,6 +148,7 @@ const KEYWORD_TRIGGERS: KeywordTrigger[] = [
     ],
     fetch: async () => {
       try {
+        const { getTodayEvents } = await import("./google/calendar");
         const events = await getTodayEvents();
         if (events.length === 0) return null;
         const lines = events.map((e) => {
@@ -175,19 +174,11 @@ const KEYWORD_TRIGGERS: KeywordTrigger[] = [
     keywords: ["email", "gmail", "inbox", "reply", "thread"],
     fetch: async () => {
       try {
-        const [biz, personal] = await Promise.all([
-          getEmailSummary("business").catch(() => ({
-            account: "business",
-            unreadCount: 0,
-          })),
-          getEmailSummary("personal").catch(() => ({
-            account: "personal",
-            unreadCount: 0,
-          })),
-        ]);
+        const { getEmailSummary } = await import("./google/gmail");
+        const summary = await getEmailSummary();
         return {
           label: "Email Summary",
-          content: `EMAIL: business: ${biz.unreadCount} unread, personal: ${personal.unreadCount} unread`,
+          content: `EMAIL: ${summary.unreadCount} unread`,
         };
       } catch {
         return null;
@@ -384,6 +375,45 @@ const KEYWORD_TRIGGERS: KeywordTrigger[] = [
       return {
         label: "Recent Spending",
         content: `SPENDING (7 days): $${total.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+      };
+    },
+  },
+  // ─── 16. Mood ─────────────────────────────────────────────────
+  {
+    keywords: ["mood", "feeling", "energy", "how am i", "emotion"],
+    fetch: async () => {
+      const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const entries = await prisma.moodEntry.findMany({
+        where: { createdAt: { gte: since } },
+        orderBy: { createdAt: "desc" },
+        take: 7,
+      });
+      if (entries.length === 0) return null;
+      const avgMood = entries.reduce((s, e) => s + e.mood, 0) / entries.length;
+      const avgEnergy = entries.reduce((s, e) => s + e.energy, 0) / entries.length;
+      const lines = entries.map(
+        (e) =>
+          `${e.createdAt.toISOString().split("T")[0]}: mood ${e.mood}/5, energy ${e.energy}/5${e.note ? ` — ${e.note}` : ""}`,
+      );
+      return {
+        label: "Mood (7 days)",
+        content: `MOOD (7 days, avg ${avgMood.toFixed(1)}/5, energy ${avgEnergy.toFixed(1)}/5):\n${lines.join("\n")}`,
+      };
+    },
+  },
+  // ─── 17. Focus ───────────────────────────────────────────────────
+  {
+    keywords: ["focus", "pomodoro", "deep work", "timer", "concentration"],
+    fetch: async () => {
+      const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const sessions = await prisma.focusSession.findMany({
+        where: { status: "completed", startedAt: { gte: since } },
+      });
+      if (sessions.length === 0) return null;
+      const totalMin = sessions.reduce((s, f) => s + (f.actualMinutes || 0), 0);
+      return {
+        label: "Focus (7 days)",
+        content: `FOCUS (7 days): ${sessions.length} sessions, ${totalMin} minutes total`,
       };
     },
   },

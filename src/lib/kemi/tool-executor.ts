@@ -2,18 +2,20 @@ import { prisma } from "@/lib/prisma";
 import { logAction, getActionLog } from "./action-log";
 import { checkEscalation } from "./escalation";
 import { todayJamaica, startOfWeek } from "./utils";
-import {
-  getUnreadEmails,
-  getEmailBody,
-  sendEmail,
-  searchEmails,
-  getEmailSummary,
-} from "./google/gmail";
-import { getEvents, createEvent, updateEvent, deleteEvent } from "./google/calendar";
-import { getSheetValues, updateSheetValues, appendRows } from "./google/sheets";
 import { remember, recall } from "./memory";
-import type { GoogleAccount } from "./google/auth";
+
 import type { Prisma } from "@/generated/prisma/client";
+
+// Google modules loaded lazily to avoid bundling googleapis at module init
+async function getGmailModule() {
+  return import("./google/gmail");
+}
+async function getCalendarModule() {
+  return import("./google/calendar");
+}
+async function getSheetsModule() {
+  return import("./google/sheets");
+}
 
 /**
  * Execute a Kemi tool by name with the given input.
@@ -792,27 +794,18 @@ export async function executeTool(
     // ─── Google Integration ──────────────────────────────────────
 
     case "check_email": {
-      const account = input.account as GoogleAccount | undefined;
+      const gmail = await getGmailModule();
       const maxResults = (input.max_results as number) || 10;
-      if (account) {
-        return await getUnreadEmails(account, maxResults);
-      }
-      // No account specified — return summary across accounts
-      const [business, personal] = await Promise.all([
-        getEmailSummary("business"),
-        getEmailSummary("personal"),
-      ]);
-      return { accounts: [business, personal] };
+      return await gmail.getUnreadEmails(maxResults);
     }
 
     case "read_email": {
-      const account = input.account as GoogleAccount;
+      const gmail = await getGmailModule();
       const messageId = input.message_id as string;
-      return await getEmailBody(account, messageId);
+      return await gmail.getEmailBody(messageId);
     }
 
     case "send_email": {
-      const account = input.account as GoogleAccount;
       const to = input.to as string;
       const subject = input.subject as string;
       const body = input.body as string;
@@ -829,9 +822,9 @@ export async function executeTool(
         return { error: escalation.reason, requiresApproval: true };
       }
 
-      const result = await sendEmail(account, to, subject, body, threadId);
+      const gmail = await getGmailModule();
+      const result = await gmail.sendEmail(to, subject, body, threadId);
       await logAction("email_sent", `Sent email to ${to}: ${subject}`, {
-        account,
         to,
         subject,
         messageId: result.id,
@@ -862,16 +855,17 @@ export async function executeTool(
     }
 
     case "search_email": {
-      const account = input.account as GoogleAccount;
       const query = input.query as string;
       const maxResults = (input.max_results as number) || 10;
-      return await searchEmails(account, query, maxResults);
+      const gmail = await getGmailModule();
+      return await gmail.searchEmails(query, maxResults);
     }
 
     case "get_calendar_events": {
+      const cal = await getCalendarModule();
       const startDate = input.start_date as string;
       const endDate = input.end_date as string;
-      return await getEvents(startDate, endDate);
+      return await cal.getEvents(startDate, endDate);
     }
 
     case "create_calendar_event": {
@@ -891,7 +885,8 @@ export async function executeTool(
         return { error: escalation.reason, requiresApproval: true };
       }
 
-      const result = await createEvent(
+      const cal = await getCalendarModule();
+      const result = await cal.createEvent(
         summary,
         start,
         end,
@@ -924,7 +919,8 @@ export async function executeTool(
       if (input.description !== undefined) updates.description = input.description as string;
       if (input.location !== undefined) updates.location = input.location as string;
 
-      const result = await updateEvent(eventId, updates);
+      const cal = await getCalendarModule();
+      const result = await cal.updateEvent(eventId, updates);
       await logAction(
         "calendar_event_updated",
         `Updated event: ${result.summary}`,
@@ -944,7 +940,8 @@ export async function executeTool(
         return { error: escalation.reason, requiresApproval: true };
       }
 
-      const result = await deleteEvent(eventId);
+      const cal = await getCalendarModule();
+      const result = await cal.deleteEvent(eventId);
       await logAction(
         "calendar_event_deleted",
         `Deleted calendar event: ${eventId}`,
@@ -954,17 +951,19 @@ export async function executeTool(
     }
 
     case "read_sheet": {
+      const sheets = await getSheetsModule();
       const spreadsheetId = input.spreadsheet_id as string;
       const range = input.range as string;
-      return await getSheetValues(spreadsheetId, range);
+      return await sheets.getSheetValues(spreadsheetId, range);
     }
 
     case "update_sheet": {
+      const sheets = await getSheetsModule();
       const spreadsheetId = input.spreadsheet_id as string;
       const range = input.range as string;
       const values = input.values as unknown[][];
 
-      const result = await updateSheetValues(spreadsheetId, range, values);
+      const result = await sheets.updateSheetValues(spreadsheetId, range, values);
       await logAction("sheet_updated", `Updated sheet ${spreadsheetId} range ${range}`, {
         spreadsheetId,
         range,
@@ -974,11 +973,12 @@ export async function executeTool(
     }
 
     case "append_sheet": {
+      const sheets = await getSheetsModule();
       const spreadsheetId = input.spreadsheet_id as string;
       const range = input.range as string;
       const rows = input.rows as unknown[][];
 
-      const result = await appendRows(spreadsheetId, range, rows);
+      const result = await sheets.appendRows(spreadsheetId, range, rows);
       await logAction("sheet_appended", `Appended ${rows.length} rows to ${spreadsheetId}`, {
         spreadsheetId,
         range,
@@ -1376,6 +1376,120 @@ export async function executeTool(
         contentPreview: content.slice(0, 100),
       });
       return { stored: true, id };
+    }
+
+    case "log_mood": {
+      const mood = input.mood as number;
+      const energy = input.energy as number;
+      const note = input.note as string | undefined;
+
+      if (mood < 1 || mood > 5 || energy < 1 || energy > 5) {
+        return { error: "mood and energy must be between 1 and 5" };
+      }
+
+      const entry = await prisma.moodEntry.create({
+        data: { mood, energy, note: note || null },
+      });
+      await logAction("log_mood", `Logged mood ${mood}/5, energy ${energy}/5`, {
+        entryId: entry.id,
+      });
+      const labels = ["", "怒 Angry", "憂 Low", "平 Neutral", "楽 Good", "喜 Great"];
+      return {
+        logged: true,
+        id: entry.id,
+        mood: `${mood}/5 (${labels[mood]})`,
+        energy: `${energy}/5`,
+      };
+    }
+
+    case "get_mood": {
+      const days = (input.days as number) || 7;
+      const since = new Date();
+      since.setDate(since.getDate() - days);
+
+      const entries = await prisma.moodEntry.findMany({
+        where: { createdAt: { gte: since } },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (entries.length === 0) {
+        return { message: `No mood entries in the last ${days} days.` };
+      }
+
+      const avgMood = entries.reduce((s, e) => s + e.mood, 0) / entries.length;
+      const avgEnergy = entries.reduce((s, e) => s + e.energy, 0) / entries.length;
+
+      return {
+        entries: entries.map((e) => ({
+          date: e.createdAt.toISOString().split("T")[0],
+          mood: e.mood,
+          energy: e.energy,
+          note: e.note,
+        })),
+        averages: {
+          mood: Math.round(avgMood * 10) / 10,
+          energy: Math.round(avgEnergy * 10) / 10,
+        },
+        count: entries.length,
+      };
+    }
+
+    case "start_focus": {
+      const type = (input.type as string) || "pomodoro";
+      const durationMinutes = (input.duration_minutes as number) || 25;
+      const label = input.label as string | undefined;
+
+      const session = await prisma.focusSession.create({
+        data: {
+          type,
+          durationMinutes,
+          label: label || null,
+          status: "active",
+        },
+      });
+      await logAction("start_focus", `Started ${durationMinutes}min ${type} session`, {
+        sessionId: session.id,
+      });
+      return {
+        started: true,
+        id: session.id,
+        type,
+        durationMinutes,
+        label: label || null,
+      };
+    }
+
+    case "get_focus_stats": {
+      const days = (input.days as number) || 7;
+      const since = new Date();
+      since.setDate(since.getDate() - days);
+
+      const sessions = await prisma.focusSession.findMany({
+        where: {
+          status: "completed",
+          startedAt: { gte: since },
+        },
+        orderBy: { startedAt: "desc" },
+      });
+
+      const totalMinutes = sessions.reduce((s, f) => s + (f.actualMinutes || 0), 0);
+      const todayStr = new Date().toISOString().split("T")[0];
+      const todayMinutes = sessions
+        .filter((s) => s.startedAt.toISOString().startsWith(todayStr))
+        .reduce((s, f) => s + (f.actualMinutes || 0), 0);
+
+      return {
+        period: `${days} days`,
+        totalSessions: sessions.length,
+        totalMinutes,
+        todayMinutes,
+        recentSessions: sessions.slice(0, 5).map((s) => ({
+          date: s.startedAt.toISOString().split("T")[0],
+          type: s.type,
+          minutes: s.actualMinutes || s.durationMinutes,
+          label: s.label,
+        })),
+      };
     }
 
     default:

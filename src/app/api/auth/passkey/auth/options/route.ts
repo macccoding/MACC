@@ -3,9 +3,7 @@ import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import { prisma } from "@/lib/prisma";
 import { rpID } from "@/lib/webauthn";
 import type { AuthenticatorTransportFuture } from "@simplewebauthn/server";
-
-// Module-level challenge store (single-user app)
-export const authChallengeStore = new Map<string, string>();
+import { authChallengeStore } from "@/lib/auth-challenge-store";
 
 export async function POST() {
   const passkeys = await prisma.passkey.findMany();

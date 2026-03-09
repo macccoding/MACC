@@ -878,15 +878,10 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
   {
     name: "check_email",
     description:
-      "Check unread emails from Gmail. If no account specified, returns a summary across business and personal accounts.",
+      "Check unread emails from Gmail.",
     input_schema: {
       type: "object" as const,
       properties: {
-        account: {
-          type: "string",
-          description:
-            'Which account to check: "business", "personal", or "tools". Omit for a summary across accounts.',
-        },
         max_results: {
           type: "number",
           description: "Max emails to return. Default 10.",
@@ -902,17 +897,12 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
     input_schema: {
       type: "object" as const,
       properties: {
-        account: {
-          type: "string",
-          description:
-            'Which account: "business", "personal", or "tools" (required).',
-        },
         message_id: {
           type: "string",
           description: "Gmail message ID (required).",
         },
       },
-      required: ["account", "message_id"],
+      required: ["message_id"],
     },
   },
   {
@@ -922,11 +912,6 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
     input_schema: {
       type: "object" as const,
       properties: {
-        account: {
-          type: "string",
-          description:
-            'Which account to send from: "business", "personal", or "tools" (required).',
-        },
         to: {
           type: "string",
           description: "Recipient email address (required).",
@@ -949,7 +934,7 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
             "Set to true to confirm sending after escalation check.",
         },
       },
-      required: ["account", "to", "subject", "body"],
+      required: ["to", "subject", "body"],
     },
   },
   {
@@ -959,11 +944,6 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
     input_schema: {
       type: "object" as const,
       properties: {
-        account: {
-          type: "string",
-          description:
-            'Which account to search: "business", "personal", or "tools" (required).',
-        },
         query: {
           type: "string",
           description: "Gmail search query (required).",
@@ -973,7 +953,7 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
           description: "Max results to return. Default 10.",
         },
       },
-      required: ["account", "query"],
+      required: ["query"],
     },
   },
   {
@@ -1400,6 +1380,58 @@ export const KEMI_TOOLS: Anthropic.Messages.Tool[] = [
         },
       },
       required: ["content"],
+    },
+  },
+  {
+    name: "log_mood",
+    description:
+      "Log a mood and energy check-in. Mood and energy are 1-5 scale.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        mood: { type: "number", description: "Mood score 1-5 (1=awful, 5=great)" },
+        energy: { type: "number", description: "Energy score 1-5 (1=drained, 5=peak)" },
+        note: { type: "string", description: "Optional note about how they're feeling" },
+      },
+      required: ["mood", "energy"],
+    },
+  },
+  {
+    name: "get_mood",
+    description:
+      "Get recent mood and energy entries. Returns check-ins from the last N days.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        days: { type: "number", description: "Number of days to look back. Default 7." },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "start_focus",
+    description:
+      "Start a focus/pomodoro timer session.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        duration_minutes: { type: "number", description: "Duration in minutes (default 25)" },
+        type: { type: "string", description: '"pomodoro", "deep_work", or "break". Default "pomodoro".' },
+        label: { type: "string", description: "What they're working on" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "get_focus_stats",
+    description:
+      "Get focus session statistics and recent history.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        days: { type: "number", description: "Number of days to look back. Default 7." },
+      },
+      required: [],
     },
   },
 ];

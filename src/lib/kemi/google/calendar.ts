@@ -1,13 +1,12 @@
-import { getCalendarClient, type GoogleAccount } from "./auth";
+import { getCalendarClient } from "./auth";
 
 const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "primary";
 
 export async function getEvents(
   startDate: string,
   endDate: string,
-  account: GoogleAccount = "business",
 ) {
-  const calendar = getCalendarClient(account);
+  const calendar = getCalendarClient();
   const res = await calendar.events.list({
     calendarId: CALENDAR_ID,
     timeMin: new Date(startDate).toISOString(),
@@ -27,12 +26,12 @@ export async function getEvents(
   }));
 }
 
-export async function getTodayEvents(account: GoogleAccount = "business") {
+export async function getTodayEvents() {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const end = new Date(start);
   end.setDate(end.getDate() + 1);
-  return getEvents(start.toISOString(), end.toISOString(), account);
+  return getEvents(start.toISOString(), end.toISOString());
 }
 
 export async function createEvent(
@@ -42,9 +41,8 @@ export async function createEvent(
   description?: string,
   location?: string,
   attendees?: string[],
-  account: GoogleAccount = "business",
 ) {
-  const calendar = getCalendarClient(account);
+  const calendar = getCalendarClient();
   const res = await calendar.events.insert({
     calendarId: CALENDAR_ID,
     requestBody: {
@@ -68,9 +66,8 @@ export async function updateEvent(
     description?: string;
     location?: string;
   },
-  account: GoogleAccount = "business",
 ) {
-  const calendar = getCalendarClient(account);
+  const calendar = getCalendarClient();
   const body: Record<string, unknown> = {};
   if (updates.summary) body.summary = updates.summary;
   if (updates.description) body.description = updates.description;
@@ -87,9 +84,8 @@ export async function updateEvent(
 
 export async function deleteEvent(
   eventId: string,
-  account: GoogleAccount = "business",
 ) {
-  const calendar = getCalendarClient(account);
+  const calendar = getCalendarClient();
   await calendar.events.delete({ calendarId: CALENDAR_ID, eventId });
   return { deleted: true, eventId };
 }

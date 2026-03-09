@@ -3,7 +3,7 @@ import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { rpID, origin } from "@/lib/webauthn";
-import { challengeStore } from "../options/route";
+import { registerChallengeStore as challengeStore } from "@/lib/auth-challenge-store";
 
 export async function POST(request: NextRequest) {
   const authError = requireAuth(request);

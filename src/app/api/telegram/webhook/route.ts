@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   sendTelegramMessage,
+  sendTypingIndicator,
   downloadTelegramFile,
 } from "@/lib/kemi/telegram";
 import { setPreference } from "@/lib/kemi/preferences";
@@ -72,6 +73,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // Show "typing..." and refresh every 4s while processing
+    await sendTypingIndicator();
+    const typingInterval = setInterval(() => sendTypingIndicator(), 4000);
+
     const { processKemiMessage } = await import("@/lib/kemi/agent");
     const response = await processKemiMessage(
       text,
@@ -79,12 +84,13 @@ export async function POST(request: NextRequest) {
       isVoiceNote,
       originalVoiceText,
     );
+
+    clearInterval(typingInterval);
     await sendTelegramMessage(response);
     return NextResponse.json({ ok: true, responded: true });
   } catch (e) {
     const errMsg = e instanceof Error ? `${e.message}\n${e.stack}` : String(e);
     console.error("Telegram processing error:", errMsg);
-    // Send error details to Mike for debugging
     await sendTelegramMessage(
       `Error: ${e instanceof Error ? e.message : String(e)}`,
     );

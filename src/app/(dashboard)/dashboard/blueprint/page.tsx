@@ -290,7 +290,7 @@ export default function BlueprintPage() {
                           {/* Delete (hover) */}
                           <button
                             onClick={() => deleteBlueprint(bp.id)}
-                            className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 shrink-0"
+                            className="w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light opacity-100 lg:opacity-0 lg:group-hover:opacity-100 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 shrink-0"
                             title="Delete"
                           >
                             &times;

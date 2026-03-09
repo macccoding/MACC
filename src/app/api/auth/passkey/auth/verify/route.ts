@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { prisma } from "@/lib/prisma";
 import { rpID, origin } from "@/lib/webauthn";
-import { authChallengeStore } from "../options/route";
+import { authChallengeStore } from "@/lib/auth-challenge-store";
 
 export async function POST(request: NextRequest) {
   const { credential } = await request.json();

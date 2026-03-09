@@ -527,3 +527,59 @@ model ConversationMessage {
 
   @@map("conversation_messages")
 }
+
+// ─── Dashboard Features ─────────────────────────────────────────
+
+model MoodEntry {
+  id        String   @id @default(cuid())
+  mood      Int
+  energy    Int
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@map("mood_entries")
+}
+
+model FocusSession {
+  id              String    @id @default(cuid())
+  type            String    @default("pomodoro")
+  durationMinutes Int
+  actualMinutes   Int?
+  label           String?
+  goalId          String?
+  learningTrackId String?
+  status          String    @default("active")
+  startedAt       DateTime  @default(now())
+  endedAt         DateTime?
+  createdAt       DateTime  @default(now())
+
+  @@map("focus_sessions")
+}
+
+model WeeklyReview {
+  id          String   @id @default(cuid())
+  weekOf      DateTime @unique @db.Date
+  stats       Json     @default("{}")
+  aiPrompts   String[] @default([])
+  reflections String?
+  highlights  Json     @default("[]")
+  status      String   @default("draft")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("weekly_reviews")
+}
+
+model Insight {
+  id        String   @id @default(cuid())
+  type      String
+  title     String
+  body      String
+  modules   String[] @default([])
+  score     Float    @default(0.5)
+  weekOf    DateTime @db.Date
+  dismissed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("insights")
+}

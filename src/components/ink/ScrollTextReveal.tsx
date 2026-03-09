@@ -33,7 +33,7 @@ export function ScrollTextReveal({
     <div
       ref={containerRef}
       className={`relative ${className}`}
-      style={{ minHeight: `${scrollSpan * 50 + 20}vh` }}
+      style={{ minHeight: `${scrollSpan * 35 + 15}vh` }}
     >
       <div
         className={`sticky top-[45vh] px-6 md:px-12 lg:px-20 xl:px-28 max-w-4xl ${
@@ -72,7 +72,7 @@ function Word({
 }) {
   // Each word has a reveal window within the scroll progress
   const start = index / total;
-  const end = Math.min(start + 4 / total, 1);
+  const end = Math.min(start + 6 / total, 1);
   const opacity = useTransform(scrollProgress, [start, end], [0.12, 1]);
   const y = useTransform(scrollProgress, [start, end], [3, 0]);
 

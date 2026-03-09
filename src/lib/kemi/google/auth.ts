@@ -1,30 +1,29 @@
 import { google } from "googleapis";
 
-const ACCOUNTS = {
-  business: process.env.GOOGLE_REFRESH_TOKEN_BUSINESS,
-  personal: process.env.GOOGLE_REFRESH_TOKEN_PERSONAL,
-  tools: process.env.GOOGLE_REFRESH_TOKEN_TOOLS,
-} as const;
+export type GoogleAccount = "personal";
 
-export type GoogleAccount = keyof typeof ACCOUNTS;
+export function getOAuth2Client() {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_REFRESH_TOKEN_PERSONAL;
 
-export function getOAuth2Client(account: GoogleAccount = "business") {
-  const oauth2 = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-  );
-  oauth2.setCredentials({ refresh_token: ACCOUNTS[account] });
+  if (!clientId) throw new Error("GOOGLE_CLIENT_ID is missing or empty");
+  if (!clientSecret) throw new Error("GOOGLE_CLIENT_SECRET is missing or empty");
+  if (!refreshToken) throw new Error("GOOGLE_REFRESH_TOKEN_PERSONAL is missing or empty");
+
+  const oauth2 = new google.auth.OAuth2(clientId, clientSecret);
+  oauth2.setCredentials({ refresh_token: refreshToken });
   return oauth2;
 }
 
-export function getGmail(account: GoogleAccount = "business") {
-  return google.gmail({ version: "v1", auth: getOAuth2Client(account) });
+export function getGmail() {
+  return google.gmail({ version: "v1", auth: getOAuth2Client() });
 }
 
-export function getCalendarClient(account: GoogleAccount = "business") {
-  return google.calendar({ version: "v3", auth: getOAuth2Client(account) });
+export function getCalendarClient() {
+  return google.calendar({ version: "v3", auth: getOAuth2Client() });
 }
 
-export function getSheetsClient(account: GoogleAccount = "business") {
-  return google.sheets({ version: "v4", auth: getOAuth2Client(account) });
+export function getSheetsClient() {
+  return google.sheets({ version: "v4", auth: getOAuth2Client() });
 }

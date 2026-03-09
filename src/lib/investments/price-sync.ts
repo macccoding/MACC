@@ -18,7 +18,7 @@ export async function syncAllPrices(): Promise<SyncResult> {
   if (stocks.length > 0) {
     const symbols = stocks.map((s) => s.symbol);
     try {
-      const quotes = await yahooFinance.quote(symbols);
+      const quotes = await yahooFinance.quote(symbols) as { symbol: string; regularMarketPrice?: number }[];
       const quoteMap = new Map(
         (Array.isArray(quotes) ? quotes : [quotes]).map((q) => [
           q.symbol,
@@ -100,7 +100,7 @@ export async function getQuote(
   }
 
   try {
-    const quote = await yahooFinance.quote(symbol.toUpperCase());
+    const quote = await yahooFinance.quote(symbol.toUpperCase()) as { regularMarketPrice?: number };
     return { price: quote.regularMarketPrice ?? null };
   } catch (err) {
     return {

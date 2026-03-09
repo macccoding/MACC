@@ -102,7 +102,7 @@ export async function syncGmail(): Promise<SyncResult> {
         format: "full",
       });
 
-      const headers = fullMsg.data.payload?.headers ?? [];
+      const headers = (fullMsg.data.payload?.headers ?? []) as { name: string; value: string }[];
       const subject = decodeHeader(headers, "Subject");
       const sender = decodeHeader(headers, "From");
       const dateStr = decodeHeader(headers, "Date");

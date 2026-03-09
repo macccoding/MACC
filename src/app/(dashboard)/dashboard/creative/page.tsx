@@ -164,7 +164,7 @@ export default function CreativePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <input
             type="text"
             value={newTitle}
@@ -323,7 +323,7 @@ export default function CreativePage() {
                     </div>
 
                     {/* Hover Actions */}
-                    <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0">
+                    <div className="flex items-center gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200 shrink-0">
                       <button
                         onClick={() => cycleStatus(item.id, item.status)}
                         className={`w-7 h-7 flex items-center justify-center rounded-lg text-sumi-gray-light transition-colors duration-200 ${
