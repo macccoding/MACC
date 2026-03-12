@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "prisma generate && next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "prisma generate && tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

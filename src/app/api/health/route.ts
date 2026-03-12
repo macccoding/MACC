@@ -5,6 +5,16 @@ import type { Prisma } from "@/generated/prisma/client";
 import { mapHealthPayload } from "@/lib/health/ingest-mapper";
 
 export async function GET(request: NextRequest) {
+  // MOS health check: unauthenticated requests get simple status
+  const hasAuth = request.headers.get('authorization') || request.cookies.get('session');
+  if (!hasAuth && !request.nextUrl.searchParams.has('days')) {
+    return Response.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      project: 'mikechen',
+    });
+  }
+
   const authError = requireAuth(request);
   if (authError) return authError;
 
@@ -50,31 +60,50 @@ export async function POST(request: NextRequest) {
 
   // Webhook path: use field mapper for Health Auto Export payloads
   if (isWebhook) {
-    const mapped = mapHealthPayload(body);
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const dayMap = mapHealthPayload(body);
 
     try {
-      const snapshot = await prisma.healthSnapshot.upsert({
-        where: { date: today },
-        create: {
-          date: today,
-          steps: mapped.steps,
-          calories: mapped.calories,
-          heartRate: mapped.heartRate,
-          sleep: mapped.sleep,
-          data: mapped.data,
-        },
-        update: {
-          ...(mapped.steps !== null ? { steps: mapped.steps } : {}),
-          ...(mapped.calories !== null ? { calories: mapped.calories } : {}),
-          ...(mapped.heartRate !== null ? { heartRate: mapped.heartRate } : {}),
-          ...(mapped.sleep !== null ? { sleep: mapped.sleep } : {}),
-          ...(Object.keys(mapped.data).length > 0 ? { data: mapped.data } : {}),
-        },
-      });
-      return NextResponse.json(snapshot, { status: 201 });
+      const results: Array<{ id: string; date: string }> = [];
+
+      for (const [dateKey, mapped] of dayMap) {
+        const normalized = dateKey === "flat"
+          ? (() => { const d = new Date(); d.setUTCHours(0, 0, 0, 0); return d; })()
+          : (() => { const d = new Date(dateKey + "T00:00:00Z"); d.setUTCHours(0, 0, 0, 0); return d; })();
+
+        // Merge data JSON with existing
+        const existing = await prisma.healthSnapshot.findUnique({
+          where: { date: normalized },
+          select: { data: true },
+        });
+        const mergedData = {
+          ...(existing?.data && typeof existing.data === "object" && !Array.isArray(existing.data)
+            ? (existing.data as Record<string, unknown>)
+            : {}),
+          ...mapped.data,
+        } as Prisma.InputJsonValue;
+
+        const snapshot = await prisma.healthSnapshot.upsert({
+          where: { date: normalized },
+          create: {
+            date: normalized,
+            ...(mapped.steps != null ? { steps: mapped.steps } : {}),
+            ...(mapped.calories != null ? { calories: mapped.calories } : {}),
+            ...(mapped.heartRate != null ? { heartRate: mapped.heartRate } : {}),
+            ...(mapped.sleep != null ? { sleep: mapped.sleep } : {}),
+            data: mergedData,
+          },
+          update: {
+            ...(mapped.steps != null ? { steps: mapped.steps } : {}),
+            ...(mapped.calories != null ? { calories: mapped.calories } : {}),
+            ...(mapped.heartRate != null ? { heartRate: mapped.heartRate } : {}),
+            ...(mapped.sleep != null ? { sleep: mapped.sleep } : {}),
+            data: mergedData,
+          },
+        });
+        results.push({ id: snapshot.id, date: dateKey });
+      }
+
+      return NextResponse.json({ ingested: true, days: results.length, results }, { status: 201 });
     } catch (err) {
       console.error("[health] Ingest error:", err);
       return NextResponse.json(
