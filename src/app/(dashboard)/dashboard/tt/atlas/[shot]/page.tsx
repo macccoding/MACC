@@ -74,6 +74,20 @@ type ShotData = {
   recentDrills: Drill[];
 };
 
+type Guide = {
+  readyPosition: string | null;
+  gripAdjustment: string | null;
+  preparation: string | null;
+  contact: string | null;
+  wristForearm: string | null;
+  followThrough: string | null;
+  commonMistakes: string | null;
+  whenToUse: string | null;
+  whenNotToUse: string | null;
+  cuePhrase: string | null;
+  imageUrl: string | null;
+};
+
 function TrendArrow({ ratings }: { ratings: Rating[] }) {
   if (ratings.length < 2) return null;
   const last = ratings[ratings.length - 1].rating;
@@ -134,6 +148,7 @@ function VideoLinks({ links }: { links: unknown }) {
 export default function ShotDetailPage({ params }: { params: Promise<{ shot: string }> }) {
   const { shot } = use(params);
   const [data, setData] = useState<ShotData | null>(null);
+  const [guide, setGuide] = useState<Guide | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -147,8 +162,12 @@ export default function ShotDetailPage({ params }: { params: Promise<{ shot: str
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const res = await fetch(`/api/tt/techniques/${encodeURIComponent(shot)}`);
-      if (res.ok) setData(await res.json());
+      const [techRes, guideRes] = await Promise.all([
+        fetch(`/api/tt/techniques/${encodeURIComponent(shot)}`),
+        fetch(`/api/tt/guides?shot=${encodeURIComponent(shot)}`),
+      ]);
+      if (techRes.ok) setData(await techRes.json());
+      if (guideRes.ok) setGuide(await guideRes.json());
       setLoading(false);
     }
     load();
@@ -206,6 +225,121 @@ export default function ShotDetailPage({ params }: { params: Promise<{ shot: str
       {loading ? (
         <p className="font-mono text-sm" style={{ color: "var(--parchment-dim)" }}>Loading...</p>
       ) : (
+        <>
+        {guide && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.06, duration: 0.4, ease: [...ease] }}
+            className="mb-5 space-y-4"
+          >
+            <p className="font-mono text-xs uppercase tracking-wider" style={{ color: "var(--gold-seal)" }}>
+              Technique Guide
+            </p>
+
+            {guide.cuePhrase && (
+              <p className="font-serif text-lg italic" style={{ color: "var(--vermillion)" }}>
+                &ldquo;{guide.cuePhrase}&rdquo;
+              </p>
+            )}
+
+            {/* Mechanics grid */}
+            {[
+              { label: "Ready Position", icon: "立", value: guide.readyPosition },
+              { label: "Grip", icon: "握", value: guide.gripAdjustment },
+              { label: "Preparation", icon: "構", value: guide.preparation },
+              { label: "Contact", icon: "触", value: guide.contact },
+              { label: "Wrist & Forearm", icon: "腕", value: guide.wristForearm },
+              { label: "Follow-Through", icon: "流", value: guide.followThrough },
+            ].filter((item) => item.value).length > 0 && (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {[
+                  { label: "Ready Position", icon: "立", value: guide.readyPosition },
+                  { label: "Grip", icon: "握", value: guide.gripAdjustment },
+                  { label: "Preparation", icon: "構", value: guide.preparation },
+                  { label: "Contact", icon: "触", value: guide.contact },
+                  { label: "Wrist & Forearm", icon: "腕", value: guide.wristForearm },
+                  { label: "Follow-Through", icon: "流", value: guide.followThrough },
+                ]
+                  .filter((item) => item.value)
+                  .map((item, i) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + i * 0.04, duration: 0.35, ease: [...ease] }}
+                      className="rounded-lg border p-4"
+                      style={{ backgroundColor: "var(--ink-dark)", borderColor: "var(--ink-mid)" }}
+                    >
+                      <p className="font-mono text-xs mb-2" style={{ color: "var(--parchment-muted)" }}>
+                        {item.icon} {item.label}
+                      </p>
+                      <p className="font-mono text-sm leading-relaxed" style={{ color: "var(--parchment)" }}>
+                        {item.value}
+                      </p>
+                    </motion.div>
+                  ))}
+              </div>
+            )}
+
+            {/* When to use / when not to use */}
+            {(guide.whenToUse || guide.whenNotToUse) && (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {guide.whenToUse && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.34, duration: 0.35, ease: [...ease] }}
+                    className="rounded-lg border p-4"
+                    style={{ backgroundColor: "var(--ink-dark)", borderColor: "var(--gold-seal)" }}
+                  >
+                    <p className="font-mono text-xs mb-2" style={{ color: "var(--gold-seal)" }}>
+                      When to Use
+                    </p>
+                    <p className="font-mono text-sm leading-relaxed" style={{ color: "var(--parchment)" }}>
+                      {guide.whenToUse}
+                    </p>
+                  </motion.div>
+                )}
+                {guide.whenNotToUse && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.38, duration: 0.35, ease: [...ease] }}
+                    className="rounded-lg border p-4"
+                    style={{ backgroundColor: "var(--ink-dark)", borderColor: "var(--vermillion)" }}
+                  >
+                    <p className="font-mono text-xs mb-2" style={{ color: "var(--vermillion)" }}>
+                      When NOT to Use
+                    </p>
+                    <p className="font-mono text-sm leading-relaxed" style={{ color: "var(--parchment)" }}>
+                      {guide.whenNotToUse}
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+            )}
+
+            {/* Common mistakes */}
+            {guide.commonMistakes && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.42, duration: 0.35, ease: [...ease] }}
+                className="rounded-lg border p-4"
+                style={{ backgroundColor: "var(--vermillion-wash)", borderColor: "var(--vermillion)" }}
+              >
+                <p className="font-mono text-xs mb-2" style={{ color: "var(--vermillion)" }}>
+                  Common Mistakes
+                </p>
+                <p className="font-mono text-sm leading-relaxed" style={{ color: "var(--parchment)" }}>
+                  {guide.commonMistakes}
+                </p>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {/* Left — Your Game */}
           <motion.div
@@ -433,6 +567,7 @@ export default function ShotDetailPage({ params }: { params: Promise<{ shot: str
             )}
           </motion.div>
         </div>
+        </>
       )}
     </div>
   );
