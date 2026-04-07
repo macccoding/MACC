@@ -584,3 +584,129 @@ model Insight {
 
   @@map("insights")
 }
+
+// ─── Table Tennis (Tsukuyomi) ───────────────────────────────────────────────
+
+model TTSession {
+  id             String    @id @default(cuid())
+  date           DateTime  @db.Date
+  duration       Int       // minutes
+  location       String?
+  blade          String    // "FZD ALC" | "Q968"
+  mode1Respected Boolean?
+  peakMode       Int?      // 1-4
+  energyLevel    Int?      // 1-10
+  notes          String?
+  drills         TTDrill[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("tt_sessions")
+}
+
+model TTDrill {
+  id        String    @id @default(cuid())
+  sessionId String
+  session   TTSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name      String
+  category  String    // "sharingan" | "amaterasu" | "totsuka" | "yata-mirror"
+  technique String?   // "bh-flick", "fh-opening-loop", etc.
+  rating    Int?      // 1-10
+  notes     String?
+  createdAt DateTime  @default(now())
+
+  @@map("tt_drills")
+}
+
+model TTTechniqueRating {
+  id        String   @id @default(cuid())
+  shot      String
+  rating    Int      // 1-10
+  date      DateTime @db.Date
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@map("tt_technique_ratings")
+}
+
+model TTTechniqueReference {
+  id                 String   @id @default(cuid())
+  shot               String
+  playerName         String
+  mechanicsBreakdown String?
+  extractionNotes    String?
+  comparisonNotes    String?
+  videoLinks         Json?    // [{url, timestamp, description}]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("tt_technique_references")
+}
+
+model TTMatch {
+  id            String   @id @default(cuid())
+  date          DateTime @db.Date
+  opponent      String
+  opponentNotes String?
+  result        String   // "3-1", "3-2", etc.
+  scores        Json?    // [{you: 11, them: 4}, ...]
+  blade         String
+  tournament    String?
+  whatWorked    String?
+  whatBroke     String?
+  tacticalNotes String?
+  servesUsed    String?
+  receiveNotes  String?
+  peakMode      Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("tt_matches")
+}
+
+model TTEquipmentLog {
+  id                String    @id @default(cuid())
+  item              String
+  type              String    // "rubber" | "blade"
+  side              String?   // "fh" | "bh"
+  blade             String?
+  dateStarted       DateTime  @db.Date
+  dateEnded         DateTime? @db.Date
+  satisfaction      Int?      // 1-10
+  pros              String?
+  cons              String?
+  verdict           String?   // "kept" | "discarded" | "revisit"
+  revisitConditions String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("tt_equipment_log")
+}
+
+model TTBoostLog {
+  id        String   @id @default(cuid())
+  rubber    String
+  blade     String
+  side      String   // "fh" | "bh"
+  booster   String
+  date      DateTime @db.Date
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@map("tt_boost_log")
+}
+
+model TTPeriodPhase {
+  id          String   @id @default(cuid())
+  name        String
+  startMonth  DateTime @db.Date
+  endMonth    DateTime @db.Date
+  focusAreas  Json     // string[]
+  targets     Json     // string[]
+  reviewNotes String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tt_period_phases")
+}
