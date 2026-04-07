@@ -47,3 +47,7 @@ public/sw.js
 public/sw.js.map
 public/serwist-worker-*.js
 public/serwist-worker-*.js.map
+
+# Claude Code worktrees
+.claude/worktrees/
+.env*.local

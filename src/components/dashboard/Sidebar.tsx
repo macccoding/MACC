@@ -28,6 +28,7 @@ export const MODULES = [
   { label: "Kioku", href: "/dashboard/knowledge", icon: "脳" },
   { label: "Review", href: "/dashboard/review", icon: "省" },
   { label: "Blueprint", href: "/dashboard/blueprint", icon: "図" },
+  { label: "Tsukuyomi", href: "/dashboard/tt", icon: "卓" },
 ];
 
 export function Sidebar({ onKemiClick }: SidebarProps) {
