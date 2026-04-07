@@ -710,3 +710,23 @@ model TTPeriodPhase {
 
   @@map("tt_period_phases")
 }
+
+model TTTechniqueGuide {
+  id              String   @id @default(cuid())
+  shot            String   @unique
+  readyPosition   String?
+  gripAdjustment  String?
+  preparation     String?
+  contact         String?
+  wristForearm    String?
+  followThrough   String?
+  commonMistakes  String?
+  whenToUse       String?
+  whenNotToUse    String?
+  cuePhrase       String?
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("tt_technique_guides")
+}
