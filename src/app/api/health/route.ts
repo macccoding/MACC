@@ -60,15 +60,13 @@ export async function POST(request: NextRequest) {
 
   // Webhook path: use field mapper for Health Auto Export payloads
   if (isWebhook) {
-    const dayMap = mapHealthPayload(body);
+    const mapped = mapHealthPayload(body);
 
     try {
       const results: Array<{ id: string; date: string }> = [];
 
-      for (const [dateKey, mapped] of dayMap) {
-        const normalized = dateKey === "flat"
-          ? (() => { const d = new Date(); d.setUTCHours(0, 0, 0, 0); return d; })()
-          : (() => { const d = new Date(dateKey + "T00:00:00Z"); d.setUTCHours(0, 0, 0, 0); return d; })();
+      {
+        const normalized = (() => { const d = new Date(); d.setUTCHours(0, 0, 0, 0); return d; })();
 
         // Merge data JSON with existing
         const existing = await prisma.healthSnapshot.findUnique({
@@ -100,7 +98,7 @@ export async function POST(request: NextRequest) {
             data: mergedData,
           },
         });
-        results.push({ id: snapshot.id, date: dateKey });
+        results.push({ id: snapshot.id, date: normalized.toISOString().split("T")[0] });
       }
 
       return NextResponse.json({ ingested: true, days: results.length, results }, { status: 201 });
