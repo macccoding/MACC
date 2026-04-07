@@ -327,7 +327,7 @@ export default function ShotDetailPage({ params }: { params: Promise<{ shot: str
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.42, duration: 0.35, ease: [...ease] }}
                 className="rounded-lg border p-4"
-                style={{ backgroundColor: "var(--vermillion-wash)", borderColor: "var(--vermillion)" }}
+                style={{ backgroundColor: "var(--ink-dark)", borderColor: "var(--vermillion)" }}
               >
                 <p className="font-mono text-xs mb-2" style={{ color: "var(--vermillion)" }}>
                   Common Mistakes
